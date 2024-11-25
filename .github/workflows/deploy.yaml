@@ -86,10 +86,21 @@ jobs:
         working-directory: ./terraform
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
-      - name: Helm Upgrade
+      - name: Update Helm Repos
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         working-directory: ./helm
         run: |
           helm repo add ollama-helm https://otwld.github.io/ollama-helm/
+          helm repo add langfuse https://langfuse.github.io/langfuse-k8s
           helm repo update
-          helm upgrade --install ollama ollama-helm/ollama -f ollama/values.yaml
+      - name: Helm Deploy Ollama
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        working-directory: ./helm
+        run: helm upgrade --install ollama ollama-helm/ollama -f ollama/values.yaml
+      - name: Helm Deploy Langfuse
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        working-directory: ./helm
+        run: helm upgrade --install langfuse langfuse-k8s/langfuse -f langfuse/values.yaml \
+          --set postgresql.auth.password=${{ secrets.DATABASE_PASSWORD }} \
+          --set langfuse.nextauth.secret=${{ secrets.LANGFUSE_NEXTAUTH_SECRET }} \
+          --set langfuse.salt=${{ secrets.LANGFUSE_SALT }}

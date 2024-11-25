@@ -1,0 +1,19 @@
+langfuse:
+  nextauth:
+    url: http://localhost:3000
+    secret:
+  salt:
+  telemetryEnabled: true
+service:
+  type: ClusterIP
+  additionalLabels: []
+ingress:
+  enabled: false
+  annotations: []
+postgresql:
+  deploy: false
+  auth:
+    username: postgres
+    password:
+    database: langfuse
+  host: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
