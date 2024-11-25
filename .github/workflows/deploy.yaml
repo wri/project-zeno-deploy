@@ -86,3 +86,9 @@ jobs:
         working-directory: ./terraform
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
+      - name: Helm Upgrade
+        working-directory: ./helm
+        run: |
+          helm repo add ollama-helm https://otwld.github.io/ollama-helm/
+          helm repo update
+          helm upgrade --install ollama ollama-helm/ollama -f ollama/values.yaml
