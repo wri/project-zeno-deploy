@@ -100,7 +100,9 @@ jobs:
       - name: Helm Deploy Langfuse
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         working-directory: ./helm
-        run: helm upgrade --install langfuse langfuse/langfuse -f langfuse/values.yaml \
-          --set postgresql.auth.password=${{ secrets.DATABASE_PASSWORD }} \
-          --set langfuse.nextauth.secret=${{ secrets.LANGFUSE_NEXTAUTH_SECRET }} \
+        run: >
+          helm upgrade --install langfuse langfuse/langfuse 
+          -f langfuse/values.yaml 
+          --set postgresql.auth.password=${{ secrets.DATABASE_PASSWORD }} 
+          --set langfuse.nextauth.secret=${{ secrets.LANGFUSE_NEXTAUTH_SECRET }} 
           --set langfuse.salt=${{ secrets.LANGFUSE_SALT }}
