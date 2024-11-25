@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - eks-cluster-setup
   pull_request:
     branches:
       - main
@@ -84,9 +85,10 @@ jobs:
         run: exit 1
       - name: Terraform Apply
         working-directory: ./terraform
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/eks-cluster-setup'
         run: terraform apply -auto-approve
       - name: Helm Upgrade
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/eks-cluster-setup'
         working-directory: ./helm
         run: |
           helm repo add ollama-helm https://otwld.github.io/ollama-helm/
