@@ -1,4 +1,4 @@
-name: 'Terraform'
+name: 'Deploy Terraform and Helm'
 on:
   push:
     branches:
@@ -27,7 +27,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Configure kubeconfig
-        run: aws eks update-kubeconfig --region us-east-1 --name project-zeno-production-cluster
+        run: aws eks update-kubeconfig --region us-east-1 --name zeno-production-cluster
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
