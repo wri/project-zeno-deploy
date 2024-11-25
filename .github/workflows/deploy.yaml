@@ -87,6 +87,11 @@ jobs:
         working-directory: ./terraform
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/eks-cluster-setup'
         run: terraform apply -auto-approve
+  Helm:
+    name: 'Helm'
+    runs-on: ubuntu-latest
+    needs: [Terraform]
+    steps:
       - name: Helm Upgrade
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/eks-cluster-setup'
         working-directory: ./helm
