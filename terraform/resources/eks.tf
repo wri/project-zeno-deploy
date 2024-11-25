@@ -72,6 +72,7 @@ module "eks" {
 
       min_size     = 0
       max_size     = 1
+      desired_size = 0
 
       # Needed by the aws-ebs-csi-driver
       iam_role_additional_policies = {
@@ -82,7 +83,7 @@ module "eks" {
     regular = {
       name = "regular"
 
-      instance_types = ["t3.xlarge"]
+      instance_types = ["t3.large"]
 
       min_size     = 1
       max_size     = 2
