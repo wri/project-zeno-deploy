@@ -4,6 +4,30 @@ langfuse:
     secret:
   salt:
   telemetryEnabled: true
+  additionalEnv:
+    - name: LANGFUSE_INIT_ORG_ID
+      value: "devseed"
+    - name: LANGFUSE_INIT_PROJECT_ID
+      value: "wri_lcl"
+    - name: LANGFUSE_INIT_PROJECT_NAME
+      value: "WRI Land Carbon Labs"
+    - name: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
+      value: "lf_pk_1234567890"
+    - name: LANGFUSE_INIT_PROJECT_SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: zeno-langfuse-secrets
+          key: LANGFUSE_INIT_PROJECT_SECRET_KEY
+    - name: LANGFUSE_INIT_USER_EMAIL
+      value: "info@developmentseed.org"
+    - name: LANGFUSE_INIT_USER_NAME
+      value: "devseed"
+    - name: LANGFUSE_INIT_USER_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: zeno-langfuse-secrets
+          key: LANGFUSE_INIT_USER_PASSWORD
+
 service:
   type: ClusterIP
   additionalLabels: []
