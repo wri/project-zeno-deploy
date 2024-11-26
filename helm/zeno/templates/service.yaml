@@ -7,6 +7,9 @@ metadata:
     component: api
 spec:
   type: ClusterIP
+  selector:
+    app: zeno
+    component: api
   ports:
     - port: 8000
       targetPort: http
