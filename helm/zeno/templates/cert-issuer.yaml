@@ -1,6 +1,6 @@
 {{- if .Values.config.enable_tls }}
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: letsencrypt-staging
 spec:
@@ -19,7 +19,7 @@ spec:
             class: nginx
 ---
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
 spec:
