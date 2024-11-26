@@ -4,13 +4,16 @@ metadata:
   name: {{ .Release.Name }}-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
-    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
-  # tls:
-  #   - hosts:
-  #       - {{ .Values.api.host }}
-  #     secretName: {{ .Release.Name }}-tls
+  {{- if .Values.config.enable_tls }}
+  tls:
+    - hosts:
+        # - {{ .Values.api.host }}
+        - {{ .Values.langfuse.host }}
+      secretName: {{ .Release.Name }}-tls
+  {{- end }}
   rules:
     # - host: {{ .Values.api.host }}
     #   http:
