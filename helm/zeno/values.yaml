@@ -3,3 +3,6 @@ secrets:
     INIT_USER_PASSWORD:
     INIT_PROJECT_SECRET_KEY:
     INIT_PROJECT_PUBLIC_KEY:
+
+langfuse:
+  host: langfuse.zeno.ds.io
