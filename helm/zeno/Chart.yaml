@@ -1,0 +1,6 @@
+apiVersion: v2
+name: zeno
+description: A Helm chart for Zeno
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

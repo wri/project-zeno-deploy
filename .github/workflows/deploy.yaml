@@ -106,3 +106,12 @@ jobs:
           --set postgresql.auth.password=${{ secrets.DATABASE_PASSWORD }} 
           --set langfuse.nextauth.secret=${{ secrets.LANGFUSE_NEXTAUTH_SECRET }} 
           --set langfuse.salt=${{ secrets.LANGFUSE_SALT }}
+      - name: Helm Deploy Zeno
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        working-directory: ./helm
+        run: >
+          helm upgrade --install zeno ./zeno
+          -f zeno/values.yaml
+          --set secrets.langfuse.INIT_USER_PASSWORD=${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}
+          --set secrets.langfuse.INIT_PROJECT_SECRET_KEY=${{ secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY }}
+          --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY=${{ secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}
