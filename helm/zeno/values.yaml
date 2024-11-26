@@ -6,3 +6,6 @@ secrets:
 
 langfuse:
   host: langfuse.zeno.ds.io
+
+api:
+  host: api.zeno.ds.io

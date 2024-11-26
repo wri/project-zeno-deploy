@@ -9,10 +9,10 @@ metadata:
 spec:
   # tls:
   #   - hosts:
-  #       - {{ .Values.ingress.host }}
+  #       - {{ .Values.api.host }}
   #     secretName: {{ .Release.Name }}-tls
   rules:
-    # - host: {{ .Values.ingress.host }}
+    # - host: {{ .Values.api.host }}
     #   http:
     #     paths:
     #       - path: /
