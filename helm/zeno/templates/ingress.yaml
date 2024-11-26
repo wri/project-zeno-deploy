@@ -10,21 +10,21 @@ spec:
   {{- if .Values.config.enable_tls }}
   tls:
     - hosts:
-        # - {{ .Values.api.host }}
+        - {{ .Values.api.host }}
         - {{ .Values.langfuse.host }}
       secretName: {{ .Release.Name }}-tls
   {{- end }}
   rules:
-    # - host: {{ .Values.api.host }}
-    #   http:
-    #     paths:
-    #       - path: /
-    #         pathType: Prefix
-    #         backend:
-    #           service:
-    #             name: {{ .Release.Name }}-service
-    #             port:
-    #               number: 80
+    - host: {{ .Values.api.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-api
+                port:
+                  number: 8000
     - host: {{ .Values.langfuse.host }}
       http:
         paths:
