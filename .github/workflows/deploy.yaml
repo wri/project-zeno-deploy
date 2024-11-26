@@ -115,3 +115,7 @@ jobs:
           --set secrets.langfuse.INIT_USER_PASSWORD=${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}
           --set secrets.langfuse.INIT_PROJECT_SECRET_KEY=${{ secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY }}
           --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY=${{ secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}
+          --set secrets.api.OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          --set secrets.api.ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
+          --set secrets.api.AWS_ACCESS_KEY_ID=${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}
+          --set secrets.api.AWS_SECRET_ACCESS_KEY=${{ secrets.S3_READONLY_AWS_SECRET_ACCESS_KEY }}

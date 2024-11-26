@@ -6,9 +6,20 @@ secrets:
     INIT_USER_PASSWORD:
     INIT_PROJECT_SECRET_KEY:
     INIT_PROJECT_PUBLIC_KEY:
+  api:
+    OPENAI_API_KEY:
+    ANTHROPIC_API_KEY:
+    AWS_ACCESS_KEY_ID:
+    AWS_SECRET_ACCESS_KEY:
 
 langfuse:
   host: langfuse.zeno.ds.io
 
 api:
   host: api.zeno.ds.io
+  replicas: 1
+  image:
+    repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
+    tag: da37dfb112a6fd9c8586fe6907b04324d0f174bd
+  config:
+    LANGFUSE_HOST: https://langfuse.zeno.ds.io
