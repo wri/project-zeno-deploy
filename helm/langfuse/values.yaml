@@ -5,6 +5,8 @@ langfuse:
   salt:
   telemetryEnabled: true
   additionalEnv:
+    - name: AUTH_DISABLE_SIGNUP
+      value: "true"
     - name: LANGFUSE_INIT_ORG_ID
       value: "devseed"
     - name: LANGFUSE_INIT_PROJECT_ID
