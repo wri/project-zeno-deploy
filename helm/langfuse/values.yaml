@@ -14,7 +14,10 @@ langfuse:
     - name: LANGFUSE_INIT_PROJECT_NAME
       value: "WRI Land Carbon Labs"
     - name: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
-      value: "lf_pk_1234567890"
+      valueFrom:
+        secretKeyRef:
+          name: zeno-langfuse-secrets
+          key: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
     - name: LANGFUSE_INIT_PROJECT_SECRET_KEY
       valueFrom:
         secretKeyRef:
