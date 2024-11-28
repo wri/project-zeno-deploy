@@ -1,5 +1,7 @@
 config:
   enable_tls: true
+  # we will use the existing cluster issuer from default namespace
+  create_cert_manager_issuer: false
 
 secrets:
   langfuse:

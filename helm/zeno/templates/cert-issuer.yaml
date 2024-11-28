@@ -1,4 +1,4 @@
-{{- if .Values.config.enable_tls }}
+{{- if .Values.config.create_cert_manager_issuer }}
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
