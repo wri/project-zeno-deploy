@@ -120,7 +120,7 @@ jobs:
           --set secrets.api.AWS_ACCESS_KEY_ID=${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}
           --set secrets.api.AWS_SECRET_ACCESS_KEY=${{ secrets.S3_READONLY_AWS_SECRET_ACCESS_KEY }}
       - name: Helm Deploy Zeno Dev Instance
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         working-directory: ./helm
         run: >
           helm upgrade --install zeno-dev ./zeno
