@@ -11,7 +11,9 @@ spec:
   tls:
     - hosts:
         - {{ .Values.api.host }}
+        {{- if .Values.langfuse.enabled }}
         - {{ .Values.langfuse.host }}
+        {{- end }}
       secretName: {{ .Release.Name }}-tls
   {{- end }}
   rules:
@@ -25,6 +27,7 @@ spec:
                 name: {{ .Release.Name }}-api
                 port:
                   number: 8000
+  {{- if .Values.langfuse.enabled }}
     - host: {{ .Values.langfuse.host }}
       http:
         paths:
@@ -35,3 +38,4 @@ spec:
                 name: langfuse
                 port:
                   number: 3000
+  {{- end }}

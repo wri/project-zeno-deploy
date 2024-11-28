@@ -16,6 +16,8 @@ spec:
       labels:
         app: zeno
         component: api
+      annotations:
+        force-update: {{ randAlphaNum 5 | quote }}  # random annotation to force update
     spec:
       initContainers:
         - name: s3-data-sync

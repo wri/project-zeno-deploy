@@ -13,11 +13,10 @@ secrets:
     AWS_SECRET_ACCESS_KEY:
 
 langfuse:
-  enabled: true
-  host: langfuse.zeno.ds.io
+  enabled: false
 
 api:
-  host: api.zeno.ds.io
+  host: dev.api.zeno.ds.io
   replicas: 1
   image:
     repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
