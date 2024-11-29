@@ -73,6 +73,8 @@ spec:
               value: {{ .Values.api.config.LANGFUSE_HOST }}
             - name: GEE_SERVICE_ACCOUNT_PATH
               value: /keys/zeno-gee-service-account.json
+            - name: OLLAMA_BASE_URL
+              value: {{ .Values.api.config.OLLAMA_BASE_URL }}
           volumeMounts:
             - name: data-volume
               mountPath: /app/data

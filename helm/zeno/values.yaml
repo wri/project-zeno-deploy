@@ -26,3 +26,4 @@ api:
     tag: 109788cd8060f9f7877753e34de99d04d599bd6b
   config:
     LANGFUSE_HOST: https://langfuse.zeno.ds.io
+    OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
