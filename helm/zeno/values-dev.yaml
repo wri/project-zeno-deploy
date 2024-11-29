@@ -22,6 +22,6 @@ api:
   replicas: 1
   image:
     repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-    tag: f636bdaa38852fafcdf6a2452872b6321295d789
+    tag: 0b9285335d8231f4a4747efa29aedc45c7f6c38f
   config:
     LANGFUSE_HOST: https://langfuse.zeno.ds.io
