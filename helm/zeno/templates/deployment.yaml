@@ -71,9 +71,20 @@ spec:
                   key: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
             - name: LANGFUSE_HOST
               value: {{ .Values.api.config.LANGFUSE_HOST }}
+            - name: GEE_SERVICE_ACCOUNT_PATH
+              value: /keys/zeno-gee-service-account.json
           volumeMounts:
             - name: data-volume
               mountPath: /app/data
+            - name: gee-service-account
+              mountPath: /keys
+              readOnly: true
       volumes:
         - name: data-volume
           emptyDir: {}
+        - name: gee-service-account
+          secret:
+            secretName: {{ .Release.Name }}-zeno-secrets
+            items:
+              - key: GEE_SERVICE_ACCOUNT_JSON
+                path: zeno-gee-service-account.json

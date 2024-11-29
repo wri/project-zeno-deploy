@@ -134,3 +134,4 @@ jobs:
           --set secrets.api.ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
           --set secrets.api.AWS_ACCESS_KEY_ID=${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}
           --set secrets.api.AWS_SECRET_ACCESS_KEY=${{ secrets.S3_READONLY_AWS_SECRET_ACCESS_KEY }}
+          --set secrets.api.GEE_SERVICE_ACCOUNT_JSON=${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}
