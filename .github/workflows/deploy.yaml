@@ -92,6 +92,8 @@ jobs:
         run: |
           helm repo add ollama-helm https://otwld.github.io/ollama-helm/
           helm repo add langfuse https://langfuse.github.io/langfuse-k8s
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo add grafana https://grafana.github.io/helm-charts
           helm repo update
       - name: Helm Deploy Ollama
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -106,6 +108,23 @@ jobs:
           --set postgresql.auth.password=${{ secrets.DATABASE_PASSWORD }} 
           --set langfuse.nextauth.secret=${{ secrets.LANGFUSE_NEXTAUTH_SECRET }} 
           --set langfuse.salt=${{ secrets.LANGFUSE_SALT }}
+      - name: Helm Deploy Kube Prometheus Stack
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        working-directory: ./helm
+        run: >
+          helm upgrade --install
+          kube-prometheus-stack
+          --namespace support
+          --create-namespace
+          prometheus-community/kube-prometheus-stack
+          -f support/kube-prometheus-stack/values.yaml
+          --set grafana.adminPassword=${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+      - name: Helm Deploy Loki
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        working-directory: ./helm
+        run: >
+          helm upgrade --install loki support/loki -f support/loki/loki-values.yaml
+      # Deploy Zeno instances
       - name: Helm Deploy Zeno
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         working-directory: ./helm
