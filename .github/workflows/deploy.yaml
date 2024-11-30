@@ -123,7 +123,12 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         working-directory: ./helm
         run: >
-          helm upgrade --install loki support/loki -f support/loki/loki-values.yaml
+          helm upgrade --install
+          --namespace support
+          --create-namespace
+          loki
+          grafana/loki-stack
+          -f support/loki/loki-values.yaml
       # Deploy Zeno instances
       - name: Helm Deploy Zeno
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
