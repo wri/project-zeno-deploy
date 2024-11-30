@@ -1,3 +1,6 @@
 grafana:
   adminPassword:
   adminUser: "admin"
+  persistence:
+    enabled: true
+    size: 10Gi
