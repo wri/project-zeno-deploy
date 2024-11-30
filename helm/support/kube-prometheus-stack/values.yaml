@@ -3,4 +3,5 @@ grafana:
   adminUser: "admin"
   persistence:
     enabled: true
+    storageClassName: "gp2"
     size: 10Gi
