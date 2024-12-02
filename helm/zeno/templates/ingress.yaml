@@ -11,6 +11,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.api.host }}
+        - {{ .Values.streamlit.host }}
         {{- if .Values.langfuse.enabled }}
         - {{ .Values.langfuse.host }}
         {{- end }}
@@ -27,6 +28,16 @@ spec:
                 name: {{ .Release.Name }}-api
                 port:
                   number: 8000
+    - host: {{ .Values.streamlit.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-streamlit
+                port:
+                  number: 8501
   {{- if .Values.langfuse.enabled }}
     - host: {{ .Values.langfuse.host }}
       http:

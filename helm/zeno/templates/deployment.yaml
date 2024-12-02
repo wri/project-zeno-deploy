@@ -125,4 +125,4 @@ spec:
               protocol: TCP
           env:
             - name: API_BASE_URL
-              value: {{ .Values.api.host }}
+              value: {{ .Values.streamlit.config.API_BASE_URL }}

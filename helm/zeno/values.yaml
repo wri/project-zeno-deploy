@@ -27,3 +27,8 @@ api:
   config:
     LANGFUSE_HOST: https://langfuse.zeno.ds.io
     OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
+
+streamlit:
+  host: streamlit.zeno.ds.io
+  config:
+    API_BASE_URL: https://api.zeno.ds.io
