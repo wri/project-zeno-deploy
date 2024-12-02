@@ -101,7 +101,7 @@ metadata:
     app: zeno
     component: streamlit
 spec:
-  replicas: {{ .Values.streamlit.replicas | default 1 }}
+  replicas: 1
   selector:
     matchLabels:
       app: zeno
