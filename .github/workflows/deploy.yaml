@@ -98,7 +98,7 @@ jobs:
       - name: Helm Deploy Ollama
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         working-directory: ./helm
-        run: helm upgrade --install ollama ollama-helm/ollama -f ollama/values.yaml
+        run: helm upgrade --install ollama ollama-helm/ollama --version 0.69.0 -f ollama/values.yaml
       - name: Helm Deploy Langfuse
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         working-directory: ./helm
