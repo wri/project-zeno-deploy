@@ -104,6 +104,7 @@ jobs:
         working-directory: ./helm
         run: >
           helm upgrade --install langfuse langfuse/langfuse 
+          --version 0.8.0
           -f langfuse/values.yaml 
           --set postgresql.auth.password=${{ secrets.DATABASE_PASSWORD }} 
           --set langfuse.nextauth.secret=${{ secrets.LANGFUSE_NEXTAUTH_SECRET }} 
@@ -114,6 +115,7 @@ jobs:
         run: >
           helm upgrade --install
           kube-prometheus-stack
+          --version 66.3.1
           --namespace support
           --create-namespace
           prometheus-community/kube-prometheus-stack
@@ -124,6 +126,7 @@ jobs:
         working-directory: ./helm
         run: >
           helm upgrade --install
+          --version 2.10.2
           --namespace support
           --create-namespace
           loki
