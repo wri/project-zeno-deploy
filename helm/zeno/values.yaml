@@ -20,7 +20,7 @@ langfuse:
 
 api:
   host: api.zeno.ds.io
-  replicas: 1
+  replicas: 2
   image:
     repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
     tag: 99da528621966d7dc3034ffd4e0b2c7180c4bbcd
