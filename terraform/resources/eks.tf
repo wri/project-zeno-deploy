@@ -62,7 +62,6 @@ module "eks" {
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2023_x86_64_STANDARD"
-    disk_size = 100
   }
 
   eks_managed_node_groups = {
@@ -74,6 +73,19 @@ module "eks" {
       min_size     = 0
       max_size     = 1
       desired_size = 0
+
+      # Launch template configuration
+      use_custom_launch_template = true
+      block_device_mappings = {
+        xvda = {
+          device_name = "/dev/xvda"
+          ebs = {
+            volume_size = 100
+            volume_type = "gp3"
+            delete_on_termination = true
+          }
+        }
+      }
 
       # Needed by the aws-ebs-csi-driver
       iam_role_additional_policies = {
@@ -89,7 +101,19 @@ module "eks" {
       min_size     = 1
       max_size     = 2
       desired_size = 1
-      disk_size    = 100
+
+      # Launch template configuration
+      use_custom_launch_template = true
+      block_device_mappings = {
+        xvda = {
+          device_name = "/dev/xvda"
+          ebs = {
+            volume_size = 100
+            volume_type = "gp3"
+            delete_on_termination = true
+          }
+        }
+      }
 
       # Needed by the aws-ebs-csi-driver
       iam_role_additional_policies = {
