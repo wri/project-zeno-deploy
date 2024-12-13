@@ -88,6 +88,7 @@ module "eks" {
       min_size     = 1
       max_size     = 2
       desired_size = 1
+      disk_size    = 100
 
       # Needed by the aws-ebs-csi-driver
       iam_role_additional_policies = {
