@@ -59,6 +59,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-zeno-secrets
                   key: ANTHROPIC_API_KEY
+            - name: MAPBOX_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: MAPBOX_API_TOKEN
             - name: LANGFUSE_SECRET_KEY
               valueFrom:
                 secretKeyRef:
