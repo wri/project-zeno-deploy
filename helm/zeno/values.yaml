@@ -14,6 +14,7 @@ secrets:
     AWS_SECRET_ACCESS_KEY:
     GEE_SERVICE_ACCOUNT_JSON:
     MAPBOX_API_TOKEN:
+    ELEVENLABS_API_KEY:
 
 langfuse:
   enabled: true
