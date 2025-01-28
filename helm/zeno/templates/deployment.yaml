@@ -64,6 +64,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-zeno-secrets
                   key: MAPBOX_API_TOKEN
+            - name: ELEVENLABS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: ELEVENLABS_API_KEY
             - name: LANGFUSE_SECRET_KEY
               valueFrom:
                 secretKeyRef:
