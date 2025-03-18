@@ -16,6 +16,7 @@ secrets:
     MAPBOX_API_TOKEN:
     GFW_DATA_API_KEY:
     GFW_DATA_API_USER_ID:
+    ELEVENLABS_API_KEY:
 
 langfuse:
   enabled: true
@@ -26,7 +27,7 @@ api:
   replicas: 1
   image:
     repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-    tag: b63a0863dc6f6617d8a4f137f953c8dc4743d821
+    tag: 8582c04cfc6c8c77a433bea31cd640322fcb20a1
   config:
     LANGFUSE_HOST: https://langfuse.zeno.ds.io
     OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
