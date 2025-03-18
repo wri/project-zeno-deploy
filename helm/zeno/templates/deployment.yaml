@@ -64,11 +64,24 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-zeno-secrets
                   key: MAPBOX_API_TOKEN
+<<<<<<< HEAD
+            - name: GFWDATA_API_KEYs
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: GFW_DATA_API_KEY
+            - name: GFWDATA_API_USER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: GFW_DATA_API_USER_ID
+=======
             - name: ELEVENLABS_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-zeno-secrets
                   key: ELEVENLABS_API_KEY
+>>>>>>> main
             - name: LANGFUSE_SECRET_KEY
               valueFrom:
                 secretKeyRef:
