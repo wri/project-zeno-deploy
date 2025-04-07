@@ -1,3 +1,5 @@
 module "resources" {
-    source = "./resources/"
+    source = "./resources"
+    
+    environment = var.environment
 }
