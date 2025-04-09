@@ -3,10 +3,12 @@ on:
   push:
     branches:
       - main
+      - develop
   pull_request:
     branches:
       - main
-  workflow_dispatch: # allows to manually run the workflow from the Actions tab
+      - develop
+  workflow_dispatch: # keeping this to allow manual runs
 jobs:
   Deploy:
     name: 'Deploy Terraform and Helm'
@@ -14,6 +16,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      ENVIRONMENT: ${{ (github.event_name == 'pull_request' && github.base_ref || github.ref_name) == 'main' && 'production' || 'staging' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -47,7 +50,7 @@ jobs:
         id: plan
         working-directory: ./terraform
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -input=false
+        run: terraform plan -var-file="${{ env.ENVIRONMENT }}.tfvars" -no-color -input=false
         continue-on-error: true
       - name: Update Pull Request
         uses: actions/github-script@v6
@@ -151,23 +154,23 @@ jobs:
           --set secrets.api.GFW_DATA_API_KEY=${{ secrets.GFW_DATA_API_KEY }}
           --set secrets.api.GFW_DATA_API_USER_ID=${{ secrets.GFW_DATA_API_USER_ID }}
           --set secrets.api.ELEVENLABS_API_KEY=${{ secrets.ELEVENLABS_API_KEY }}
-      - name: Helm Deploy Zeno Dev Instance
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        working-directory: ./helm
-        run: >
-          helm upgrade --install zeno-dev ./zeno
-          -f zeno/values-dev.yaml
-          --namespace zeno-dev
-          --create-namespace
-          --set secrets.langfuse.INIT_USER_PASSWORD=${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}
-          --set secrets.langfuse.INIT_PROJECT_SECRET_KEY=${{ secrets.DEV_LANGFUSE_INIT_PROJECT_SECRET_KEY }}
-          --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY=${{ secrets.DEV_LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}
-          --set secrets.api.OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-          --set secrets.api.ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
-          --set secrets.api.AWS_ACCESS_KEY_ID=${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}
-          --set secrets.api.AWS_SECRET_ACCESS_KEY=${{ secrets.S3_READONLY_AWS_SECRET_ACCESS_KEY }}
-          --set secrets.api.GEE_SERVICE_ACCOUNT_JSON=${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}
-          --set secrets.api.MAPBOX_API_TOKEN=${{ secrets.MAPBOX_API_TOKEN }}
-          --set secrets.api.GFW_DATA_API_KEY=${{ secrets.GFW_DATA_API_KEY }}
-          --set secrets.api.GFW_DATA_API_USER_ID=${{ secrets.GFW_DATA_API_USER_ID }}
-          --set secrets.api.ELEVENLABS_API_KEY=${{ secrets.ELEVENLABS_API_KEY }}
+      # - name: Helm Deploy Zeno Dev Instance
+      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      #   working-directory: ./helm
+      #   run: >
+      #     helm upgrade --install zeno-dev ./zeno
+      #     -f zeno/values-dev.yaml
+      #     --namespace zeno-dev
+      #     --create-namespace
+      #     --set secrets.langfuse.INIT_USER_PASSWORD=${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}
+      #     --set secrets.langfuse.INIT_PROJECT_SECRET_KEY=${{ secrets.DEV_LANGFUSE_INIT_PROJECT_SECRET_KEY }}
+      #     --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY=${{ secrets.DEV_LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}
+      #     --set secrets.api.OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+      #     --set secrets.api.ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
+      #     --set secrets.api.AWS_ACCESS_KEY_ID=${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}
+      #     --set secrets.api.AWS_SECRET_ACCESS_KEY=${{ secrets.S3_READONLY_AWS_SECRET_ACCESS_KEY }}
+      #     --set secrets.api.GEE_SERVICE_ACCOUNT_JSON=${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}
+      #     --set secrets.api.MAPBOX_API_TOKEN=${{ secrets.MAPBOX_API_TOKEN }}
+      #     --set secrets.api.GFW_DATA_API_KEY=${{ secrets.GFW_DATA_API_KEY }}
+      #     --set secrets.api.GFW_DATA_API_USER_ID=${{ secrets.GFW_DATA_API_USER_ID }}
+      #     --set secrets.api.ELEVENLABS_API_KEY=${{ secrets.ELEVENLABS_API_KEY }}
