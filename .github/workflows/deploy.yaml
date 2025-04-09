@@ -87,10 +87,14 @@ jobs:
         run: exit 1
       - name: Terraform Apply
         working-directory: ./terraform
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        run: terraform apply -var-file="${{ env.ENVIRONMENT }}.tfvars" -auto-approve
       - name: Update Helm Repos
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         working-directory: ./helm
         run: |
           helm repo add ollama-helm https://otwld.github.io/ollama-helm/
@@ -99,11 +103,15 @@ jobs:
           helm repo add grafana https://grafana.github.io/helm-charts
           helm repo update
       - name: Helm Deploy Ollama
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         working-directory: ./helm
         run: helm upgrade --install ollama ollama-helm/ollama --version 0.69.0 -f ollama/values.yaml
       - name: Helm Deploy Langfuse
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         working-directory: ./helm
         run: >
           helm upgrade --install langfuse langfuse/langfuse 
@@ -113,7 +121,9 @@ jobs:
           --set langfuse.nextauth.secret=${{ secrets.LANGFUSE_NEXTAUTH_SECRET }} 
           --set langfuse.salt=${{ secrets.LANGFUSE_SALT }}
       - name: Helm Deploy Kube Prometheus Stack
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         working-directory: ./helm
         run: >
           helm upgrade --install
@@ -125,7 +135,9 @@ jobs:
           -f support/kube-prometheus-stack/values.yaml
           --set grafana.adminPassword=${{ secrets.GRAFANA_ADMIN_PASSWORD }}
       - name: Helm Deploy Loki
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         working-directory: ./helm
         run: >
           helm upgrade --install
