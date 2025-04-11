@@ -61,15 +61,6 @@ module "eks" {
       addon_version = "v1.40.1-eksbuild.1"
     }
   }
-  
-  # Don't force an update when platform_version changes upstream, just ignore.
-  resource_overrides = {
-    aws_eks_cluster.this = {
-      lifecycle = {
-        ignore_changes = ["platform_version"]
-      }
-    }
-  }
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2023_x86_64_STANDARD"
