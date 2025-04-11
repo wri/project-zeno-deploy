@@ -64,9 +64,7 @@ module "eks" {
   
   # Explicitly pin cluster platform version to avoid unexpected terraform updates,
   # change this explicitly when wanting an upgrade
-  cluster_settings = {
-    platform_version = "eks.20"
-  }
+  platform_version = "eks.20"
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2023_x86_64_STANDARD"
