@@ -56,8 +56,16 @@ module "eks" {
 
   cluster_addons = {
     aws-ebs-csi-driver = {
-      most_recent = true
+      # Pinning version to avoid unexpected updates to EKS via terraform
+      # Explicitly update this to update version
+      addon_version = "v1.40.1-eksbuild.1"
     }
+  }
+  
+  # Explicitly pin cluster platform version to avoid unexpected terraform updates,
+  # change this explicitly when wanting an upgrade
+  cluster_settings = {
+    platform_version = "eks.20"
   }
 
   eks_managed_node_group_defaults = {
