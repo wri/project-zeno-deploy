@@ -16,6 +16,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # Sets the ENVIRONMENT variable to "production" if push or PR is to main, else, "staging" (if push is to 'develop')
       ENVIRONMENT: ${{ (github.event_name == 'pull_request' && github.base_ref || github.ref_name) == 'main' && 'production' || 'staging' }}
     steps:
       - name: Checkout
@@ -116,7 +117,8 @@ jobs:
         run: >
           helm upgrade --install langfuse langfuse/langfuse 
           --version 0.8.0
-          -f langfuse/values.yaml 
+          -f langfuse/values.yaml
+          -f langfuse/values-${{ env.ENVIRONMENT }}.yaml
           --set postgresql.auth.password=${{ secrets.DATABASE_PASSWORD }} 
           --set langfuse.nextauth.secret=${{ secrets.LANGFUSE_NEXTAUTH_SECRET }} 
           --set langfuse.salt=${{ secrets.LANGFUSE_SALT }}
@@ -133,6 +135,7 @@ jobs:
           --create-namespace
           prometheus-community/kube-prometheus-stack
           -f support/kube-prometheus-stack/values.yaml
+          -f support/kube-prometheus-stack/values-${{ env.ENVIRONMENT }}.yaml
           --set grafana.adminPassword=${{ secrets.GRAFANA_ADMIN_PASSWORD }}
       - name: Helm Deploy Loki
         if: |
@@ -147,6 +150,7 @@ jobs:
           loki
           grafana/loki-stack
           -f support/loki/loki-values.yaml
+          -f support/loki/loki-values-${{ env.ENVIRONMENT }}.yaml
       # Deploy Zeno instances
       - name: Helm Deploy Zeno Production
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -154,6 +158,7 @@ jobs:
         run: >
           helm upgrade --install zeno ./zeno
           -f zeno/values.yaml
+          -f zeno/values-${{ env.ENVIRONMENT }}.yaml
           --set secrets.langfuse.INIT_USER_PASSWORD=${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}
           --set secrets.langfuse.INIT_PROJECT_SECRET_KEY=${{ secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY }}
           --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY=${{ secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}
@@ -173,6 +178,7 @@ jobs:
         run: >
           helm upgrade --install zeno ./zeno
           -f zeno/values.yaml
+          -f zeno/values-${{ env.ENVIRONMENT }}.yaml
           --set secrets.langfuse.INIT_USER_PASSWORD=${{ secrets.STAGING_LANGFUSE_INIT_USER_PASSWORD }}
           --set secrets.langfuse.INIT_PROJECT_SECRET_KEY=${{ secrets.STAGING_LANGFUSE_INIT_PROJECT_SECRET_KEY }}
           --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY=${{ secrets.STAGING_LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}
