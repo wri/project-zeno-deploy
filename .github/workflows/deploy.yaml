@@ -95,6 +95,9 @@ jobs:
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: terraform apply -var-file="${{ env.ENVIRONMENT }}.tfvars" -auto-approve
       - name: Configure kubeconfig
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: aws eks update-kubeconfig --region us-east-1 --name zeno-${{ env.ENVIRONMENT }}-cluster
       - name: Update Helm Repos
         if: |
