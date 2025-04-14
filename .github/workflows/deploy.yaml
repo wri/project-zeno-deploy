@@ -29,8 +29,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - name: Configure kubeconfig
-        run: aws eks update-kubeconfig --region us-east-1 --name zeno-production-cluster
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -96,6 +94,8 @@ jobs:
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: terraform apply -var-file="${{ env.ENVIRONMENT }}.tfvars" -auto-approve
+      - name: Configure kubeconfig
+        run: aws eks update-kubeconfig --region us-east-1 --name zeno-${{ env.ENVIRONMENT }}-cluster
       - name: Update Helm Repos
         if: |
           github.event_name == 'push' && 
