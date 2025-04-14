@@ -42,7 +42,10 @@ jobs:
       - name: Terraform Init
         id: init
         working-directory: ./terraform
-        run: terraform init
+        run: |
+          STATE_PATH=${{ env.ENVIRONMENT == 'production' && 'prod' || env.ENVIRONMENT }}
+          terraform init \
+            -backend-config="key=terraform/state/${STATE_PATH}/terraform.tfstate"
       - name: Terraform Validate
         id: validate
         working-directory: ./terraform
