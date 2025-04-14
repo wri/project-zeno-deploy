@@ -51,19 +51,7 @@ jobs:
         id: plan
         working-directory: ./terraform
         if: github.event_name == 'pull_request'
-        run: |
-          # Enable debug logging for terraform
-          export TF_LOG=DEBUG
-          
-          # Run plan and capture the exit code
-          terraform plan -var-file="${{ env.ENVIRONMENT }}.tfvars" -no-color -input=false -detailed-exitcode || exit_code=$?
-          
-          # If plan failed, show error and exit
-          if [ ${exit_code:-0} -eq 1 ]; then
-            echo "Terraform plan failed. Running plan again with full output..."
-            terraform plan -var-file="${{ env.ENVIRONMENT }}.tfvars" -no-color -input=false
-            exit 1
-          fi
+        run: terraform plan -var-file="${{ env.ENVIRONMENT }}.tfvars" -no-color -input=false
         continue-on-error: true
       - name: Update Pull Request
         uses: actions/github-script@v6
@@ -98,7 +86,6 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: |
           echo "Terraform plan failed. See above for error details."
-          echo "Exit code was: ${exit_code:-unknown}"
           exit 1
       - name: Terraform Apply
         working-directory: ./terraform
