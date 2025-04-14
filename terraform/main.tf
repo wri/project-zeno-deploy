@@ -2,5 +2,5 @@ module "resources" {
     source = "./resources"
     
     environment = var.environment
-    region      = var.aws_region
+    aws_region      = var.aws_region
 }

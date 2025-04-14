@@ -4,7 +4,7 @@ variable "environment" {
     type = string
 }
 
-variable "region" {
+variable "aws_region" {
     description = "The region to deploy to"
     default = "us-east-1"
     type = string
