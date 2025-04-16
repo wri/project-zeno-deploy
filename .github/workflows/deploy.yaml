@@ -13,6 +13,7 @@ jobs:
   Deploy:
     name: 'Deploy Terraform and Helm'
     runs-on: ubuntu-latest
+    environment:  ${{ (github.event_name == 'pull_request' && github.base_ref || github.ref_name) == 'main' && 'production' || 'staging' }}
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -209,25 +210,25 @@ jobs:
           --set secrets.api.GFW_DATA_API_USER_ID=${{ secrets.GFW_DATA_API_USER_ID }}
           --set secrets.api.ELEVENLABS_API_KEY=${{ secrets.ELEVENLABS_API_KEY }}
 
-      - name: Helm Deploy Zeno Staging
-        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
-        working-directory: ./helm
-        run: >
-          helm upgrade --install zeno ./zeno
-          -f zeno/values.yaml
-          -f zeno/values-${{ env.ENVIRONMENT }}.yaml
-          --set secrets.langfuse.INIT_USER_PASSWORD=${{ secrets.STAGING_LANGFUSE_INIT_USER_PASSWORD }}
-          --set secrets.langfuse.INIT_PROJECT_SECRET_KEY=${{ secrets.STAGING_LANGFUSE_INIT_PROJECT_SECRET_KEY }}
-          --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY=${{ secrets.STAGING_LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}
-          --set secrets.api.OPENAI_API_KEY=${{ secrets.STAGING_OPENAI_API_KEY }}
-          --set secrets.api.ANTHROPIC_API_KEY=${{ secrets.STAGING_ANTHROPIC_API_KEY }}
-          --set secrets.api.AWS_ACCESS_KEY_ID=${{ secrets.STAGING_S3_READONLY_AWS_ACCESS_KEY_ID }}
-          --set secrets.api.AWS_SECRET_ACCESS_KEY=${{ secrets.STAGING_S3_READONLY_AWS_SECRET_ACCESS_KEY }}
-          --set secrets.api.GEE_SERVICE_ACCOUNT_JSON=${{ secrets.STAGING_GEE_SERVICE_ACCOUNT_JSON }}
-          --set secrets.api.MAPBOX_API_TOKEN=${{ secrets.STAGING_MAPBOX_API_TOKEN }}
-          --set secrets.api.GFW_DATA_API_KEY=${{ secrets.STAGING_GFW_DATA_API_KEY }}
-          --set secrets.api.GFW_DATA_API_USER_ID=${{ secrets.STAGING_GFW_DATA_API_USER_ID }}
-          --set secrets.api.ELEVENLABS_API_KEY=${{ secrets.STAGING_ELEVENLABS_API_KEY }}
+      # - name: Helm Deploy Zeno Staging
+      #   if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+      #   working-directory: ./helm
+      #   run: >
+      #     helm upgrade --install zeno ./zeno
+      #     -f zeno/values.yaml
+      #     -f zeno/values-${{ env.ENVIRONMENT }}.yaml
+      #     --set secrets.langfuse.INIT_USER_PASSWORD=${{ secrets.STAGING_LANGFUSE_INIT_USER_PASSWORD }}
+      #     --set secrets.langfuse.INIT_PROJECT_SECRET_KEY=${{ secrets.STAGING_LANGFUSE_INIT_PROJECT_SECRET_KEY }}
+      #     --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY=${{ secrets.STAGING_LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}
+      #     --set secrets.api.OPENAI_API_KEY=${{ secrets.STAGING_OPENAI_API_KEY }}
+      #     --set secrets.api.ANTHROPIC_API_KEY=${{ secrets.STAGING_ANTHROPIC_API_KEY }}
+      #     --set secrets.api.AWS_ACCESS_KEY_ID=${{ secrets.STAGING_S3_READONLY_AWS_ACCESS_KEY_ID }}
+      #     --set secrets.api.AWS_SECRET_ACCESS_KEY=${{ secrets.STAGING_S3_READONLY_AWS_SECRET_ACCESS_KEY }}
+      #     --set secrets.api.GEE_SERVICE_ACCOUNT_JSON=${{ secrets.STAGING_GEE_SERVICE_ACCOUNT_JSON }}
+      #     --set secrets.api.MAPBOX_API_TOKEN=${{ secrets.STAGING_MAPBOX_API_TOKEN }}
+      #     --set secrets.api.GFW_DATA_API_KEY=${{ secrets.STAGING_GFW_DATA_API_KEY }}
+      #     --set secrets.api.GFW_DATA_API_USER_ID=${{ secrets.STAGING_GFW_DATA_API_USER_ID }}
+      #     --set secrets.api.ELEVENLABS_API_KEY=${{ secrets.STAGING_ELEVENLABS_API_KEY }}
 
       
       # - name: Helm Deploy Zeno Dev Instance
