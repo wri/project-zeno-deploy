@@ -1,0 +1,2 @@
+postgresql:
+  host: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com

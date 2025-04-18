@@ -45,4 +45,4 @@ postgresql:
     username: postgres
     password:
     database: langfuse
-  host: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
+  host:
