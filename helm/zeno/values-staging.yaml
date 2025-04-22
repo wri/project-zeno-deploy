@@ -1,0 +1,16 @@
+langfuse:
+  enabled: true
+  host: langfuse.zeno-staging.ds.io
+
+api:
+  host: api.zeno-staging.ds.io
+  image:
+    tag: 8582c04cfc6c8c77a433bea31cd640322fcb20a1
+  config:
+    LANGFUSE_HOST: https://langfuse.zen-staging.ds.io
+    OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
+
+streamlit:
+  host: streamlit.zeno-staging.ds.io
+  config:
+    API_BASE_URL: https://api.zeno-staging.ds.io

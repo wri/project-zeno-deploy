@@ -1,0 +1,7 @@
+grafana:
+  ingress:
+    hosts:
+      - grafana.zeno.ds.io
+    tls:
+        hosts:
+          - grafana.zeno.ds.io
