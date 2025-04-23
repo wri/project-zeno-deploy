@@ -1,5 +1,5 @@
 provider "aws" {
-    region = var.region
+    region = var.aws_region
 }
 
 provider "kubernetes" {
@@ -56,7 +56,9 @@ module "eks" {
 
   cluster_addons = {
     aws-ebs-csi-driver = {
-      most_recent = true
+      # Pinning version to avoid unexpected updates to EKS via terraform
+      # Explicitly update this to update version
+      addon_version = "v1.40.1-eksbuild.1"
     }
   }
 
