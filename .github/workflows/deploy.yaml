@@ -174,7 +174,7 @@ jobs:
           prometheus-community/kube-prometheus-stack
           -f support/kube-prometheus-stack/values.yaml
           -f support/kube-prometheus-stack/values-${{ env.ENVIRONMENT }}.yaml
-          --set grafana.adminPassword=${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+          --set grafana.adminPassword="${{ secrets.GRAFANA_ADMIN_PASSWORD }}"
       - name: Helm Deploy Loki
         if: |
           github.event_name == 'push' && 
@@ -197,18 +197,18 @@ jobs:
           helm upgrade --install zeno ./zeno
           -f zeno/values.yaml
           -f zeno/values-${{ env.ENVIRONMENT }}.yaml
-          --set secrets.langfuse.INIT_USER_PASSWORD=${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}
-          --set secrets.langfuse.INIT_PROJECT_SECRET_KEY=${{ secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY }}
-          --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY=${{ secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}
-          --set secrets.api.OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-          --set secrets.api.ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
-          --set secrets.api.AWS_ACCESS_KEY_ID=${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}
-          --set secrets.api.AWS_SECRET_ACCESS_KEY=${{ secrets.S3_READONLY_AWS_SECRET_ACCESS_KEY }}
-          --set secrets.api.GEE_SERVICE_ACCOUNT_JSON=${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}
-          --set secrets.api.MAPBOX_API_TOKEN=${{ secrets.MAPBOX_API_TOKEN }}
-          --set secrets.api.GFW_DATA_API_KEY=${{ secrets.GFW_DATA_API_KEY }}
-          --set secrets.api.GFW_DATA_API_USER_ID=${{ secrets.GFW_DATA_API_USER_ID }}
-          --set secrets.api.ELEVENLABS_API_KEY=${{ secrets.ELEVENLABS_API_KEY }}
+          --set secrets.langfuse.INIT_USER_PASSWORD="${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}"
+          --set secrets.langfuse.INIT_PROJECT_SECRET_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY }}"
+          --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}"
+          --set secrets.api.OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
+          --set secrets.api.ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}"
+          --set secrets.api.AWS_ACCESS_KEY_ID="${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}"
+          --set secrets.api.AWS_SECRET_ACCESS_KEY="${{ secrets.S3_READONLY_AWS_SECRET_ACCESS_KEY }}"
+          --set secrets.api.GEE_SERVICE_ACCOUNT_JSON="${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}"
+          --set secrets.api.MAPBOX_API_TOKEN="${{ secrets.MAPBOX_API_TOKEN }}"
+          --set secrets.api.GFW_DATA_API_KEY="${{ secrets.GFW_DATA_API_KEY }}"
+          --set secrets.api.GFW_DATA_API_USER_ID="${{ secrets.GFW_DATA_API_USER_ID }}"
+          --set secrets.api.ELEVENLABS_API_KEY="${{ secrets.ELEVENLABS_API_KEY }}"
 
       # - name: Helm Deploy Zeno Staging
       #   if: github.event_name == 'push' && github.ref == 'refs/heads/develop'

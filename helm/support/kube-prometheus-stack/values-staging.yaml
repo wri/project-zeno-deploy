@@ -3,5 +3,6 @@ grafana:
     hosts:
       - grafana.zeno-staging.ds.io
     tls:
+      - secretName: grafana-tls
         hosts:
           - grafana.zeno-staging.ds.io
