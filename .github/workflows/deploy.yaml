@@ -190,8 +190,10 @@ jobs:
           -f support/loki/loki-values.yaml
           -f support/loki/loki-values-${{ env.ENVIRONMENT }}.yaml
       # Deploy Zeno instances
-      - name: Helm Deploy Zeno Production
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Helm Deploy Zeno
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         working-directory: ./helm
         run: >
           helm upgrade --install zeno ./zeno
