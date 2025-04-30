@@ -1,3 +1,113 @@
+# Global configuration
+global:
+  environment: default
+
+# Dependency configurations
+ingress-nginx:
+  enabled: true
+  controller:
+    service:
+      enabled: true
+
+cert-manager:
+  enabled: true
+  installCRDs: true
+
+ollama:
+  enabled: true
+  service:
+    type: ClusterIP
+  models:
+    - nomic-embed-text
+
+langfuse-chart:
+  enabled: true
+  langfuse:
+    nextauth:
+      url: http://localhost:3000
+      secret:
+    salt:
+    telemetryEnabled: true
+    additionalEnv:
+      - name: AUTH_DISABLE_SIGNUP
+        value: "true"
+      - name: LANGFUSE_INIT_ORG_ID
+        value: "devseed"
+      - name: LANGFUSE_INIT_PROJECT_ID
+        value: "wri_lcl"
+      - name: LANGFUSE_INIT_PROJECT_NAME
+        value: "WRI Land Carbon Labs"
+      - name: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
+        valueFrom:
+          secretKeyRef:
+            name: zeno-langfuse-secrets
+            key: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
+      - name: LANGFUSE_INIT_PROJECT_SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: zeno-langfuse-secrets
+            key: LANGFUSE_INIT_PROJECT_SECRET_KEY
+      - name: LANGFUSE_INIT_USER_EMAIL
+        value: "info@developmentseed.org"
+      - name: LANGFUSE_INIT_USER_NAME
+        value: "devseed"
+      - name: LANGFUSE_INIT_USER_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: zeno-langfuse-secrets
+            key: LANGFUSE_INIT_USER_PASSWORD
+  service:
+    type: ClusterIP
+  postgresql:
+    deploy: false
+    auth:
+      username: postgres
+      password:
+      database: langfuse
+
+kube-prometheus-stack:
+  enabled: true
+  namespaceOverride: support
+  grafana:
+    enabled: true
+    adminUser: "admin"
+    adminPassword:
+    persistence:
+      enabled: true
+      storageClassName: "gp2"
+      size: 10Gi
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - grafana.zeno.ds.io
+      tls:
+        - secretName: grafana-tls
+          hosts:
+            - grafana.zeno.ds.io
+
+loki-stack:
+  enabled: true
+  namespaceOverride: support
+  grafana:
+    enabled: false
+  prometheus:
+    enabled: false
+    alertmanager:
+      enabled: false
+      persistentVolume:
+        enabled: false
+    server:
+      persistentVolume:
+        enabled: false
+  loki:
+    image:
+      tag: 2.9.10 # 3.x doesn't work well with loki-stack helm chart
+
+# Zeno application configuration
 config:
   enable_tls: true
   create_cert_manager_issuer: true
