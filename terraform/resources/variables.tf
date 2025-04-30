@@ -1,11 +1,13 @@
 variable "environment" {
     description = "The environment to deploy to"
     default = "production"
+    type = string
 }
 
-variable "region" {
+variable "aws_region" {
     description = "The region to deploy to"
     default = "us-east-1"
+    type = string
 }
 
 locals {

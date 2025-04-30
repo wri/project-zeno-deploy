@@ -1,3 +1,4 @@
+/*
 provider "helm" {
   kubernetes {
     host = module.eks.cluster_endpoint
@@ -10,26 +11,4 @@ provider "helm" {
     }
   }
 }
-
-resource "helm_release" "zeno-ingress-nginx" {
-  name = "ingress-nginx"
-  repository = "https://kubernetes.github.io/ingress-nginx"
-  chart = "ingress-nginx"
-  version = "4.11.3"
-  namespace = "ingress-nginx"
-  create_namespace = true
-}
-
-resource "helm_release" "zeno-cert-manager" {
-  name = "cert-manager"
-  repository = "https://charts.jetstack.io"
-  chart = "cert-manager"
-  version = "v1.16.1"
-  namespace = "cert-manager"
-  create_namespace = true
-
-  set {
-    name  = "installCRDs"
-    value = true
-  }
-}
+*/
