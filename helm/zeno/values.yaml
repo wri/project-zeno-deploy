@@ -5,9 +5,6 @@ global:
 # Dependency configurations
 ingress-nginx:
   enabled: true
-  controller:
-    service:
-      enabled: true
 
 cert-manager:
   enabled: true
@@ -15,9 +12,8 @@ cert-manager:
 
 ollama:
   enabled: true
-  service:
-    type: ClusterIP
   models:
+    # - llama3.2
     - nomic-embed-text
 
 langfuse-chart:
@@ -69,7 +65,6 @@ kube-prometheus-stack:
   enabled: true
   namespaceOverride: support
   grafana:
-    enabled: true
     adminUser: "admin"
     adminPassword:
     persistence:

@@ -1,6 +1,7 @@
 langfuse:
-  enabled: true
   host: langfuse.zeno-staging.ds.io
+  postgresql:
+    host: zeno-db-staging.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
 
 api:
   host: api.zeno-staging.ds.io
@@ -15,3 +16,12 @@ streamlit:
 
 db:
   POSTGRES_HOST: zeno-db-staging.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
+kube-prometheus-stack:
+  grafana:
+    ingress:
+      hosts:
+        - grafana.zeno-staging.ds.io
+      tls:
+        - secretName: grafana-tls
+          hosts:
+            - grafana.zeno-staging.ds.io
