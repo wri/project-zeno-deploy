@@ -4,7 +4,7 @@ langfuse:
 api:
   host: api.zeno.ds.io
   image:
-    tag: 8582c04cfc6c8c77a433bea31cd640322fcb20a1
+    tag: 2757f359105a9738086f1d07ac2e8200cca9675d
   config:
     LANGFUSE_HOST: https://langfuse.zeno.ds.io
     OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
