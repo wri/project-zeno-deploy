@@ -11,3 +11,6 @@ streamlit:
   host: streamlit.zeno.ds.io
   config:
     API_BASE_URL: https://api.zeno.ds.io
+
+db:
+  POSTGRES_HOST: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com

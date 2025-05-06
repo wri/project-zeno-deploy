@@ -211,6 +211,7 @@ jobs:
           --set secrets.api.GFW_DATA_API_KEY="${{ secrets.GFW_DATA_API_KEY }}"
           --set secrets.api.GFW_DATA_API_USER_ID="${{ secrets.GFW_DATA_API_USER_ID }}"
           --set secrets.api.ELEVENLABS_API_KEY="${{ secrets.ELEVENLABS_API_KEY }}"
+          --set db.POSTGRES_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
 
       # - name: Helm Deploy Zeno Staging
       #   if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
