@@ -36,3 +36,12 @@ streamlit:
   host: streamlit.zeno.ds.io
   config:
     API_BASE_URL: https://api.zeno.ds.io
+
+db:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD:
+  POSTGRES_HOST:
+  APP_DB: zeno_db
+  image:
+    repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
+    tag: 3bfead908d81b6c54804d409e2a6492f57662113

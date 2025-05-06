@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-db-migrate
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-2"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      name: {{ .Release.Name }}-db-migrate
+    spec:
+      containers:
+      - name: db-migrate
+        image: "{{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}"
+        env:
+        - name: POSTGRES_USER
+          value: {{ .Values.db.POSTGRES_USER }}
+        - name: POSTGRES_PASSWORD
+          value: {{ .Values.db.POSTGRES_PASSWORD }}
+        - name: POSTGRES_HOST
+          value: {{ .Values.db.POSTGRES_HOST }}
+        - name: APP_DB
+          value: {{ .Values.db.APP_DB }}
+      restartPolicy: Never
