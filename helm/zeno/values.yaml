@@ -44,4 +44,4 @@ db:
   APP_DB: zeno_db
   image:
     repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-    tag: 3bfead908d81b6c54804d409e2a6492f57662113
+    tag: d101549e5c3a3674b54205139be4cc8b6d66e129
