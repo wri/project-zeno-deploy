@@ -5,7 +5,7 @@ langfuse:
 api:
   host: api.zeno-staging.ds.io
   config:
-    LANGFUSE_HOST: https://langfuse.zen-staging.ds.io
+    LANGFUSE_HOST: https://langfuse.zeno-staging.ds.io
     OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
 
 streamlit:
