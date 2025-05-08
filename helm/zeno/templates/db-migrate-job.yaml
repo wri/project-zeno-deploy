@@ -14,14 +14,14 @@ spec:
     spec:
       containers:
       - name: db-migrate
-        image: "{{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}"
+        image: "{{ .Values.zeno.db.image.repository }}:{{ .Values.zeno.db.image.tag }}"
         env:
         - name: POSTGRES_USER
-          value: {{ .Values.db.POSTGRES_USER }}
+          value: {{ .Values.zeno.db.POSTGRES_USER }}
         - name: POSTGRES_PASSWORD
-          value: {{ .Values.db.POSTGRES_PASSWORD }}
+          value: {{ .Values.zeno.db.POSTGRES_PASSWORD }}
         - name: POSTGRES_HOST
-          value: {{ .Values.db.POSTGRES_HOST }}
+          value: {{ .Values.zeno.db.POSTGRES_HOST }}
         - name: APP_DB
-          value: {{ .Values.db.APP_DB }}
+          value: {{ .Values.zeno.db.APP_DB }}
       restartPolicy: Never

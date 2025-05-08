@@ -16,7 +16,7 @@ ollama:
     # - llama3.2
     - nomic-embed-text
 
-langfuse-chart:
+langfuse:
   enabled: true
   langfuse:
     nextauth:
@@ -103,51 +103,52 @@ loki-stack:
       tag: 2.9.10 # 3.x doesn't work well with loki-stack helm chart
 
 # Zeno application configuration
-config:
-  enable_tls: true
-  create_cert_manager_issuer: true
+zeno:
+  config:
+    enable_tls: true
+    create_cert_manager_issuer: true
 
-secrets:
+  secrets:
+    langfuse:
+      INIT_USER_PASSWORD:
+      INIT_PROJECT_SECRET_KEY:
+      INIT_PROJECT_PUBLIC_KEY:
+    api:
+      OPENAI_API_KEY:
+      ANTHROPIC_API_KEY:
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      GEE_SERVICE_ACCOUNT_JSON:
+      MAPBOX_API_TOKEN:
+      GFW_DATA_API_KEY:
+      GFW_DATA_API_USER_ID:
+      ELEVENLABS_API_KEY:
+
   langfuse:
-    INIT_USER_PASSWORD:
-    INIT_PROJECT_SECRET_KEY:
-    INIT_PROJECT_PUBLIC_KEY:
+    enabled: true
+    host: langfuse.zeno.ds.io
+
   api:
-    OPENAI_API_KEY:
-    ANTHROPIC_API_KEY:
-    AWS_ACCESS_KEY_ID:
-    AWS_SECRET_ACCESS_KEY:
-    GEE_SERVICE_ACCOUNT_JSON:
-    MAPBOX_API_TOKEN:
-    GFW_DATA_API_KEY:
-    GFW_DATA_API_USER_ID:
-    ELEVENLABS_API_KEY:
+    host: api.zeno.ds.io
+    replicas: 1
+    image:
+      repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
+      tag: 671cf56e7156725b69d4159a3283337ec945aab2
+    config:
+      LANGFUSE_HOST: https://langfuse.zeno.ds.io
+      OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
+      DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
 
-langfuse:
-  enabled: true
-  host: langfuse.zeno.ds.io
+  streamlit:
+    host: streamlit.zeno.ds.io
+    config:
+      API_BASE_URL: https://api.zeno.ds.io
 
-api:
-  host: api.zeno.ds.io
-  replicas: 1
-  image:
-    repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-    tag: 671cf56e7156725b69d4159a3283337ec945aab2
-  config:
-    LANGFUSE_HOST: https://langfuse.zeno.ds.io
-    OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
-    DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
-
-streamlit:
-  host: streamlit.zeno.ds.io
-  config:
-    API_BASE_URL: https://api.zeno.ds.io
-
-db:
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD:
-  POSTGRES_HOST:
-  APP_DB: zeno_db
-  image:
-    repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-    tag: 149bffadbb4d58500b13accc7eb862c4d6d08150
+  db:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD:
+    POSTGRES_HOST:
+    APP_DB: zeno_db
+    image:
+      repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
+      tag: 149bffadbb4d58500b13accc7eb862c4d6d08150

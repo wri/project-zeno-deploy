@@ -19,7 +19,6 @@ dependencies:
   - name: langfuse
     version: 0.8.0
     repository: https://langfuse.github.io/langfuse-k8s
-    alias: langfuse-chart
   - name: kube-prometheus-stack
     version: 66.3.1
     repository: https://prometheus-community.github.io/helm-charts
