@@ -31,6 +31,7 @@ api:
   config:
     LANGFUSE_HOST: https://langfuse.zeno.ds.io
     OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
+    DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
 
 streamlit:
   host: streamlit.zeno.ds.io
