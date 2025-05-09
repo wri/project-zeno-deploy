@@ -15,8 +15,8 @@ zeno:
     config:
       API_BASE_URL: https://api.zeno-staging.ds.io
 
-db:
-  POSTGRES_HOST: zeno-db-staging.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
+  db:
+    POSTGRES_HOST: zeno-db-staging.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
 
 kube-prometheus-stack:
   grafana:
