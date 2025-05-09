@@ -1,0 +1,38 @@
+kube-prometheus-stack:
+  enabled: true
+  grafana:
+    adminUser: "admin"
+    adminPassword:
+    persistence:
+      enabled: true
+      storageClassName: "gp2"
+      size: 10Gi
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - grafana.zeno.ds.io
+      tls:
+        - secretName: grafana-tls
+          hosts:
+            - grafana.zeno.ds.io
+
+loki-stack:
+  enabled: true
+  grafana:
+    enabled: false
+  prometheus:
+    enabled: false
+    alertmanager:
+      enabled: false
+      persistentVolume:
+        enabled: false
+    server:
+      persistentVolume:
+        enabled: false
+  loki:
+    image:
+      tag: 2.9.10

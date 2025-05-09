@@ -100,15 +100,74 @@ jobs:
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: aws eks update-kubeconfig --region us-east-1 --name zeno-${{ env.ENVIRONMENT }}-cluster
-      - name: Update Helm Dependencies
+      # Add Helm repositories
+      - name: Add Helm repositories
         if: |
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        working-directory: ./helm/zeno
-        run: helm dependency update
+        run: |
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo update
 
-      # Deploy Zeno with all dependencies
-      - name: Helm Deploy Zeno
+      # Deploy ingress-nginx
+      - name: Deploy ingress-nginx
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        run: >
+          helm upgrade --install 
+          ingress-nginx
+          ingress-nginx/ingress-nginx
+          --version 4.11.3
+          --namespace ingress-nginx
+          --create-namespace
+
+      # Deploy cert-manager
+      - name: Deploy cert-manager
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        run: >
+          helm upgrade --install 
+          cert-manager
+          jetstack/cert-manager
+          --version v1.16.1
+          --namespace cert-manager
+          --create-namespace
+          --set installCRDs=true
+
+      # Update dependencies for monitoring
+      - name: Update Helm Dependencies for monitoring
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        run: |
+          helm dependency update ./helm/support
+
+      # Deploy monitoring services
+      - name: Deploy monitoring services
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        working-directory: ./helm
+        run: >
+          helm upgrade --install support ./support
+          -f support/values.yaml
+          -f support/values-${{ env.ENVIRONMENT }}.yaml
+          --namespace support
+          --create-namespace
+
+      # Update Zeno dependencies
+      - name: Update Helm Dependencies for Zeno
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        run: |
+          helm dependency update ./helm/zeno
+
+      # Deploy Zeno
+      - name: Deploy Zeno
         if: |
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
@@ -133,4 +192,3 @@ jobs:
           --set secrets.api.GFW_DATA_API_USER_ID="${{ secrets.GFW_DATA_API_USER_ID }}"
           --set secrets.api.ELEVENLABS_API_KEY="${{ secrets.ELEVENLABS_API_KEY }}"
           --set db.POSTGRES_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
-
