@@ -7,18 +7,18 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
-  {{- if .Values.config.enable_tls }}
+  {{- if .Values.zeno.config.enable_tls }}
   tls:
     - hosts:
-        - {{ .Values.api.host }}
-        - {{ .Values.streamlit.host }}
-        {{- if .Values.langfuse.enabled }}
-        - {{ .Values.langfuse.host }}
+        - {{ .Values.zeno.api.host }}
+        - {{ .Values.zeno.streamlit.host }}
+        {{- if .Values.zeno.langfuse.enabled }}
+        - {{ .Values.zeno.langfuse.host }}
         {{- end }}
       secretName: {{ .Release.Name }}-tls
   {{- end }}
   rules:
-    - host: {{ .Values.api.host }}
+    - host: {{ .Values.zeno.api.host }}
       http:
         paths:
           - path: /
@@ -28,7 +28,7 @@ spec:
                 name: {{ .Release.Name }}-api
                 port:
                   number: 8000
-    - host: {{ .Values.streamlit.host }}
+    - host: {{ .Values.zeno.streamlit.host }}
       http:
         paths:
           - path: /
@@ -38,8 +38,8 @@ spec:
                 name: {{ .Release.Name }}-streamlit
                 port:
                   number: 8501
-  {{- if .Values.langfuse.enabled }}
-    - host: {{ .Values.langfuse.host }}
+  {{- if .Values.zeno.langfuse.enabled }}
+    - host: {{ .Values.zeno.langfuse.host }}
       http:
         paths:
           - path: /

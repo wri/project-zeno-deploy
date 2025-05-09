@@ -100,96 +100,14 @@ jobs:
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: aws eks update-kubeconfig --region us-east-1 --name zeno-${{ env.ENVIRONMENT }}-cluster
-      - name: Update Helm Repos
+      - name: Update Helm Dependencies
         if: |
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        working-directory: ./helm
-        run: |
-          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-          helm repo add jetstack https://charts.jetstack.io
-          helm repo add ollama-helm https://otwld.github.io/ollama-helm/
-          helm repo add langfuse https://langfuse.github.io/langfuse-k8s
-          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-          helm repo add grafana https://grafana.github.io/helm-charts
-          helm repo update
-      - name: Helm Deploy Ingress Nginx
-        if: |
-          github.event_name == 'push' && 
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        working-directory: ./helm
-        run: >
-          helm upgrade --install 
-          ingress-nginx
-          ingress-nginx/ingress-nginx
-          --version 4.11.3
-          --namespace ingress-nginx
-          --create-namespace
-          -f support/ingress-nginx/values.yaml
-          -f support/ingress-nginx/values-${{ env.ENVIRONMENT }}.yaml
-      - name: Helm Deploy Cert Manager
-        if: |
-          github.event_name == 'push' && 
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        working-directory: ./helm
-        run: >
-          helm upgrade --install 
-          cert-manager
-          jetstack/cert-manager
-          --version v1.16.1
-          --namespace cert-manager
-          --create-namespace
-          -f support/cert-manager/values.yaml
-          -f support/cert-manager/values-${{ env.ENVIRONMENT }}.yaml
-      - name: Helm Deploy Ollama
-        if: |
-          github.event_name == 'push' && 
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        working-directory: ./helm
-        run: helm upgrade --install ollama ollama-helm/ollama --version 0.69.0 -f ollama/values.yaml
-      - name: Helm Deploy Langfuse
-        if: |
-          github.event_name == 'push' && 
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        working-directory: ./helm
-        run: >
-          helm upgrade --install langfuse langfuse/langfuse 
-          --version 0.8.0
-          -f langfuse/values.yaml
-          -f langfuse/values-${{ env.ENVIRONMENT }}.yaml
-          --set postgresql.auth.password="${{ secrets.DATABASE_PASSWORD }}"
-          --set langfuse.nextauth.secret="${{ secrets.LANGFUSE_NEXTAUTH_SECRET }}"
-          --set langfuse.salt="${{ secrets.LANGFUSE_SALT }}"
-      - name: Helm Deploy Kube Prometheus Stack
-        if: |
-          github.event_name == 'push' && 
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        working-directory: ./helm
-        run: >
-          helm upgrade --install
-          kube-prometheus-stack
-          --version 66.3.1
-          --namespace support
-          --create-namespace
-          prometheus-community/kube-prometheus-stack
-          -f support/kube-prometheus-stack/values.yaml
-          -f support/kube-prometheus-stack/values-${{ env.ENVIRONMENT }}.yaml
-          --set grafana.adminPassword="${{ secrets.GRAFANA_ADMIN_PASSWORD }}"
-      - name: Helm Deploy Loki
-        if: |
-          github.event_name == 'push' && 
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        working-directory: ./helm
-        run: >
-          helm upgrade --install
-          --version 2.10.2
-          --namespace support
-          --create-namespace
-          loki
-          grafana/loki-stack
-          -f support/loki/loki-values.yaml
-          -f support/loki/loki-values-${{ env.ENVIRONMENT }}.yaml
-      # Deploy Zeno instances
+        working-directory: ./helm/zeno
+        run: helm dependency update
+
+      # Deploy Zeno with all dependencies
       - name: Helm Deploy Zeno
         if: |
           github.event_name == 'push' && 
@@ -202,6 +120,9 @@ jobs:
           --set secrets.langfuse.INIT_USER_PASSWORD="${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}"
           --set secrets.langfuse.INIT_PROJECT_SECRET_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY }}"
           --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}"
+          --set langfuse-chart.postgresql.auth.password="${{ secrets.DATABASE_PASSWORD }}"
+          --set langfuse-chart.langfuse.nextauth.secret="${{ secrets.LANGFUSE_NEXTAUTH_SECRET }}"
+          --set langfuse-chart.langfuse.salt="${{ secrets.LANGFUSE_SALT }}"
           --set secrets.api.OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
           --set secrets.api.ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}"
           --set secrets.api.AWS_ACCESS_KEY_ID="${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}"
@@ -213,44 +134,3 @@ jobs:
           --set secrets.api.ELEVENLABS_API_KEY="${{ secrets.ELEVENLABS_API_KEY }}"
           --set db.POSTGRES_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
 
-      # - name: Helm Deploy Zeno Staging
-      #   if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
-      #   working-directory: ./helm
-      #   run: >
-      #     helm upgrade --install zeno ./zeno
-      #     -f zeno/values.yaml
-      #     -f zeno/values-${{ env.ENVIRONMENT }}.yaml
-      #     --set secrets.langfuse.INIT_USER_PASSWORD=${{ secrets.STAGING_LANGFUSE_INIT_USER_PASSWORD }}
-      #     --set secrets.langfuse.INIT_PROJECT_SECRET_KEY=${{ secrets.STAGING_LANGFUSE_INIT_PROJECT_SECRET_KEY }}
-      #     --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY=${{ secrets.STAGING_LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}
-      #     --set secrets.api.OPENAI_API_KEY=${{ secrets.STAGING_OPENAI_API_KEY }}
-      #     --set secrets.api.ANTHROPIC_API_KEY=${{ secrets.STAGING_ANTHROPIC_API_KEY }}
-      #     --set secrets.api.AWS_ACCESS_KEY_ID=${{ secrets.STAGING_S3_READONLY_AWS_ACCESS_KEY_ID }}
-      #     --set secrets.api.AWS_SECRET_ACCESS_KEY=${{ secrets.STAGING_S3_READONLY_AWS_SECRET_ACCESS_KEY }}
-      #     --set secrets.api.GEE_SERVICE_ACCOUNT_JSON=${{ secrets.STAGING_GEE_SERVICE_ACCOUNT_JSON }}
-      #     --set secrets.api.MAPBOX_API_TOKEN=${{ secrets.STAGING_MAPBOX_API_TOKEN }}
-      #     --set secrets.api.GFW_DATA_API_KEY=${{ secrets.STAGING_GFW_DATA_API_KEY }}
-      #     --set secrets.api.GFW_DATA_API_USER_ID=${{ secrets.STAGING_GFW_DATA_API_USER_ID }}
-      #     --set secrets.api.ELEVENLABS_API_KEY=${{ secrets.STAGING_ELEVENLABS_API_KEY }}
-
-      
-      # - name: Helm Deploy Zeno Dev Instance
-      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      #   working-directory: ./helm
-      #   run: >
-      #     helm upgrade --install zeno-dev ./zeno
-      #     -f zeno/values-dev.yaml
-      #     --namespace zeno-dev
-      #     --create-namespace
-      #     --set secrets.langfuse.INIT_USER_PASSWORD=${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}
-      #     --set secrets.langfuse.INIT_PROJECT_SECRET_KEY=${{ secrets.DEV_LANGFUSE_INIT_PROJECT_SECRET_KEY }}
-      #     --set secrets.langfuse.INIT_PROJECT_PUBLIC_KEY=${{ secrets.DEV_LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}
-      #     --set secrets.api.OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-      #     --set secrets.api.ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
-      #     --set secrets.api.AWS_ACCESS_KEY_ID=${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}
-      #     --set secrets.api.AWS_SECRET_ACCESS_KEY=${{ secrets.S3_READONLY_AWS_SECRET_ACCESS_KEY }}
-      #     --set secrets.api.GEE_SERVICE_ACCOUNT_JSON=${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}
-      #     --set secrets.api.MAPBOX_API_TOKEN=${{ secrets.MAPBOX_API_TOKEN }}
-      #     --set secrets.api.GFW_DATA_API_KEY=${{ secrets.GFW_DATA_API_KEY }}
-      #     --set secrets.api.GFW_DATA_API_USER_ID=${{ secrets.GFW_DATA_API_USER_ID }}
-      #     --set secrets.api.ELEVENLABS_API_KEY=${{ secrets.ELEVENLABS_API_KEY }}
