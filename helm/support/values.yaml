@@ -35,4 +35,4 @@ loki-stack:
         enabled: false
   loki:
     image:
-      tag: 2.9.10
+      tag: 2.9.10 # 3.x doesn't work well with loki-stack helm chart
