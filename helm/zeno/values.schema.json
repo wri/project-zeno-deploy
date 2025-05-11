@@ -1,0 +1,348 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "ollama": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable/disable Ollama integration"
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Name of the Ollama model"
+          },
+          "description": "List of Ollama models to be used"
+        }
+      },
+      "required": ["enabled"]
+    },
+    "langfuse": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable/disable Langfuse integration"
+        },
+        "langfuse": {
+          "type": "object",
+          "properties": {
+            "nextauth": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "NextAuth URL for authentication"
+                },
+                "secret": {
+                  "type": "string",
+                  "description": "NextAuth secret key"
+                }
+              }
+            },
+            "salt": {
+              "type": "string",
+              "description": "Salt for Langfuse cryptographic operations"
+            },
+            "telemetryEnabled": {
+              "type": "boolean",
+              "description": "Enable/disable Langfuse telemetry"
+            },
+            "additionalEnv": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Environment variable name"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "Environment variable value"
+                  },
+                  "valueFrom": {
+                    "type": "object",
+                    "properties": {
+                      "secretKeyRef": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "Name of the Kubernetes secret"
+                          },
+                          "key": {
+                            "type": "string",
+                            "description": "Key within the Kubernetes secret"
+                          }
+                        },
+                        "required": ["name", "key"]
+                      }
+                    }
+                  }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["ClusterIP", "NodePort", "LoadBalancer"],
+              "description": "Kubernetes service type"
+            }
+          }
+        },
+        "postgresql": {
+          "type": "object",
+          "properties": {
+            "deploy": {
+              "type": "boolean",
+              "description": "Whether to deploy PostgreSQL"
+            },
+            "auth": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "description": "PostgreSQL username"
+                },
+                "password": {
+                  "type": "string",
+                  "description": "PostgreSQL password"
+                },
+                "database": {
+                  "type": "string",
+                  "description": "PostgreSQL database name"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["enabled"]
+    },
+    "zeno": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "type": "object",
+          "properties": {
+            "enable_tls": {
+              "type": "boolean",
+              "description": "Enable/disable TLS"
+            },
+            "create_cert_manager_issuer": {
+              "type": "boolean",
+              "description": "Create cert-manager ClusterIssuer"
+            }
+          }
+        },
+        "secrets": {
+          "type": "object",
+          "properties": {
+            "langfuse": {
+              "type": "object",
+              "properties": {
+                "INIT_USER_PASSWORD": {
+                  "type": "string",
+                  "description": "Initial user password for Langfuse"
+                },
+                "INIT_PROJECT_SECRET_KEY": {
+                  "type": "string",
+                  "description": "Initial project secret key for Langfuse"
+                },
+                "INIT_PROJECT_PUBLIC_KEY": {
+                  "type": "string",
+                  "description": "Initial project public key for Langfuse"
+                }
+              }
+            },
+            "api": {
+              "type": "object",
+              "properties": {
+                "OPENAI_API_KEY": {
+                  "type": "string",
+                  "description": "OpenAI API key"
+                },
+                "ANTHROPIC_API_KEY": {
+                  "type": "string",
+                  "description": "Anthropic API key"
+                },
+                "AWS_ACCESS_KEY_ID": {
+                  "type": "string",
+                  "description": "AWS access key ID"
+                },
+                "AWS_SECRET_ACCESS_KEY": {
+                  "type": "string",
+                  "description": "AWS secret access key"
+                },
+                "GEE_SERVICE_ACCOUNT_JSON": {
+                  "type": "string",
+                  "description": "Google Earth Engine service account JSON"
+                },
+                "MAPBOX_API_TOKEN": {
+                  "type": "string",
+                  "description": "Mapbox API token"
+                },
+                "GFW_DATA_API_KEY": {
+                  "type": "string",
+                  "description": "Global Forest Watch API key"
+                },
+                "GFW_DATA_API_USER_ID": {
+                  "type": "string",
+                  "description": "Global Forest Watch API user ID"
+                },
+                "ELEVENLABS_API_KEY": {
+                  "type": "string",
+                  "description": "ElevenLabs API key"
+                }
+              }
+            }
+          }
+        },
+        "langfuse": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable/disable Langfuse integration"
+            },
+            "host": {
+              "type": "string",
+              "format": "hostname",
+              "description": "Langfuse hostname"
+            },
+            "postgresql": {
+              "type": "object",
+              "properties": {
+                "host": {
+                  "type": "string",
+                  "format": "hostname",
+                  "description": "PostgreSQL hostname"
+                }
+              }
+            }
+          },
+          "required": ["enabled", "host"]
+        },
+        "api": {
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "format": "hostname",
+              "description": "API hostname"
+            },
+            "replicas": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of API replicas"
+            },
+            "image": {
+              "type": "object",
+              "properties": {
+                "repository": {
+                  "type": "string",
+                  "description": "Docker image repository"
+                },
+                "tag": {
+                  "type": "string",
+                  "description": "Docker image tag"
+                }
+              },
+              "required": ["repository", "tag"]
+            },
+            "config": {
+              "type": "object",
+              "properties": {
+                "LANGFUSE_HOST": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "Langfuse host URL"
+                },
+                "OLLAMA_BASE_URL": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "Ollama base URL"
+                },
+                "DOMAINS_ALLOWLIST": {
+                  "type": "string",
+                  "description": "Comma-separated list of allowed domains"
+                }
+              }
+            }
+          },
+          "required": ["host", "image"]
+        },
+        "streamlit": {
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "format": "hostname",
+              "description": "Streamlit hostname"
+            },
+            "config": {
+              "type": "object",
+              "properties": {
+                "API_BASE_URL": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "API base URL"
+                }
+              },
+              "required": ["API_BASE_URL"]
+            }
+          },
+          "required": ["host"]
+        },
+        "db": {
+          "type": "object",
+          "properties": {
+            "POSTGRES_USER": {
+              "type": "string",
+              "description": "PostgreSQL username"
+            },
+            "POSTGRES_PASSWORD": {
+              "type": "string",
+              "description": "PostgreSQL password"
+            },
+            "POSTGRES_HOST": {
+              "type": "string",
+              "format": "hostname",
+              "description": "PostgreSQL hostname"
+            },
+            "APP_DB": {
+              "type": "string",
+              "description": "Application database name"
+            },
+            "image": {
+              "type": "object",
+              "properties": {
+                "repository": {
+                  "type": "string",
+                  "description": "Database Docker image repository"
+                },
+                "tag": {
+                  "type": "string",
+                  "description": "Database Docker image tag"
+                }
+              },
+              "required": ["repository", "tag"]
+            }
+          },
+          "required": ["POSTGRES_USER", "POSTGRES_PASSWORD", "POSTGRES_HOST", "APP_DB"]
+        }
+      },
+      "required": ["config", "api", "db"]
+    }
+  }
+}
