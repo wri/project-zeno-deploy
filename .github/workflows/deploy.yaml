@@ -9,10 +9,49 @@ on:
       - main
       - develop
   workflow_dispatch: # keeping this to allow manual runs
+
 jobs:
+  Test:
+    name: 'Test Helm Charts'
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure Kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Setup k3d
+        uses: AbsaOSS/k3d-action@v2
+        with:
+          cluster-name: test-cluster
+          args: --agents 1
+
+      - name: Make scripts executable
+        run: |
+          chmod +x ./helm/zeno/tests/ci/setup-cluster.sh
+          chmod +x ./helm/zeno/tests/ci/run-tests.sh
+          chmod +x ./helm/zeno/tests/ci/cleanup.sh
+
+      - name: Setup test environment
+        run: ./helm/zeno/tests/ci/setup-cluster.sh
+
+      - name: Run tests
+        id: run_tests
+        run: ./helm/zeno/tests/ci/run-tests.sh
+
+      - name: Cleanup test environment
+        if: always()
+        run: ./helm/zeno/tests/ci/cleanup.sh
+
   Deploy:
     name: 'Deploy Terraform and Helm'
     runs-on: ubuntu-latest
+    needs: Test
+    if: |
+      github.event_name == 'push' || 
+      (github.event_name == 'pull_request' && success())
     environment:  ${{ (github.event_name == 'pull_request' && github.base_ref || github.ref_name) == 'main' && 'production' || 'staging' }}
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -22,22 +61,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Configure Kubectl
         uses: azure/setup-kubectl@v3
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
            terraform_version: 1.5.1
+
       - name: Terraform Format
         id: fmt
         working-directory: ./terraform
         run: terraform fmt -no-color
+
       - name: Terraform Init
         id: init
         working-directory: ./terraform
@@ -45,21 +89,25 @@ jobs:
           STATE_PATH=${{ env.ENVIRONMENT == 'production' && 'prod' || env.ENVIRONMENT }}
           terraform init \
             -backend-config="key=terraform/state/${STATE_PATH}/terraform.tfstate"
+
       - name: Terraform Validate
         id: validate
         working-directory: ./terraform
         run: terraform validate -no-color
+
       - name: Terraform Plan
         id: plan
         working-directory: ./terraform
         if: github.event_name == 'pull_request'
         run: terraform plan -var-file="${{ env.ENVIRONMENT }}.tfvars" -no-color -input=false
         continue-on-error: true
+
       - name: Update Pull Request
         uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+         TEST: "${{ steps.run_tests.outcome }}"
         with:
          github-token: ${{ secrets.GITHUB_TOKEN }}
          script: |
@@ -67,6 +115,7 @@ jobs:
            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+           #### Helm Tests 🚀\`${{ env.TEST }}\`
 
            <details><summary>Show Plan</summary>
 
@@ -84,22 +133,26 @@ jobs:
              repo: context.repo.repo,
              body: output
            })
+
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: |
           echo "Terraform plan failed. See above for error details."
           exit 1
+
       - name: Terraform Apply
         working-directory: ./terraform
         if: |
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: terraform apply -var-file="${{ env.ENVIRONMENT }}.tfvars" -auto-approve
+
       - name: Configure kubeconfig
         if: |
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: aws eks update-kubeconfig --region us-east-1 --name zeno-${{ env.ENVIRONMENT }}-cluster
+
       # Add Helm repositories
       - name: Add Helm repositories
         if: |
