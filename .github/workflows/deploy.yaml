@@ -48,7 +48,7 @@ jobs:
       - name: Terraform Validate
         id: validate
         working-directory: ./terraform
-        run: terraform validate -no-color -var="eoapi_db_password=${{ secrets.EOAPI_DB_PASSWORD }}"
+        run: terraform validate -no-color
       - name: Terraform Plan
         id: plan
         working-directory: ./terraform
