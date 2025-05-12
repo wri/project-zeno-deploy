@@ -4,6 +4,12 @@ variable "environment" {
     type = string
 }
 
+variable "eoapi_db_password" {
+    description = "Password for the eoapi database"
+    type = string
+    sensitive = true
+}
+
 variable "aws_region" {
     description = "The region to deploy to"
     default = "us-east-1"
