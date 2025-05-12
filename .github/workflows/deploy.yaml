@@ -48,12 +48,12 @@ jobs:
       - name: Terraform Validate
         id: validate
         working-directory: ./terraform
-        run: terraform validate -no-color
+        run: terraform validate -no-color -var="eoapi_db_password=${{ secrets.EOAPI_DB_PASSWORD }}"
       - name: Terraform Plan
         id: plan
         working-directory: ./terraform
         if: github.event_name == 'pull_request'
-        run: terraform plan -var-file="${{ env.ENVIRONMENT }}.tfvars" -no-color -input=false
+        run: terraform plan -var-file="${{ env.ENVIRONMENT }}.tfvars" -var="eoapi_db_password=${{ secrets.EOAPI_DB_PASSWORD }}" -no-color -input=false
         continue-on-error: true
       - name: Update Pull Request
         uses: actions/github-script@v6
