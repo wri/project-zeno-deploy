@@ -200,11 +200,12 @@ jobs:
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: |
           echo "Reading terraform output..."
-          terraform -chdir=terraform output
+          cd terraform
+          terraform output
           echo "Reading specific eoapi_db_endpoint..."
-          terraform -chdir=terraform output eoapi_db_endpoint
+          terraform output resources.eoapi_db_endpoint
           echo "Setting DB host..."
-          EOAPI_DB_HOST="$(terraform -chdir=terraform output -raw eoapi_db_endpoint)"
+          EOAPI_DB_HOST="$(terraform output -raw resources.eoapi_db_endpoint)"
           echo "DB Host value: $EOAPI_DB_HOST"
           
           if [ -z "$EOAPI_DB_HOST" ]; then
