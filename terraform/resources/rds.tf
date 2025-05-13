@@ -36,11 +36,6 @@ resource "aws_db_instance" "eoapi" {
 resource "aws_db_parameter_group" "eoapi_postgres15" {
   family = "postgres15"
   name   = "eoapi-postgres15-${var.environment}"
-
-  parameter {
-    name  = "shared_preload_libraries"
-    value = "postgis-3"
-  }
 }
 
 # Security group for RDS
