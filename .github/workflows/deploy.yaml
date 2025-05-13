@@ -204,7 +204,7 @@ jobs:
           echo "Outputs available:"
           terraform output
           echo "Reading specific eoapi_db_endpoint..."
-          EOAPI_DB_HOST="$(terraform output -raw resources.eoapi_db_endpoint)"
+          EOAPI_DB_HOST="$(terraform output -raw eoapi_db_endpoint)"
           echo "DB Host value: $EOAPI_DB_HOST"
           
           if [ -z "$EOAPI_DB_HOST" ]; then
