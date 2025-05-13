@@ -7,7 +7,7 @@ data "aws_db_instance" "zeno-db" {
 resource "aws_db_instance" "eoapi" {
   identifier = "eoapi-${var.environment}"
   engine     = "postgres"
-  engine_version = "15.3"
+  engine_version = "17.5"
   instance_class = "db.t3.small"
 
   allocated_storage = 20
