@@ -101,8 +101,8 @@ module "eks" {
       instance_types = ["t3.large"]
 
       min_size     = 1
-      max_size     = 2
-      desired_size = 1
+      max_size     = 3
+      desired_size = 3
 
       # Launch template configuration
       use_custom_launch_template = true
