@@ -1,0 +1,24 @@
+# Default configuration for eoapi
+postgresql:
+  type: "external-plaintext"
+  external:
+    port: "5432"
+    database: "eoapi"
+    credentials:
+      username: "eoapi"
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+namespace: eoapi

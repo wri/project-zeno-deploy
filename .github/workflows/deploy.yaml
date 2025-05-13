@@ -53,7 +53,7 @@ jobs:
         id: plan
         working-directory: ./terraform
         if: github.event_name == 'pull_request'
-        run: terraform plan -var-file="${{ env.ENVIRONMENT }}.tfvars" -no-color -input=false
+        run: terraform plan -var-file="${{ env.ENVIRONMENT }}.tfvars" -var="eoapi_db_password=${{ secrets.EOAPI_DB_PASSWORD }}" -no-color -input=false
         continue-on-error: true
       - name: Update Pull Request
         uses: actions/github-script@v6
@@ -94,7 +94,7 @@ jobs:
         if: |
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        run: terraform apply -var-file="${{ env.ENVIRONMENT }}.tfvars" -auto-approve
+        run: terraform apply -var-file="${{ env.ENVIRONMENT }}.tfvars" -var="eoapi_db_password=${{ secrets.EOAPI_DB_PASSWORD }}" -auto-approve
       - name: Configure kubeconfig
         if: |
           github.event_name == 'push' && 
@@ -108,6 +108,7 @@ jobs:
         run: |
           helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
           helm repo add jetstack https://charts.jetstack.io
+          helm repo add eoapi https://devseed.com/eoapi-k8s/
           helm repo update
 
       # Deploy ingress-nginx
@@ -192,3 +193,20 @@ jobs:
           --set zeno.secrets.api.GFW_DATA_API_USER_ID="${{ secrets.GFW_DATA_API_USER_ID }}"
           --set zeno.secrets.api.ELEVENLABS_API_KEY="${{ secrets.ELEVENLABS_API_KEY }}"
           --set zeno.db.POSTGRES_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
+
+      # Deploy eoapi
+      - name: Deploy eoapi
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        run: >
+          export EOAPI_DB_HOST=$(terraform -chdir=terraform output -raw eoapi_db_endpoint) &&
+          helm upgrade --install 
+          eoapi 
+          eoapi/eoapi
+          -f helm/eoapi/values.yaml
+          -f helm/eoapi/values-${{ env.ENVIRONMENT }}.yaml
+          --set postgresql.external.credentials.password="${{ secrets.EOAPI_DB_PASSWORD }}"
+          --set postgresql.external.host="$EOAPI_DB_HOST"
+          --namespace eoapi
+          --create-namespace

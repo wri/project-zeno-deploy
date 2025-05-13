@@ -8,3 +8,9 @@ variable "aws_region" {
   type        = string
   default     = "us-east-1"
 }
+
+variable "eoapi_db_password" {
+  description = "Password for the eoapi database"
+  type        = string
+  sensitive   = true
+}
