@@ -193,7 +193,6 @@ jobs:
           --set zeno.secrets.api.GFW_DATA_API_USER_ID="${{ secrets.GFW_DATA_API_USER_ID }}"
           --set zeno.secrets.api.ELEVENLABS_API_KEY="${{ secrets.ELEVENLABS_API_KEY }}"
           --set zeno.db.POSTGRES_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
-
       # Deploy eoapi
       - name: Deploy eoapi
         if: |
@@ -201,12 +200,14 @@ jobs:
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: >
           export EOAPI_DB_HOST=$(terraform -chdir=terraform output -raw eoapi_db_endpoint) &&
+          echo "EOAPI DB Host: $EOAPI_DB_HOST" &&
+          echo "EOAPI DB Password: ${{ secrets.EOAPI_DB_PASSWORD }}" &&
           helm upgrade --install 
           eoapi 
           eoapi/eoapi
           -f helm/eoapi/values.yaml
           -f helm/eoapi/values-${{ env.ENVIRONMENT }}.yaml
-          --set postgresql.external.credentials.password="${{ secrets.EOAPI_DB_PASSWORD }}"
+          --set-string postgresql.external.credentials.password=${{ secrets.EOAPI_DB_PASSWORD }}
           --set postgresql.external.host="$EOAPI_DB_HOST"
           --namespace eoapi
           --create-namespace
