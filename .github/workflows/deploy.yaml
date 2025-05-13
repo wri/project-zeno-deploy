@@ -205,8 +205,8 @@ jobs:
           DB_OUTPUT=$(terraform output -raw eoapi_db_endpoint)
           echo "Raw output: $DB_OUTPUT"
           
-          # Extract just the hostname using grep pattern
-          EOAPI_DB_HOST=$(echo "$DB_OUTPUT" | grep -o 'eoapi-[^:]*' || echo '')
+          # Extract just the hostname using grep pattern and take first match
+          EOAPI_DB_HOST=$(echo "$DB_OUTPUT" | grep -o 'eoapi-[^:]*' | head -n1 || echo '')
           echo "Clean hostname: $EOAPI_DB_HOST"
           
           if [ -z "$EOAPI_DB_HOST" ]; then
