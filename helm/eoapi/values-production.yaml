@@ -1,12 +1,10 @@
 postgresql:
   type: "external-plaintext"
   external:
-    host: "${EOAPI_DB_HOST}"  # Will be replaced with terraform output
     port: "5432"
     database: "eoapi"
     credentials:
       username: "eoapi"
-      password: "${EOAPI_DB_PASSWORD}"  # Will be set via GitHub secret
 
 ingress:
   enabled: true
