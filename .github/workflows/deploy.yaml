@@ -198,13 +198,12 @@ jobs:
         if: |
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        working-directory: ./terraform
         run: |
           echo "Reading terraform output..."
-          cd terraform
+          echo "Outputs available:"
           terraform output
           echo "Reading specific eoapi_db_endpoint..."
-          terraform output resources.eoapi_db_endpoint
-          echo "Setting DB host..."
           EOAPI_DB_HOST="$(terraform output -raw resources.eoapi_db_endpoint)"
           echo "DB Host value: $EOAPI_DB_HOST"
           
@@ -212,6 +211,7 @@ jobs:
             echo "Error: EOAPI_DB_HOST is empty!"
             exit 1
           fi
+          
           cd ..
           helm upgrade --install \
             eoapi \
