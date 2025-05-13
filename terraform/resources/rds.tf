@@ -24,7 +24,7 @@ resource "aws_db_instance" "eoapi" {
   skip_final_snapshot    = true
 
   # Enable PostGIS
-  parameter_group_name = aws_db_parameter_group.eoapi_postgres15.name
+  parameter_group_name = aws_db_parameter_group.eoapi_postgres17.name
 
   tags = {
     Environment = var.environment
@@ -33,9 +33,9 @@ resource "aws_db_instance" "eoapi" {
 }
 
 # Create parameter group for PostGIS
-resource "aws_db_parameter_group" "eoapi_postgres15" {
-  family = "postgres15"
-  name   = "eoapi-postgres15-${var.environment}"
+resource "aws_db_parameter_group" "eoapi_postgres17" {
+  family = "postgres17"
+  name   = "eoapi-postgres17-${var.environment}"
 }
 
 # Security group for RDS
