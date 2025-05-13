@@ -201,13 +201,14 @@ jobs:
         working-directory: ./terraform
         run: |
           echo "Getting DB host..."
-          # Store the full output
+          # Store and parse the output
           DB_OUTPUT=$(terraform output -raw eoapi_db_endpoint)
           echo "Raw output: $DB_OUTPUT"
           
-          # Extract just the hostname
-          EOAPI_DB_HOST=$(echo "$DB_OUTPUT" | awk -F':' '{print $1}')
+          # Extract just the hostname using grep pattern
+          EOAPI_DB_HOST=$(echo "$DB_OUTPUT" | grep -o 'eoapi-[^:]*' || echo '')
           echo "Clean hostname: $EOAPI_DB_HOST"
+          
           if [ -z "$EOAPI_DB_HOST" ]; then
             echo "Error: Failed to get DB host!"
             exit 1
