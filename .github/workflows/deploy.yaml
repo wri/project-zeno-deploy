@@ -198,16 +198,14 @@ jobs:
         if: |
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        run: >
-          export EOAPI_DB_HOST=$(terraform -chdir=terraform output -raw eoapi_db_endpoint) &&
-          echo "EOAPI DB Host: $EOAPI_DB_HOST" &&
-          echo "EOAPI DB Password: ${{ secrets.EOAPI_DB_PASSWORD }}" &&
-          helm upgrade --install 
-          eoapi 
-          eoapi/eoapi
-          -f helm/eoapi/values.yaml
-          -f helm/eoapi/values-${{ env.ENVIRONMENT }}.yaml
-          --set-string postgresql.external.credentials.password=${{ secrets.EOAPI_DB_PASSWORD }}
-          --set postgresql.external.host="$EOAPI_DB_HOST"
-          --namespace eoapi
-          --create-namespace
+        run: |
+          EOAPI_DB_HOST="$(terraform -chdir=terraform output -raw eoapi_db_endpoint)"
+          helm upgrade --install \
+            eoapi \
+            eoapi/eoapi \
+            -f helm/eoapi/values.yaml \
+            -f helm/eoapi/values-${{ env.ENVIRONMENT }}.yaml \
+            --set postgresql.external.credentials.password="${{ secrets.EOAPI_DB_PASSWORD }}" \
+            --set postgresql.external.host="$EOAPI_DB_HOST" \
+            --namespace eoapi \
+            --create-namespace
