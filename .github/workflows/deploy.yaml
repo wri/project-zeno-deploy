@@ -212,7 +212,7 @@ jobs:
             echo "Error: EOAPI_DB_HOST is empty!"
             exit 1
           fi
-          
+          cd ..
           helm upgrade --install \
             eoapi \
             eoapi/eoapi \
