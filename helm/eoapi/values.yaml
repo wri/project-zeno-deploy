@@ -7,6 +7,9 @@ postgresql:
     credentials:
       username: "eoapi"
 
+postgrescluster:
+  enabled: false
+
 ingress:
   enabled: true
   annotations:
