@@ -200,15 +200,14 @@ jobs:
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         working-directory: ./terraform
         run: |
-          echo "Getting DB host with debugging..."
-          echo "Raw terraform output:"
-          terraform output -raw eoapi_db_endpoint
+          echo "Getting DB host..."
+          # Store the full output
+          DB_OUTPUT=$(terraform output -raw eoapi_db_endpoint)
+          echo "Raw output: $DB_OUTPUT"
           
-          echo "Capturing clean hostname..."
-          FULL_ENDPOINT=$(terraform output -raw eoapi_db_endpoint | head -n1)
-          EOAPI_DB_HOST=${FULL_ENDPOINT%:*}
-          
-          echo "Final DB Host: $EOAPI_DB_HOST"
+          # Extract just the hostname
+          EOAPI_DB_HOST=$(echo "$DB_OUTPUT" | awk -F':' '{print $1}')
+          echo "Clean hostname: $EOAPI_DB_HOST"
           if [ -z "$EOAPI_DB_HOST" ]; then
             echo "Error: Failed to get DB host!"
             exit 1
