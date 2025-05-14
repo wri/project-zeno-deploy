@@ -51,6 +51,13 @@ resource "aws_security_group" "eoapi_db" {
     security_groups = [module.eks.cluster_security_group_id]
   }
 
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = {
     Environment = var.environment
     Name        = "eoapi-db-${var.environment}"
