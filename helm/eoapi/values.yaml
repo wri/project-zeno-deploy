@@ -12,8 +12,7 @@ postgrescluster:
 
 ingress:
   enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
+  className: "nginx"
   tls:
     enabled: true
     secretName: eoapi-tls
