@@ -15,6 +15,12 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    enabled: true
+    secretName: eoapi-tls
+    certManager: true
+    certManagerIssuer: letsencrypt-prod
+    certManagerEmail: "sanjay@developmentseed.org"
 
 resources:
   requests:

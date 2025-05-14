@@ -11,10 +11,6 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-  hosts:
-    - host: eoapi.zeno-staging.ds.io
-      paths:
-        - path: /
-          pathType: Prefix
+  host: "eoapi.zeno-staging.ds.io"
 
 namespace: eoapi
