@@ -13,12 +13,12 @@ postgrescluster:
 ingress:
   enabled: true
   className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
   tls:
     enabled: true
     secretName: eoapi-tls
-    certManager: true
-    certManagerIssuer: letsencrypt-prod
-    certManagerEmail: "sanjay@developmentseed.org"
+    certManager: false
 
 resources:
   requests:
