@@ -48,7 +48,10 @@ resource "aws_security_group" "eoapi_db" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [module.eks.cluster_security_group_id]
+    security_groups = [
+      module.eks.cluster_security_group_id,
+      module.eks.node_security_group_id
+    ]
   }
 
   egress {
