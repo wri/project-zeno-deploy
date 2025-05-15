@@ -85,7 +85,7 @@ resource "kubernetes_secret" "eoapi_db_credentials" {
     namespace = "eoapi"
   }
 
-  data = {
+  stringData = {
     username = "eoapi"
     password = var.eoapi_db_password
     host     = split(":", aws_db_instance.eoapi.endpoint)[0]
