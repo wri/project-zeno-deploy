@@ -198,29 +198,12 @@ jobs:
         if: |
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        working-directory: ./terraform
-        run: |
-          echo "Getting DB host..."
-          # Store and parse the output
-          DB_OUTPUT=$(terraform output -raw eoapi_db_endpoint)
-          echo "Raw output: $DB_OUTPUT"
-          
-          # Extract just the hostname using grep pattern and take first match
-          EOAPI_DB_HOST=$(echo "$DB_OUTPUT" | grep -o 'eoapi-[^:]*' | head -n1 || echo '')
-          echo "Clean hostname: $EOAPI_DB_HOST"
-          
-          if [ -z "$EOAPI_DB_HOST" ]; then
-            echo "Error: Failed to get DB host!"
-            exit 1
-          fi
-          
-          cd ..
-          helm upgrade --install \
-            eoapi \
-            eoapi/eoapi \
-            -f helm/eoapi/values.yaml \
-            -f helm/eoapi/values-${{ env.ENVIRONMENT }}.yaml \
-            --set postgresql.external.credentials.password="${{ secrets.EOAPI_DB_PASSWORD }}" \
-            --set postgresql.external.host="$EOAPI_DB_HOST" \
-            --namespace eoapi \
-            --create-namespace
+        working-directory: ./helm
+        run: >
+          helm upgrade --install 
+          eoapi
+          eoapi/eoapi
+          -f eoapi/values.yaml
+          -f eoapi/values-${{ env.ENVIRONMENT }}.yaml
+          --namespace eoapi
+          --create-namespace

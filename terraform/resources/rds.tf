@@ -78,11 +78,18 @@ resource "aws_db_subnet_group" "eoapi" {
   }
 }
 
-# Add outputs for the database endpoint and name
-output "eoapi_db_endpoint" {
-  value = aws_db_instance.eoapi.endpoint
-}
+# Create Kubernetes secret for database credentials
+resource "kubernetes_secret" "eoapi_db_credentials" {
+  metadata {
+    name      = "eoapi-db-credentials"
+    namespace = "eoapi"
+  }
 
-output "eoapi_db_name" {
-  value = aws_db_instance.eoapi.db_name
+  data = {
+    username = "eoapi"
+    password = var.eoapi_db_password
+    host     = split(":", aws_db_instance.eoapi.endpoint)[0]
+    port     = "5432"
+    database = "eoapi"
+  }
 }

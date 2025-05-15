@@ -1,11 +1,8 @@
 # Default configuration for eoapi
 postgresql:
-  type: "external-plaintext"
+  type: "external-secret"
   external:
-    port: "5432"
-    database: "eoapi"
-    credentials:
-      username: "eoapi"
+    secretName: "eoapi-db-credentials"
 
 postgrescluster:
   enabled: false
