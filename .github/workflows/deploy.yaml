@@ -203,6 +203,7 @@ jobs:
           helm upgrade --install 
           eoapi
           eoapi/eoapi
+          --version 0.7.0
           -f eoapi/values.yaml
           -f eoapi/values-${{ env.ENVIRONMENT }}.yaml
           --namespace eoapi
