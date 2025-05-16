@@ -153,3 +153,5 @@ spec:
           env:
             - name: API_BASE_URL
               value: {{ .Values.zeno.streamlit.config.API_BASE_URL }}
+            - name: LOCAL_API_BASE_URL
+              value: {{ .Values.zeno.streamlit.config.API_BASE_URL }}
