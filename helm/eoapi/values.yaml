@@ -2,7 +2,8 @@
 postgresql:
   type: "external-secret"
   external:
-    secretName: "eoapi-db-credentials"
+    existingSecret:
+      name: "eoapi-db-credentials"
 
 postgrescluster:
   enabled: false
