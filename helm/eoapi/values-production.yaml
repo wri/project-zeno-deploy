@@ -1,11 +1,3 @@
-postgresql:
-  type: "external-plaintext"
-  external:
-    port: "5432"
-    database: "eoapi"
-    credentials:
-      username: "eoapi"
-
 ingress:
   host: "eoapi.zeno.ds.io"
 
