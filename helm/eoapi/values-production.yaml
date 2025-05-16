@@ -1,0 +1,5 @@
+ingress:
+  host: "eoapi.zeno.ds.io"
+
+
+namespace: eoapi

@@ -1,13 +1,29 @@
-langfuse:
-  host: langfuse.zeno.ds.io
+zeno:
+  langfuse:
+    host: langfuse.zeno.ds.io
+    postgresql:
+      host: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
 
-api:
-  host: api.zeno.ds.io
-  config:
-    LANGFUSE_HOST: https://langfuse.zeno.ds.io
-    OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
+  api:
+    host: api.zeno.ds.io
+    config:
+      LANGFUSE_HOST: https://langfuse.zeno.ds.io
+      OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
 
-streamlit:
-  host: streamlit.zeno.ds.io
-  config:
-    API_BASE_URL: https://api.zeno.ds.io
+  streamlit:
+    host: streamlit.zeno.ds.io
+    config:
+      API_BASE_URL: https://api.zeno.ds.io
+
+  db:
+    POSTGRES_HOST: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
+
+kube-prometheus-stack:
+  grafana:
+    ingress:
+      hosts:
+        - grafana.zeno.ds.io
+      tls:
+        - secretName: grafana-tls
+          hosts:
+            - grafana.zeno.ds.io

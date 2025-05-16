@@ -1,38 +1,106 @@
-config:
-  enable_tls: true
-  create_cert_manager_issuer: true
+# Global configuration
+global:
+  environment: default
 
-secrets:
-  langfuse:
-    INIT_USER_PASSWORD:
-    INIT_PROJECT_SECRET_KEY:
-    INIT_PROJECT_PUBLIC_KEY:
-  api:
-    OPENAI_API_KEY:
-    ANTHROPIC_API_KEY:
-    AWS_ACCESS_KEY_ID:
-    AWS_SECRET_ACCESS_KEY:
-    GEE_SERVICE_ACCOUNT_JSON:
-    MAPBOX_API_TOKEN:
-    GFW_DATA_API_KEY:
-    GFW_DATA_API_USER_ID:
-    ELEVENLABS_API_KEY:
+# Dependency configurations
+ollama:
+  enabled: true
+  models:
+    # - llama3.2
+    - nomic-embed-text
 
 langfuse:
   enabled: true
-  host: langfuse.zeno.ds.io
+  langfuse:
+    nextauth:
+      url: http://localhost:3000
+      secret:
+    salt:
+    telemetryEnabled: true
+    additionalEnv:
+      - name: AUTH_DISABLE_SIGNUP
+        value: "true"
+      - name: LANGFUSE_INIT_ORG_ID
+        value: "devseed"
+      - name: LANGFUSE_INIT_PROJECT_ID
+        value: "wri_lcl"
+      - name: LANGFUSE_INIT_PROJECT_NAME
+        value: "WRI Land Carbon Labs"
+      - name: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
+        valueFrom:
+          secretKeyRef:
+            name: zeno-langfuse-secrets
+            key: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
+      - name: LANGFUSE_INIT_PROJECT_SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: zeno-langfuse-secrets
+            key: LANGFUSE_INIT_PROJECT_SECRET_KEY
+      - name: LANGFUSE_INIT_USER_EMAIL
+        value: "info@developmentseed.org"
+      - name: LANGFUSE_INIT_USER_NAME
+        value: "devseed"
+      - name: LANGFUSE_INIT_USER_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: zeno-langfuse-secrets
+            key: LANGFUSE_INIT_USER_PASSWORD
+  service:
+    type: ClusterIP
+  postgresql:
+    deploy: false
+    auth:
+      username: postgres
+      password:
+      database: langfuse
 
-api:
-  host: api.zeno.ds.io
-  replicas: 1
-  image:
-    repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-    tag: 2757f359105a9738086f1d07ac2e8200cca9675d
+# Zeno application configuration
+zeno:
   config:
-    LANGFUSE_HOST: https://langfuse.zeno.ds.io
-    OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
+    enable_tls: true
+    create_cert_manager_issuer: true
 
-streamlit:
-  host: streamlit.zeno.ds.io
-  config:
-    API_BASE_URL: https://api.zeno.ds.io
+  secrets:
+    langfuse:
+      INIT_USER_PASSWORD:
+      INIT_PROJECT_SECRET_KEY:
+      INIT_PROJECT_PUBLIC_KEY:
+    api:
+      OPENAI_API_KEY:
+      ANTHROPIC_API_KEY:
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      GEE_SERVICE_ACCOUNT_JSON:
+      MAPBOX_API_TOKEN:
+      GFW_DATA_API_KEY:
+      GFW_DATA_API_USER_ID:
+      ELEVENLABS_API_KEY:
+
+  langfuse:
+    enabled: true
+    host: langfuse.zeno.ds.io
+
+  api:
+    host: api.zeno.ds.io
+    replicas: 1
+    image:
+      repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
+      tag: 671cf56e7156725b69d4159a3283337ec945aab2
+    config:
+      LANGFUSE_HOST: https://langfuse.zeno.ds.io
+      OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
+      DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
+
+  streamlit:
+    host: streamlit.zeno.ds.io
+    config:
+      API_BASE_URL: https://api.zeno.ds.io
+
+  db:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD:
+    POSTGRES_HOST:
+    APP_DB: zeno_db
+    image:
+      repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
+      tag: 149bffadbb4d58500b13accc7eb862c4d6d08150

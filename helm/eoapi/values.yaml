@@ -1,0 +1,31 @@
+# Default configuration for eoapi
+postgresql:
+  type: "external-secret"
+  external:
+    existingSecret:
+      name: "eoapi-db-credentials"
+
+postgrescluster:
+  enabled: false
+
+ingress:
+  enabled: true
+  pathSuffix: "(/|$)(.*)"
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  tls:
+    enabled: true
+    secretName: eoapi-tls
+    certManager: false
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+namespace: eoapi
