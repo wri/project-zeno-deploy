@@ -85,7 +85,7 @@ zeno:
     replicas: 1
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 671cf56e7156725b69d4159a3283337ec945aab2
+      tag: be0bc8c45c8f4f615ec920c0371838351579fab2
     config:
       LANGFUSE_HOST: https://langfuse.zeno.ds.io
       OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
