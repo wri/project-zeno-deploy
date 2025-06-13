@@ -6,12 +6,26 @@ zeno:
 
   api:
     host: api.zeno-staging.ds.io
+    resources:
+      requests:
+        cpu: "1000m"    # 1.5 CPU cores
+        memory: "2Gi"   # 3GB RAM
+      limits:
+        cpu: "1800m"    # 2.5 CPU cores max
+        memory: "4Gi"   # 5GB RAM max
     config:
       LANGFUSE_HOST: https://langfuse.zeno-staging.ds.io
       OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
 
   streamlit:
     host: streamlit.zeno-staging.ds.io
+    resources:
+      requests:
+        cpu: "750m"     # 0.75 CPU core
+        memory: "1.5Gi" # 1.5GB RAM
+      limits:
+        cpu: "1500m"    # 1.5 CPU cores max
+        memory: "3Gi"   # 3GB RAM max
     config:
       API_BASE_URL: https://api.zeno-staging.ds.io
       STREAMLIT_URL: https://streamlit.zeno-staging.ds.io
