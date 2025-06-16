@@ -8,11 +8,10 @@ zeno:
     host: api.zeno.ds.io
     resources:
       requests:
-        cpu: "1000m"    # 2 CPU cores
-        memory: "2Gi"   # 4GB RAM
+        cpu: "1000m"
+        memory: "4Gi"
       limits:
-        cpu: "1900m"    # 3 CPU cores max
-        memory: "4Gi"   # 6GB RAM max
+        memory: "6Gi"
     config:
       LANGFUSE_HOST: https://langfuse.zeno.ds.io
       OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
@@ -21,11 +20,11 @@ zeno:
     host: streamlit.zeno.ds.io
     resources:
       requests:
-        cpu: "1000m"    # 1 CPU core
-        memory: "1Gi"   # 2GB RAM
+        cpu: "500m"
+        memory: "1Gi"
       limits:
-        cpu: "1800m"    # 2 CPU cores max
-        memory: "3Gi"   # 4GB RAM max
+        cpu: "1000m"
+        memory: "2Gi"
     config:
       API_BASE_URL: https://api.zeno.ds.io
       STREAMLIT_URL: https://streamlit.zeno.ds.io
