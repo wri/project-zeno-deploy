@@ -43,7 +43,12 @@ spec:
         - name: zeno-api
           image: "{{ .Values.zeno.api.image.repository }}:{{ .Values.zeno.api.image.tag }}"
           imagePullPolicy: "IfNotPresent"
-          command: ["uv", "run", "uvicorn", "src.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+          #command: ["uv", "run", "uvicorn", "src.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+          command: ["/bin/sh"]
+          args: 
+            - "-c"
+            - |
+              uv run uvicorn src.api.app:app --host
           resources:
             {{- toYaml .Values.zeno.api.resources | nindent 12 }}
           ports:
