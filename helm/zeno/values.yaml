@@ -91,7 +91,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 0039a3fcbece3ef1de843d8e6b85b4f225c0f0dd
+      tag: cb392bd2f999240b7ef8dd97634d290a292b7cd6
     config:
       LANGFUSE_HOST: https://langfuse.zeno.ds.io
       OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
