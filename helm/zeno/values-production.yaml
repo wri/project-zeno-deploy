@@ -6,12 +6,25 @@ zeno:
 
   api:
     host: api.zeno.ds.io
+    resources:
+      requests:
+        cpu: "1000m"
+        memory: "4Gi"
+      limits:
+        memory: "6Gi"
     config:
       LANGFUSE_HOST: https://langfuse.zeno.ds.io
       OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
 
   streamlit:
     host: streamlit.zeno.ds.io
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+      limits:
+        cpu: "1000m"
+        memory: "2Gi"
     config:
       API_BASE_URL: https://api.zeno.ds.io
       STREAMLIT_URL: https://streamlit.zeno.ds.io

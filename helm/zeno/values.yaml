@@ -83,6 +83,12 @@ zeno:
   api:
     host: api.zeno.ds.io
     replicas: 1
+    resources:
+      requests:
+        cpu: "1000m"
+        memory: "2Gi"
+      limits:
+        memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
       tag: edce001953d0cf2093153fd71f678f2f41e9a374
@@ -93,6 +99,13 @@ zeno:
 
   streamlit:
     host: streamlit.zeno.ds.io
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+      limits:
+        cpu: "1000m"
+        memory: "2Gi"
     config:
       API_BASE_URL: https://api.zeno.ds.io
 
