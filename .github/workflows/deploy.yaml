@@ -177,12 +177,12 @@ jobs:
           helm upgrade --install zeno ./zeno
           -f zeno/values.yaml
           -f zeno/values-${{ env.ENVIRONMENT }}.yaml
-          --set langfuse.postgresql.auth.password="${{ secrets.DATABASE_PASSWORD }}"
-          --set langfuse.langfuse.nextauth.secret="${{ secrets.LANGFUSE_NEXTAUTH_SECRET }}"
-          --set langfuse.langfuse.salt="${{ secrets.LANGFUSE_SALT }}"
-          --set zeno.secrets.langfuse.INIT_USER_PASSWORD="${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}"
-          --set zeno.secrets.langfuse.INIT_PROJECT_SECRET_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY }}"
-          --set zeno.secrets.langfuse.INIT_PROJECT_PUBLIC_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}"
+          --set langfuse.database.encryptionKey="${{ secrets.LANGFUSE_ENCRYPTION_KEY }}"
+          --set zeno.secrets.langfuse.ENCRYPTION_KEY="${{ secrets.LANGFUSE_ENCRYPTION_KEY }}"
+          --set zeno.secrets.langfuse.NEXTAUTH_SECRET="${{ secrets.LANGFUSE_NEXTAUTH_SECRET }}"
+          --set zeno.secrets.langfuse.PROJECT_SECRET_KEY="${{ secrets.LANGFUSE_PROJECT_SECRET_KEY }}"
+          --set zeno.secrets.langfuse.PROJECT_PUBLIC_KEY="${{ secrets.LANGFUSE_PROJECT_PUBLIC_KEY }}"
+          --set zeno.secrets.langfuse.POSTGRES_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
           --set zeno.secrets.api.OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
           --set zeno.secrets.api.ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}"
           --set zeno.secrets.api.AWS_ACCESS_KEY_ID="${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}"

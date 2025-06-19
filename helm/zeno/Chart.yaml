@@ -9,5 +9,5 @@ dependencies:
     version: 0.69.0
     repository: https://otwld.github.io/ollama-helm/
   - name: langfuse
-    version: 0.8.0
-    repository: https://langfuse.github.io/langfuse-k8s
+    version: "3.0.0"
+    repository: "oci://ghcr.io/langfuse/helm-charts/langfuse"

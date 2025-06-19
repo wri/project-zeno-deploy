@@ -1,8 +1,22 @@
+langfuse:
+  database:
+    url: postgresql+psycopg://postgres:${POSTGRES_PASSWORD}@zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com/langfuse
+  
+  auth:
+    nextauth:
+      url: "https://langfuse.zeno.ds.io"
+
+  redis:
+    persistence:
+      size: 5Gi  # Larger for production
+
+  clickhouse:
+    persistence:
+      size: 20Gi  # Larger for production
+
 zeno:
   langfuse:
     host: langfuse.zeno.ds.io
-    postgresql:
-      host: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
 
   api:
     host: api.zeno.ds.io

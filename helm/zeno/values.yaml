@@ -11,48 +11,48 @@ ollama:
 
 langfuse:
   enabled: true
-  langfuse:
+  
+  # Database configuration
+  database:
+    type: postgres
+    url: ${DATABASE_URL}
+    encryptionKey: ${ENCRYPTION_KEY}
+
+  # Redis configuration (in-cluster)
+  redis:
+    enabled: true
+    architecture: standalone
+    persistence:
+      enabled: true
+      storageClass: "gp2"
+      size: 1Gi
+
+  # ClickHouse configuration (in-cluster)
+  clickhouse:
+    enabled: true
+    persistence:
+      enabled: true
+      storageClass: "gp2"
+      size: 10Gi
+
+  # Authentication
+  auth:
+    disableSignup: true
     nextauth:
-      url: http://localhost:3000
-      secret:
-    salt:
-    telemetryEnabled: true
-    additionalEnv:
-      - name: AUTH_DISABLE_SIGNUP
-        value: "true"
-      - name: LANGFUSE_INIT_ORG_ID
-        value: "devseed"
-      - name: LANGFUSE_INIT_PROJECT_ID
-        value: "wri_lcl"
-      - name: LANGFUSE_INIT_PROJECT_NAME
-        value: "WRI Land Carbon Labs"
-      - name: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
-        valueFrom:
-          secretKeyRef:
-            name: zeno-langfuse-secrets
-            key: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
-      - name: LANGFUSE_INIT_PROJECT_SECRET_KEY
-        valueFrom:
-          secretKeyRef:
-            name: zeno-langfuse-secrets
-            key: LANGFUSE_INIT_PROJECT_SECRET_KEY
-      - name: LANGFUSE_INIT_USER_EMAIL
-        value: "info@developmentseed.org"
-      - name: LANGFUSE_INIT_USER_NAME
-        value: "devseed"
-      - name: LANGFUSE_INIT_USER_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: zeno-langfuse-secrets
-            key: LANGFUSE_INIT_USER_PASSWORD
-  service:
-    type: ClusterIP
-  postgresql:
-    deploy: false
-    auth:
-      username: postgres
-      password:
-      database: langfuse
+      secret: ${NEXTAUTH_SECRET}
+      url: "https://langfuse.zeno.ds.io"
+
+  # Ingress configuration
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+    hosts:
+      - host: "langfuse.zeno.ds.io"
+        paths:
+          - path: /
+            pathType: Prefix
 
 # Zeno application configuration
 zeno:
@@ -62,9 +62,11 @@ zeno:
 
   secrets:
     langfuse:
-      INIT_USER_PASSWORD:
-      INIT_PROJECT_SECRET_KEY:
-      INIT_PROJECT_PUBLIC_KEY:
+      NEXTAUTH_SECRET:      # Required for v3
+      ENCRYPTION_KEY:       # Required for v3
+      PROJECT_PUBLIC_KEY:   # Changed from INIT_PROJECT_PUBLIC_KEY
+      PROJECT_SECRET_KEY:   # Changed from INIT_PROJECT_SECRET_KEY
+      POSTGRES_PASSWORD:
     api:
       OPENAI_API_KEY:
       ANTHROPIC_API_KEY:

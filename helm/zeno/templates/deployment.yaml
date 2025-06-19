@@ -90,12 +90,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-langfuse-secrets
-                  key: LANGFUSE_INIT_PROJECT_SECRET_KEY
+                  key: PROJECT_SECRET_KEY
             - name: LANGFUSE_PUBLIC_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-langfuse-secrets
-                  key: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
+                  key: PROJECT_PUBLIC_KEY
             - name: LANGFUSE_HOST
               value: {{ .Values.zeno.api.config.LANGFUSE_HOST }}
             - name: GEE_SERVICE_ACCOUNT_PATH
