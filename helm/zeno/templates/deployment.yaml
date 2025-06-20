@@ -152,7 +152,7 @@ spec:
         - name: zeno-streamlit
           image: "{{ .Values.zeno.api.image.repository }}:{{ .Values.zeno.api.image.tag }}"
           imagePullPolicy: "IfNotPresent"
-          command: ["uv", "run", "streamlit", "run", "frontend/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+          command: ["uv", "run", "streamlit", "run", "src/frontend/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
           resources:
             {{- toYaml .Values.zeno.streamlit.resources | nindent 12 }}
           ports:
