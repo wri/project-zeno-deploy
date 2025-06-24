@@ -64,6 +64,15 @@ langfuse:
       username: postgres
       password:
       database: langfuse
+  clickhouse:
+    auth:
+      existingSecret: zeno-langfuse-secrets
+      existingSecretKey: CLICKHOUSE_PASSWORD
+  redis:
+    auth:
+      existingSecret: zeno-langfuse-secrets
+      existingSecretKey: REDIS_PASSWORD
+  
 
 # Zeno application configuration
 zeno:

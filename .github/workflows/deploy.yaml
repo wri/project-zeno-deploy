@@ -183,6 +183,8 @@ jobs:
           --set zeno.secrets.langfuse.INIT_USER_PASSWORD="${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}"
           --set zeno.secrets.langfuse.INIT_PROJECT_SECRET_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY }}"
           --set zeno.secrets.langfuse.INIT_PROJECT_PUBLIC_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}"
+          --set zeno.secrets.langfuse.CLICKHOUSE_PASSWORD="${{ secrets.LANGFUSE_CLICKHOUSE_PASSWORD }}"
+          --set zeno.secrets.langfuse.REDIS_PASSWORD="${{ secrets.LANGFUSE_REDIS_PASSWORD }}"
           --set zeno.secrets.api.OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
           --set zeno.secrets.api.ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}"
           --set zeno.secrets.api.AWS_ACCESS_KEY_ID="${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}"
