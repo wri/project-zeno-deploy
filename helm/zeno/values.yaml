@@ -10,12 +10,12 @@ ollama:
     - nomic-embed-text
 
 langfuse:
-  enabled: true
   langfuse:
     nextauth:
       url: http://localhost:3000
       secret:
     salt:
+      value: ""
     telemetryEnabled: true
     additionalEnv:
       - name: AUTH_DISABLE_SIGNUP
