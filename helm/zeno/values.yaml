@@ -17,7 +17,8 @@ langfuse:
         value: ""
     salt:
       value: ""
-    telemetryEnabled: true
+    features:
+      telemetryEnabled: true
     additionalEnv:
       - name: AUTH_DISABLE_SIGNUP
         value: "true"
