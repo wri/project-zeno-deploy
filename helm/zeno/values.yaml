@@ -58,8 +58,6 @@ langfuse:
           secretKeyRef:
             name: zeno-langfuse-secrets
             key: LANGFUSE_INIT_USER_PASSWORD
-  service:
-    type: ClusterIP
   postgresql:
     deploy: false
     auth:
