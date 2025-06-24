@@ -14,6 +14,7 @@ langfuse:
     nextauth:
       url: http://localhost:3000
       secret:
+        value: ""
     salt:
       value: ""
     telemetryEnabled: true

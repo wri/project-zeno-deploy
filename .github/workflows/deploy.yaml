@@ -178,7 +178,7 @@ jobs:
           -f zeno/values.yaml
           -f zeno/values-${{ env.ENVIRONMENT }}.yaml
           --set langfuse.postgresql.auth.password="${{ secrets.DATABASE_PASSWORD }}"
-          --set langfuse.langfuse.nextauth.secret="${{ secrets.LANGFUSE_NEXTAUTH_SECRET }}"
+          --set langfuse.langfuse.nextauth.secret.value="${{ secrets.LANGFUSE_NEXTAUTH_SECRET }}"
           --set langfuse.langfuse.salt.value="${{ secrets.LANGFUSE_SALT }}"
           --set zeno.secrets.langfuse.INIT_USER_PASSWORD="${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}"
           --set zeno.secrets.langfuse.INIT_PROJECT_SECRET_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY }}"
