@@ -12,9 +12,6 @@ spec:
     - hosts:
         - {{ .Values.zeno.api.host }}
         - {{ .Values.zeno.streamlit.host }}
-        {{- if .Values.zeno.langfuse.enabled }}
-        - {{ .Values.zeno.langfuse.host }}
-        {{- end }}
       secretName: {{ .Release.Name }}-tls
   {{- end }}
   rules:
