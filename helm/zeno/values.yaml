@@ -62,7 +62,7 @@ langfuse:
     deploy: false
     auth:
       username: postgres
-      password:
+      postgresPassword:
       database: langfuse
   clickhouse:
     auth:
@@ -72,7 +72,7 @@ langfuse:
     auth:
       existingSecret: zeno-langfuse-secrets
       existingSecretKey: REDIS_PASSWORD
-  
+
 
 # Zeno application configuration
 zeno:
