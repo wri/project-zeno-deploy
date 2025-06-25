@@ -72,6 +72,22 @@ langfuse:
     auth:
       existingSecret: zeno-langfuse-secrets
       existingSecretKey: REDIS_PASSWORD
+  s3:
+    deploy: false
+    bucket: "langfuse-bucket"
+    region: "us-east-1"
+    endpoint: "s3.amazonaws.com"
+    forcePathStyle: false # not sure if this is needed
+    accessKeyId:
+      value: "mykey"
+    secretAccessKey:
+      value: "mysecret"
+    eventUpload:
+      prefix: "events/"
+    batchExport:
+      prefix: "exports/"
+    mediaUpload:
+      prefix: "media/"
 
 
 # Zeno application configuration

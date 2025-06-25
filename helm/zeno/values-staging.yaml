@@ -3,6 +3,9 @@ zeno:
     host: langfuse.zeno-staging.ds.io
     postgresql:
       host: zeno-db-staging.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
+    s3:
+      bucket: "langfuse-staging-bucket"
+
 
   api:
     host: api.zeno-staging.ds.io
