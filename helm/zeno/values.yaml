@@ -27,9 +27,12 @@ langfuse:
       className: nginx
       tls:
         enabled: true
-        secretName: {{ .Release.Name }}-tls
+        secretName: langfuse-tls
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        cert-manager.io/cluster-issuer: letsencrypt-prod
       hosts:
-      - host: {{ .Values.zeno.langfuse.host }}
+      - host: langfuse.zeno.ds.io
         paths:
         - path: /
           pathType: Prefix
