@@ -85,9 +85,13 @@ langfuse:
     endpoint: "s3.amazonaws.com"
     forcePathStyle: false # not sure if this is needed
     accessKeyId:
-      value: "mykey"
+      secretKeyRef:
+        name: "langfuse-s3-credentials"
+        key: "access_key_id"
     secretAccessKey:
-      value: "mysecret"
+      secretKeyRef:
+        name: "langfuse-s3-credentials"
+        key: "secret_access_key"
     eventUpload:
       prefix: "events/"
     batchExport:

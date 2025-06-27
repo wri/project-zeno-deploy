@@ -11,12 +11,12 @@ langfuse:
   postgresql:
     host: zeno-db-staging.cv2oy6g4svaz.us-east-1.rds.amazonaws.com  
 
+  s3:
+    bucket: "langfuse-staging-bucket"
+
 zeno:
   langfuse:
     host: langfuse.zeno-staging.ds.io
-
-    s3:
-      bucket: "langfuse-staging-bucket"
 
 
   api:
