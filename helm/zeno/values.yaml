@@ -31,11 +31,6 @@ langfuse:
       annotations:
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
         cert-manager.io/cluster-issuer: letsencrypt-prod
-      hosts:
-      - host: langfuse.zeno.ds.io
-        paths:
-        - path: /
-          pathType: Prefix
     additionalEnv:
       - name: AUTH_DISABLE_SIGNUP
         value: "true"
