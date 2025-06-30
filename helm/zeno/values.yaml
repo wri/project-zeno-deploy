@@ -68,6 +68,9 @@ langfuse:
   clickhouse:
     persistence:
       storageClass: "gp2"
+    zookeeper:
+      persistence:
+        storageClass: "gp2"
     auth:
       existingSecret: zeno-langfuse-secrets
       existingSecretKey: CLICKHOUSE_PASSWORD
