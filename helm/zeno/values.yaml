@@ -72,7 +72,7 @@ langfuse:
   redis:
     auth:
       existingSecret: zeno-langfuse-secrets
-      existingSecretKey: REDIS_PASSWORD
+      existingSecretPasswordKey: REDIS_PASSWORD
   s3:
     deploy: false
     bucket: "langfuse-bucket"
