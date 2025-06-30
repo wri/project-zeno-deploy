@@ -66,10 +66,15 @@ langfuse:
       password:
       database: langfuse
   clickhouse:
+    persistence:
+      storageClass: "gp2"
     auth:
       existingSecret: zeno-langfuse-secrets
       existingSecretKey: CLICKHOUSE_PASSWORD
   redis:
+    primary:
+      persistence:
+        storageClass: "gp2"
     auth:
       existingSecret: zeno-langfuse-secrets
       existingSecretPasswordKey: REDIS_PASSWORD
