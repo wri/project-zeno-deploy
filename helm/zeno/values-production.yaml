@@ -1,8 +1,19 @@
+langfuse:
+  langfuse:
+    ingress:
+      hosts:
+      - host: langfuse.zeno.ds.io
+        paths:
+        - path: /
+          pathType: Prefix
+  postgresql:
+    host: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
+  s3:
+    bucket: "langfuse-production-bucket"
+
 zeno:
   langfuse:
     host: langfuse.zeno.ds.io
-    postgresql:
-      host: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
 
   api:
     host: api.zeno.ds.io
