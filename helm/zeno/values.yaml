@@ -10,6 +10,7 @@ ollama:
     - nomic-embed-text
 
 langfuse:
+  fullnameOverride: "zeno" 
   langfuse:
     nextauth:
       url: http://localhost:3000
