@@ -63,7 +63,7 @@ langfuse:
     deploy: false
     auth:
       username: postgres
-      postgresPassword:
+      password:
       database: langfuse
   clickhouse:
     auth:

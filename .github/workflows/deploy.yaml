@@ -177,7 +177,7 @@ jobs:
           helm upgrade --install zeno ./zeno
           -f zeno/values.yaml
           -f zeno/values-${{ env.ENVIRONMENT }}.yaml
-          --set langfuse.postgresql.auth.postgresPassword="${{ secrets.DATABASE_PASSWORD }}"
+          --set langfuse.postgresql.auth.password="${{ secrets.DATABASE_PASSWORD }}"
           --set langfuse.langfuse.nextauth.secret.value="${{ secrets.LANGFUSE_NEXTAUTH_SECRET }}"
           --set langfuse.langfuse.salt.value="${{ secrets.LANGFUSE_SALT }}"
           --set langfuse.s3.accessKeyId.value="${{ secrets.LANGFUSE_S3_ACCESS_KEY }}"
