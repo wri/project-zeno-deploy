@@ -86,7 +86,7 @@ langfuse:
     deploy: false
     bucket: "langfuse-bucket"
     region: "us-east-1"
-    endpoint: "s3.amazonaws.com"
+    endpoint: "s3.us-east-1.amazonaws.com"
     # forcePathStyle: false
     accessKeyId:
       secretKeyRef:
