@@ -87,7 +87,7 @@ langfuse:
     bucket: "langfuse-bucket"
     region: "us-east-1"
     endpoint: "s3.us-east-1.amazonaws.com"
-    # forcePathStyle: false
+    forcePathStyle: false
     accessKeyId:
       secretKeyRef:
         name: "langfuse-s3-credentials"
@@ -96,12 +96,12 @@ langfuse:
       secretKeyRef:
         name: "langfuse-s3-credentials"
         key: "secret_access_key"
-    # eventUpload:
-    #   prefix: "events/"
-    # batchExport:
-    #   prefix: "exports/"
-    # mediaUpload:
-    #   prefix: "media/"
+    eventUpload:
+      prefix: "events/"
+    batchExport:
+      prefix: "exports/"
+    mediaUpload:
+      prefix: "media/"
 
 
 # Zeno application configuration
