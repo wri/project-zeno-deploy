@@ -12,8 +12,6 @@ ollama:
 langfuse:
   fullnameOverride: "zeno" 
   langfuse:
-    logging:
-      level: trace
     nextauth:
       url: http://localhost:3000
       secret:
@@ -88,7 +86,7 @@ langfuse:
     deploy: false
     bucket: "langfuse-bucket"
     region: "us-east-1"
-    endpoint: "s3.us-east-1.amazonaws.com"
+    endpoint: "https://s3.us-east-1.amazonaws.com"
     forcePathStyle: false
     accessKeyId:
       secretKeyRef:
