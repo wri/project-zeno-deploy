@@ -13,7 +13,7 @@ langfuse:
   fullnameOverride: "zeno" 
   langfuse:
     logging:
-      level: trace
+      level: debug
     nextauth:
       url: http://localhost:3000
       secret:
