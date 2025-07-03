@@ -12,6 +12,8 @@ ollama:
 langfuse:
   fullnameOverride: "zeno" 
   langfuse:
+    logging:
+      level: trace
     nextauth:
       url: http://localhost:3000
       secret:
