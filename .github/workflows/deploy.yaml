@@ -123,6 +123,7 @@ jobs:
           --version 4.11.3
           --namespace ingress-nginx
           --create-namespace
+          --set controller.config.proxy-body-size=500m
 
       # Deploy cert-manager
       - name: Deploy cert-manager
