@@ -12,9 +12,6 @@ spec:
     - hosts:
         - {{ .Values.zeno.api.host }}
         - {{ .Values.zeno.streamlit.host }}
-        {{- if .Values.zeno.langfuse.enabled }}
-        - {{ .Values.zeno.langfuse.host }}
-        {{- end }}
       secretName: {{ .Release.Name }}-tls
   {{- end }}
   rules:
@@ -38,15 +35,4 @@ spec:
                 name: {{ .Release.Name }}-streamlit
                 port:
                   number: 8501
-  {{- if .Values.zeno.langfuse.enabled }}
-    - host: {{ .Values.zeno.langfuse.host }}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: langfuse
-                port:
-                  number: 3000
-  {{- end }}
+

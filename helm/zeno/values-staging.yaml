@@ -1,17 +1,45 @@
+langfuse:
+
+  langfuse:
+    ingress:
+      hosts:
+      - host: langfuse.zeno-staging.ds.io
+        paths:
+        - path: /
+          pathType: Prefix
+
+  postgresql:
+    host: zeno-db-staging.cv2oy6g4svaz.us-east-1.rds.amazonaws.com  
+
+  s3:
+    bucket: "langfuse-staging-bucket"
+
 zeno:
   langfuse:
     host: langfuse.zeno-staging.ds.io
-    postgresql:
-      host: zeno-db-staging.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
+
 
   api:
     host: api.zeno-staging.ds.io
+    resources:
+      requests:
+        cpu: "1000m"
+        memory: "3Gi"
+      limits:
+        memory: "6Gi"
     config:
       LANGFUSE_HOST: https://langfuse.zeno-staging.ds.io
       OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
 
   streamlit:
     host: streamlit.zeno-staging.ds.io
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+      limits:
+        cpu: "1500m"
+        memory: "2Gi"
     config:
       API_BASE_URL: https://api.zeno-staging.ds.io
       STREAMLIT_URL: https://streamlit.zeno-staging.ds.io
