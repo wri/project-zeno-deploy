@@ -47,3 +47,20 @@ db:
 ```
 
 Note: It's important to ensure that the database migrations are compatible with the application version being deployed.
+
+### Inspecting Logs
+
+We use Prometheus + Loki + Grafana for monitoring of services and logging.
+
+To login:
+
+Go to https://grafana.zeno-staging.ds.io
+
+Login: admin
+Get password with `kubectl get secret -n support support-grafana -o jsonpath='{.data.admin-password}' | base64 -d`
+
+To get memory, CPU usage, etc. over time for pods, go to Dashboard and select the appropriate Dashboard.
+
+To see API logs:
+
+Go to Explore. Switch from Prometheus to Loki in the top bar. In label filters: select label=component and value=api . Hit the Run Query button at the top right. You should see the raw logs appear below. You can use the text filter to narrow down your search.
