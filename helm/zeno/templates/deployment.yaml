@@ -92,6 +92,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-zeno-secrets
                   key: ELEVENLABS_API_KEY
+            - name: COOKIE_SIGNER_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: COOKIE_SIGNER_SECRET_KEY
             - name: LANGFUSE_SECRET_KEY
               valueFrom:
                 secretKeyRef:
