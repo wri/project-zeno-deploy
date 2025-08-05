@@ -123,6 +123,7 @@ jobs:
           --version 4.11.3
           --namespace ingress-nginx
           --create-namespace
+          --set controller.config.proxy-body-size=500m
 
       # Deploy cert-manager
       - name: Deploy cert-manager
@@ -178,11 +179,15 @@ jobs:
           -f zeno/values.yaml
           -f zeno/values-${{ env.ENVIRONMENT }}.yaml
           --set langfuse.postgresql.auth.password="${{ secrets.DATABASE_PASSWORD }}"
-          --set langfuse.langfuse.nextauth.secret="${{ secrets.LANGFUSE_NEXTAUTH_SECRET }}"
-          --set langfuse.langfuse.salt="${{ secrets.LANGFUSE_SALT }}"
+          --set langfuse.langfuse.nextauth.secret.value="${{ secrets.LANGFUSE_NEXTAUTH_SECRET }}"
+          --set langfuse.langfuse.salt.value="${{ secrets.LANGFUSE_SALT }}"
+          --set langfuse.s3.accessKeyId.value="${{ secrets.LANGFUSE_S3_ACCESS_KEY }}"
+          --set langfuse.s3.secretAccessKey.value="${{ secrets.LANGFUSE_S3_SECRET_KEY }}"
           --set zeno.secrets.langfuse.INIT_USER_PASSWORD="${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}"
           --set zeno.secrets.langfuse.INIT_PROJECT_SECRET_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY }}"
           --set zeno.secrets.langfuse.INIT_PROJECT_PUBLIC_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}"
+          --set zeno.secrets.langfuse.CLICKHOUSE_PASSWORD="${{ secrets.LANGFUSE_CLICKHOUSE_PASSWORD }}"
+          --set zeno.secrets.langfuse.REDIS_PASSWORD="${{ secrets.LANGFUSE_REDIS_PASSWORD }}"
           --set zeno.secrets.api.OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
           --set zeno.secrets.api.ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}"
           --set zeno.secrets.api.AWS_ACCESS_KEY_ID="${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}"
@@ -192,6 +197,7 @@ jobs:
           --set zeno.secrets.api.GFW_DATA_API_KEY="${{ secrets.GFW_DATA_API_KEY }}"
           --set zeno.secrets.api.GFW_DATA_API_USER_ID="${{ secrets.GFW_DATA_API_USER_ID }}"
           --set zeno.secrets.api.ELEVENLABS_API_KEY="${{ secrets.ELEVENLABS_API_KEY }}"
+          --set zeno.secrets.api.COOKIE_SIGNER_SECRET_KEY="${{ secrets.COOKIE_SIGNER_SECRET_KEY }}"
           --set zeno.db.POSTGRES_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
       # Deploy eoapi
       - name: Deploy eoapi

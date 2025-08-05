@@ -22,6 +22,6 @@ spec:
           value: {{ .Values.zeno.db.POSTGRES_PASSWORD }}
         - name: POSTGRES_HOST
           value: {{ .Values.zeno.db.POSTGRES_HOST }}
-        - name: APP_DB
-          value: {{ .Values.zeno.db.APP_DB }}
+        - name: POSTGRES_DB
+          value: {{ .Values.zeno.db.POSTGRES_DB }}
       restartPolicy: Never

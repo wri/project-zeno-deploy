@@ -10,13 +10,28 @@ ollama:
     - nomic-embed-text
 
 langfuse:
-  enabled: true
+  fullnameOverride: "zeno" 
   langfuse:
     nextauth:
       url: http://localhost:3000
       secret:
+        value: ""
     salt:
-    telemetryEnabled: true
+      value: ""
+    features:
+      telemetryEnabled: true
+    ingress:
+      enabled: true
+      # This requires an ingress controller to be installed in the cluster
+      # For example, using the nginx ingress controller:
+      # helm install nginx-ingress ingress-nginx/ingress-nginx
+      className: nginx
+      tls:
+        enabled: true
+        secretName: langfuse-tls
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        cert-manager.io/cluster-issuer: letsencrypt-prod
     additionalEnv:
       - name: AUTH_DISABLE_SIGNUP
         value: "true"
@@ -45,14 +60,49 @@ langfuse:
           secretKeyRef:
             name: zeno-langfuse-secrets
             key: LANGFUSE_INIT_USER_PASSWORD
-  service:
-    type: ClusterIP
   postgresql:
     deploy: false
     auth:
       username: postgres
       password:
       database: langfuse
+  clickhouse:
+    persistence:
+      storageClass: "gp2"
+    zookeeper:
+      persistence:
+        storageClass: "gp2"
+    auth:
+      existingSecret: zeno-langfuse-secrets
+      existingSecretKey: CLICKHOUSE_PASSWORD
+  redis:
+    primary:
+      persistence:
+        storageClass: "gp2"
+    auth:
+      existingSecret: zeno-langfuse-secrets
+      existingSecretPasswordKey: REDIS_PASSWORD
+  s3:
+    deploy: false
+    bucket: "langfuse-bucket"
+    region: "us-east-1"
+    endpoint: "https://s3.us-east-1.amazonaws.com"
+    forcePathStyle: false
+    accessKeyId:
+      secretKeyRef:
+        name: "langfuse-s3-credentials"
+        key: "access_key_id"
+    secretAccessKey:
+      secretKeyRef:
+        name: "langfuse-s3-credentials"
+        key: "secret_access_key"
+    eventUpload:
+      prefix: "events/"
+    batchExport:
+      prefix: "exports/"
+    mediaUpload:
+      prefix: "media/"
+
 
 # Zeno application configuration
 zeno:
@@ -75,6 +125,7 @@ zeno:
       GFW_DATA_API_KEY:
       GFW_DATA_API_USER_ID:
       ELEVENLABS_API_KEY:
+      COOKIE_SIGNER_SECRET_KEY:
 
   langfuse:
     enabled: true
@@ -82,17 +133,32 @@ zeno:
 
   api:
     host: api.zeno.ds.io
-    replicas: 1
+    replicas: 3
+    resources:
+      requests:
+        cpu: "1000m"
+        memory: "2Gi"
+      limits:
+        memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: be0bc8c45c8f4f615ec920c0371838351579fab2
+      tag: 840e3bf1bf294d10a696a01a1403cd0cf6ba9184
     config:
+      LOG_FORMAT: json
+      LOG_LEVEL: info
       LANGFUSE_HOST: https://langfuse.zeno.ds.io
       OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
       DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
 
   streamlit:
     host: streamlit.zeno.ds.io
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+      limits:
+        cpu: "1000m"
+        memory: "2Gi"
     config:
       API_BASE_URL: https://api.zeno.ds.io
 
@@ -100,7 +166,7 @@ zeno:
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD:
     POSTGRES_HOST:
-    APP_DB: zeno_db
+    POSTGRES_DB: zeno_db
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-      tag: 149bffadbb4d58500b13accc7eb862c4d6d08150
+      tag: e7f039a9e52e49184c8a546f66d1c45d637707e0

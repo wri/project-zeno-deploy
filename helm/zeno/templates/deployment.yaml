@@ -43,12 +43,25 @@ spec:
         - name: zeno-api
           image: "{{ .Values.zeno.api.image.repository }}:{{ .Values.zeno.api.image.tag }}"
           imagePullPolicy: "IfNotPresent"
-          command: ["uv", "run", "uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+          #command: ["uv", "run", "uvicorn", "src.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+          command: ["/bin/sh"]
+          args: 
+            - "-c"
+            - |
+              uv run uvicorn src.api.app:app --host 0.0.0.0 --port 8000 
+          resources:
+            {{- toYaml .Values.zeno.api.resources | nindent 12 }}
           ports:
             - name: http
               containerPort: 8000
               protocol: TCP
           env:
+            - name: LOG_LEVEL
+              value: {{ .Values.zeno.api.config.LOG_LEVEL | default "info" }}
+            - name: LOG_FORMAT
+              value: {{ .Values.zeno.api.config.LOG_FORMAT | default "json" }}
+            - name: LOG_TO_FILE
+              value: "false"
             - name: OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -79,6 +92,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-zeno-secrets
                   key: ELEVENLABS_API_KEY
+            - name: COOKIE_SIGNER_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: COOKIE_SIGNER_SECRET_KEY
             - name: LANGFUSE_SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -145,7 +163,9 @@ spec:
         - name: zeno-streamlit
           image: "{{ .Values.zeno.api.image.repository }}:{{ .Values.zeno.api.image.tag }}"
           imagePullPolicy: "IfNotPresent"
-          command: ["uv", "run", "streamlit", "run", "frontend/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+          command: ["uv", "run", "streamlit", "run", "src/frontend/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+          resources:
+            {{- toYaml .Values.zeno.streamlit.resources | nindent 12 }}
           ports:
             - name: http
               containerPort: 8501
