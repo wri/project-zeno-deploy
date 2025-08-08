@@ -133,13 +133,13 @@ zeno:
 
   api:
     host: api.zeno.ds.io
-    replicas: 3
+    replicas: 1
     resources:
       requests:
         cpu: "1000m"
-        memory: "2Gi"
+        memory: "1Gi"
       limits:
-        memory: "4Gi"
+        memory: "2Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
       tag: 987b4136498b183480616bc2b325b1d9462ceb0b
