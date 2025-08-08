@@ -197,6 +197,7 @@ jobs:
           --set zeno.secrets.api.GFW_DATA_API_KEY="${{ secrets.GFW_DATA_API_KEY }}"
           --set zeno.secrets.api.GFW_DATA_API_USER_ID="${{ secrets.GFW_DATA_API_USER_ID }}"
           --set zeno.secrets.api.ELEVENLABS_API_KEY="${{ secrets.ELEVENLABS_API_KEY }}"
+          --set zeno.secrets.api.COOKIE_SIGNER_SECRET_KEY="${{ secrets.COOKIE_SIGNER_SECRET_KEY }}"
           --set zeno.db.POSTGRES_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
       # Deploy eoapi
       - name: Deploy eoapi

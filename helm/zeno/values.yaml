@@ -125,6 +125,7 @@ zeno:
       GFW_DATA_API_KEY:
       GFW_DATA_API_USER_ID:
       ELEVENLABS_API_KEY:
+      COOKIE_SIGNER_SECRET_KEY:
 
   langfuse:
     enabled: true
@@ -143,6 +144,8 @@ zeno:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
       tag: 4d8be49f6685203f9547ded4a924199c938bec02
     config:
+      LOG_FORMAT: json
+      LOG_LEVEL: info
       LANGFUSE_HOST: https://langfuse.zeno.ds.io
       OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
       DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
@@ -166,4 +169,4 @@ zeno:
     POSTGRES_DB: zeno_db
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-      tag: 36399544a758d4860dc23594d81e22b2c342172c
+      tag: 987b4136498b183480616bc2b325b1d9462ceb0b

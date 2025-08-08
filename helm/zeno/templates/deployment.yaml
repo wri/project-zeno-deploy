@@ -56,6 +56,12 @@ spec:
               containerPort: 8000
               protocol: TCP
           env:
+            - name: LOG_LEVEL
+              value: {{ .Values.zeno.api.config.LOG_LEVEL | default "info" }}
+            - name: LOG_FORMAT
+              value: {{ .Values.zeno.api.config.LOG_FORMAT | default "json" }}
+            - name: LOG_TO_FILE
+              value: "false"
             - name: OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -86,6 +92,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-zeno-secrets
                   key: ELEVENLABS_API_KEY
+            - name: COOKIE_SIGNER_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: COOKIE_SIGNER_SECRET_KEY
             - name: LANGFUSE_SECRET_KEY
               valueFrom:
                 secretKeyRef:
