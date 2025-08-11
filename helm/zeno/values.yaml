@@ -69,6 +69,7 @@ langfuse:
   clickhouse:
     persistence:
       storageClass: "gp2"
+      size: "20Gi"
     zookeeper:
       persistence:
         storageClass: "gp2"
