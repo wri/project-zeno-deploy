@@ -169,4 +169,4 @@ zeno:
     POSTGRES_DB: zeno_db
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-      tag: e7f039a9e52e49184c8a546f66d1c45d637707e0
+      tag: 83832685e5944d2e70b21a5f56ea34cabef07dc9
