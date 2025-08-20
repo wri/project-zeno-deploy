@@ -1,0 +1,76 @@
+# IAM user for Requester Pays S3 access
+resource "aws_iam_user" "requester_pays" {
+  name = "eoapi-requester-pays-${var.environment}-user"
+}
+
+# Policy for requester pays S3 access
+resource "aws_iam_user_policy" "requester_pays" {
+  name = "requester-pays-${var.environment}-policy"
+  user = aws_iam_user.requester_pays.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject"
+        ]
+        Resource = [
+          # Replace with the specific external requester pays buckets you need access to
+          # Example: "arn:aws:s3:::landsat-pds/*",
+          # Example: "arn:aws:s3:::sentinel-s2-l2a/*"
+        ]
+        Condition = {
+          StringEquals = {
+            "s3:x-amz-request-payer" = "requester"
+          }
+        }
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:ListBucket"
+        ]
+        Resource = [
+          # Replace with the specific external requester pays buckets you need access to
+          # Example: "arn:aws:s3:::landsat-pds",
+          # Example: "arn:aws:s3:::sentinel-s2-l2a"
+        ]
+        Condition = {
+          StringEquals = {
+            "s3:x-amz-request-payer" = "requester"
+          }
+        }
+      }
+    ]
+  })
+}
+
+# Access key for the IAM user
+resource "aws_iam_access_key" "requester_pays" {
+  user = aws_iam_user.requester_pays.name
+}
+
+# Kubernetes secret for requester pays S3 credentials
+resource "kubernetes_secret" "requester_pays_s3_credentials" {
+  metadata {
+    name      = "requester-pays-s3-credentials"
+    namespace = "eoapi"
+  }
+
+  data = {
+    access_key_id     = aws_iam_access_key.requester_pays.id
+    secret_access_key = aws_iam_access_key.requester_pays.secret
+  }
+}
+
+# Outputs
+output "requester_pays_access_key_id" {
+  value = aws_iam_access_key.requester_pays.id
+}
+
+output "requester_pays_secret_key" {
+  value     = aws_iam_access_key.requester_pays.secret
+  sensitive = true
+}
