@@ -60,8 +60,8 @@ resource "kubernetes_secret" "requester_pays_s3_credentials" {
   }
 
   data = {
-    access_key_id     = aws_iam_access_key.requester_pays.id
-    secret_access_key = aws_iam_access_key.requester_pays.secret
+    AWS_ACCESS_KEY_ID     = aws_iam_access_key.requester_pays.id
+    AWS_SECRET_ACCESS_KEY = aws_iam_access_key.requester_pays.secret
   }
 }
 
