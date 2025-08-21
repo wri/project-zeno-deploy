@@ -14,17 +14,13 @@ resource "aws_iam_user_policy" "requester_pays" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject"
+          "s3:GetObject",
+          "s3:HeadObject"
         ]
         Resource = [
           "arn:aws:s3:::lcl-cogs/*",
           "arn:aws:s3:::gfw-data-lake/*"
         ]
-        Condition = {
-          StringEquals = {
-            "s3:x-amz-request-payer" = "requester"
-          }
-        }
       },
       {
         Effect = "Allow"
@@ -35,11 +31,6 @@ resource "aws_iam_user_policy" "requester_pays" {
           "arn:aws:s3:::lcl-cogs",
           "arn:aws:s3:::gfw-data-lake"
         ]
-        Condition = {
-          StringEquals = {
-            "s3:x-amz-request-payer" = "requester"
-          }
-        }
       }
     ]
   })
