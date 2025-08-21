@@ -17,9 +17,8 @@ resource "aws_iam_user_policy" "requester_pays" {
           "s3:GetObject"
         ]
         Resource = [
-          # Replace with the specific external requester pays buckets you need access to
-          # Example: "arn:aws:s3:::landsat-pds/*",
-          # Example: "arn:aws:s3:::sentinel-s2-l2a/*"
+          "arn:aws:s3:::lcl-cogs/*",
+          "arn:aws:s3:::gfw-data-lake/*"
         ]
         Condition = {
           StringEquals = {
@@ -33,9 +32,8 @@ resource "aws_iam_user_policy" "requester_pays" {
           "s3:ListBucket"
         ]
         Resource = [
-          # Replace with the specific external requester pays buckets you need access to
-          # Example: "arn:aws:s3:::landsat-pds",
-          # Example: "arn:aws:s3:::sentinel-s2-l2a"
+          "arn:aws:s3:::lcl-cogs",
+          "arn:aws:s3:::gfw-data-lake"
         ]
         Condition = {
           StringEquals = {
