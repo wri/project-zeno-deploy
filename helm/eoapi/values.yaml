@@ -6,6 +6,12 @@ raster:
     extraEnvFrom:
       - secretRef:
           name: requester-pays-s3-credentials
+  command:
+    - "uvicorn"
+    - "titiler.pgstac.main:app"
+    - "--host=$(HOST)"
+    - "--port=$(PORT)"
+    - "--log-level=debug"
 
 postgresql:
   type: "external-secret"
