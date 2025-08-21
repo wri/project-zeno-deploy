@@ -17,3 +17,14 @@ output "cluster_name" {
   description = "Kubernetes Cluster Name"
   value = module.eks.cluster_name
 }
+
+output "requester_pays_access_key_id" {
+  description = "Access Key ID for requester pays S3 access"
+  value = aws_iam_access_key.requester_pays.id
+}
+
+output "requester_pays_secret_key" {
+  description = "Secret Access Key for requester pays S3 access"
+  value = aws_iam_access_key.requester_pays.secret
+  sensitive = true
+}

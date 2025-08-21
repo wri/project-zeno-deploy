@@ -1,4 +1,12 @@
 # Default configuration for eoapi
+raster:
+  settings:
+    envVars:
+      AWS_REQUEST_PAYER: "requester"
+    extraEnvFrom:
+      - secretRef:
+          name: requester-pays-s3-credentials
+
 postgresql:
   type: "external-secret"
   external:
