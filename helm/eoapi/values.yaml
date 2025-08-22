@@ -6,12 +6,20 @@ raster:
     extraEnvFrom:
       - secretRef:
           name: requester-pays-s3-credentials
+    resources:
+      limits:
+        cpu: "2000m"
+        memory: "8192Mi"
+      requests:
+        cpu: "1000m"
+        memory: "4096Mi"
   command:
     - "uvicorn"
     - "titiler.pgstac.main:app"
     - "--host=$(HOST)"
     - "--port=$(PORT)"
     - "--log-level=debug"
+  
 
 postgresql:
   type: "external-secret"
@@ -34,12 +42,12 @@ ingress:
     secretName: eoapi-tls
     certManager: false
 
-resources:
-  requests:
-    cpu: 200m
-    memory: 256Mi
-  limits:
-    cpu: 1000m
-    memory: 1Gi
+# resources:
+#   requests:
+#     cpu: 200m
+#     memory: 256Mi
+#   limits:
+#     cpu: 1000m
+#     memory: 1Gi
 
 namespace: eoapi

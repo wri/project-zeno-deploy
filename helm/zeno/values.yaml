@@ -133,7 +133,7 @@ zeno:
 
   api:
     host: api.zeno.ds.io
-    replicas: 3
+    replicas: 2
     resources:
       requests:
         cpu: "1000m"
