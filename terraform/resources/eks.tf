@@ -98,11 +98,11 @@ module "eks" {
     regular = {
       name = "regular"
 
-      instance_types = ["t3.large"]
+      instance_types = ["m5.2xlarge"]
 
-      min_size     = 6
-      max_size     = 8
-      desired_size = 8
+      min_size     = 2
+      max_size     = 6
+      desired_size = 3
 
       # Launch template configuration
       use_custom_launch_template = true
@@ -115,6 +115,12 @@ module "eks" {
             delete_on_termination = true
           }
         }
+      }
+
+      # Enable autoscaling tags
+      tags = {
+        "k8s.io/cluster-autoscaler/enabled" = "true"
+        "k8s.io/cluster-autoscaler/${local.cluster_name}" = "owned"
       }
 
       # Needed by the aws-ebs-csi-driver
