@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - develop
+      - zeno-shell-run-evals
   pull_request:
     branches:
       - main
@@ -98,7 +99,7 @@ jobs:
       - name: Configure kubeconfig
         if: |
           github.event_name == 'push' && 
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/zeno-shell-run-evals')
         run: aws eks update-kubeconfig --region us-east-1 --name zeno-${{ env.ENVIRONMENT }}-cluster
       # Add Helm repositories
       - name: Add Helm repositories
@@ -164,7 +165,7 @@ jobs:
       - name: Update Helm Dependencies for Zeno
         if: |
           github.event_name == 'push' && 
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/zeno-shell-run-evals')
         run: |
           helm dependency update ./helm/zeno
 
@@ -172,7 +173,7 @@ jobs:
       - name: Deploy Zeno
         if: |
           github.event_name == 'push' && 
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/zeno-shell-run-evals')
         working-directory: ./helm
         run: >
           helm upgrade --install zeno ./zeno

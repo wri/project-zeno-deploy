@@ -177,3 +177,139 @@ spec:
               value: {{ .Values.zeno.streamlit.config.API_BASE_URL }}
             - name: STREAMLIT_URL
               value: {{ .Values.zeno.streamlit.config.STREAMLIT_URL }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-shell
+  labels:
+    app: zeno
+    component: shell
+spec:
+  replicas: {{ .Values.zeno.shell.replicas | default 0 }}
+  selector:
+    matchLabels:
+      app: zeno
+      component: shell
+  template:
+    metadata:
+      labels:
+        app: zeno
+        component: shell
+      annotations:
+        force-update: {{ randAlphaNum 5 | quote }}  # random annotation to force update
+    spec:
+      initContainers:
+        - name: s3-data-sync
+          image: amazon/aws-cli
+          command: ['aws', 's3', 'sync', 's3://zeno-static-data', '/app/data']
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: AWS_DEFAULT_REGION
+              value: "{{ .Values.zeno.api.config.AWS_REGION | default "us-east-1" }}"
+          volumeMounts:
+            - name: data-volume
+              mountPath: /app/data
+      containers:
+        - name: zeno-shell
+          image: "{{ .Values.zeno.api.image.repository }}:{{ .Values.zeno.api.image.tag }}"
+          imagePullPolicy: "IfNotPresent"
+          command: ["/bin/sh"]
+          args: 
+            - "-c"
+            - |
+              echo "Zeno shell container started. Ready for commands."
+              sleep infinity
+          resources:
+            {{- toYaml .Values.zeno.shell.resources | nindent 12 }}
+          env:
+            - name: LOG_LEVEL
+              value: {{ .Values.zeno.api.config.LOG_LEVEL | default "info" }}
+            - name: LOG_FORMAT
+              value: {{ .Values.zeno.api.config.LOG_FORMAT | default "json" }}
+            - name: LOG_TO_FILE
+              value: "false"
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: OPENAI_API_KEY
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: ANTHROPIC_API_KEY
+            - name: MAPBOX_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: MAPBOX_API_TOKEN
+            - name: GFW_DATA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: GFW_DATA_API_KEY
+            - name: GFW_DATA_API_USER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: GFW_DATA_API_USER_ID
+            - name: ELEVENLABS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: ELEVENLABS_API_KEY
+            - name: COOKIE_SIGNER_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: COOKIE_SIGNER_SECRET_KEY
+            - name: LANGFUSE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-langfuse-secrets
+                  key: LANGFUSE_INIT_PROJECT_SECRET_KEY
+            - name: LANGFUSE_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-langfuse-secrets
+                  key: LANGFUSE_INIT_PROJECT_PUBLIC_KEY
+            - name: LANGFUSE_HOST
+              value: {{ .Values.zeno.api.config.LANGFUSE_HOST }}
+            - name: GEE_SERVICE_ACCOUNT_PATH
+              value: /keys/zeno-gee-service-account.json
+            - name: OLLAMA_BASE_URL
+              value: {{ .Values.zeno.api.config.OLLAMA_BASE_URL }}
+            - name: DOMAINS_ALLOWLIST
+              value: {{ .Values.zeno.api.config.DOMAINS_ALLOWLIST | quote }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: DATABASE_URL
+          volumeMounts:
+            - name: data-volume
+              mountPath: /app/data
+            - name: gee-service-account
+              mountPath: /keys
+              readOnly: true
+      volumes:
+        - name: data-volume
+          emptyDir: {}
+        - name: gee-service-account
+          secret:
+            secretName: {{ .Release.Name }}-zeno-secrets
+            items:
+              - key: GEE_SERVICE_ACCOUNT_JSON
+                path: zeno-gee-service-account.json
