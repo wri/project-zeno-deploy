@@ -6,7 +6,7 @@ on:
       command:
         description: 'Command to run in zeno-shell container'
         required: true
-        default: 'echo "Hello from zeno-shell!"'
+        default: "echo 'Hello from zeno-shell!'"
       environment:
         description: 'Environment to run in'
         required: true
@@ -65,17 +65,16 @@ jobs:
         id: execute-command
         run: |
           POD_NAME="${{ steps.scale-up.outputs.pod_name }}"
-          COMMAND="${{ inputs.command }}"
           TIMEOUT="${{ inputs.timeout }}"
           
           echo "Executing command in pod $POD_NAME:"
-          echo "Command: $COMMAND"
+          echo "Command: ${{ inputs.command }}"
           echo "Timeout: ${TIMEOUT}s"
           echo ""
           echo "=== Command Output ==="
           
           # Execute the command with timeout and capture output
-          if timeout ${TIMEOUT}s kubectl exec -i $POD_NAME -n default -- /bin/bash -c "$COMMAND"; then
+          if timeout ${TIMEOUT}s kubectl exec -i $POD_NAME -n default -- /bin/bash -c '${{ inputs.command }}'; then
             echo ""
             echo "=== Command completed successfully ==="
             echo "exit_code=0" >> $GITHUB_OUTPUT
@@ -97,11 +96,10 @@ jobs:
         if: always()
         run: |
           EXIT_CODE="${{ steps.execute-command.outputs.exit_code }}"
-          COMMAND="${{ inputs.command }}"
           
           echo "=== Execution Summary ==="
           echo "Environment: ${{ env.ENVIRONMENT }}"
-          echo "Command: $COMMAND"
+          echo "Command: ${{ inputs.command }}"
           echo "Exit Code: $EXIT_CODE"
           echo "Pod: ${{ steps.scale-up.outputs.pod_name }}"
           
