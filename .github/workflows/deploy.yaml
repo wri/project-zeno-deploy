@@ -145,15 +145,14 @@ jobs:
         if: |
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        run: >
-          helm upgrade --install 
-          cluster-autoscaler
-          autoscaler/cluster-autoscaler
-          --version 9.43.0
-          -f helm/cluster-autoscaler/values.yaml
-          -f helm/cluster-autoscaler/values-${{ env.ENVIRONMENT }}.yaml
-          --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="$(cd terraform && terraform output -raw cluster_autoscaler_iam_role_arn)"
-          --namespace kube-system
+        run: |
+          ROLE_ARN=$(cd terraform && terraform output -raw cluster_autoscaler_iam_role_arn)
+          helm upgrade --install cluster-autoscaler autoscaler/cluster-autoscaler \
+            --version 9.43.0 \
+            -f helm/cluster-autoscaler/values.yaml \
+            -f helm/cluster-autoscaler/values-${{ env.ENVIRONMENT }}.yaml \
+            --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="${ROLE_ARN}" \
+            --namespace kube-system
 
       # Update dependencies for monitoring
       - name: Update Helm Dependencies for monitoring
