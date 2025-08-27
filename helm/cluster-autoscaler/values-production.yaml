@@ -1,0 +1,6 @@
+autoDiscovery:
+  clusterName: zeno-production-cluster
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: "" # Will be populated by Terraform output
