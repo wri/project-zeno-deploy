@@ -148,11 +148,7 @@ jobs:
         run: |
           ROLE_ARN=$(cd terraform && terraform output -raw cluster_autoscaler_iam_role_arn)
           # Create temporary values file to avoid --set parsing issues with dots in annotation key
-          cat > /tmp/ca-role.yaml << EOF
-serviceAccount:
-  annotations:
-    eks.amazonaws.com/role-arn: "${ROLE_ARN}"
-EOF
+          printf 'serviceAccount:\n  annotations:\n    eks.amazonaws.com/role-arn: "%s"\n' "${ROLE_ARN}" > /tmp/ca-role.yaml
           helm upgrade --install cluster-autoscaler autoscaler/cluster-autoscaler \
             --version 9.43.0 \
             -f helm/cluster-autoscaler/values.yaml \
