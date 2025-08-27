@@ -109,6 +109,7 @@ jobs:
           helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
           helm repo add jetstack https://charts.jetstack.io
           helm repo add eoapi https://devseed.com/eoapi-k8s/
+          helm repo add autoscaler https://kubernetes.github.io/autoscaler
           helm repo update
 
       # Deploy ingress-nginx
@@ -138,6 +139,21 @@ jobs:
           --namespace cert-manager
           --create-namespace
           --set installCRDs=true
+
+      # Deploy cluster-autoscaler
+      - name: Deploy cluster-autoscaler
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        run: >
+          helm upgrade --install 
+          cluster-autoscaler
+          autoscaler/cluster-autoscaler
+          --version 9.43.0
+          -f helm/cluster-autoscaler/values.yaml
+          -f helm/cluster-autoscaler/values-${{ env.ENVIRONMENT }}.yaml
+          --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="$(cd terraform && terraform output -raw cluster_autoscaler_iam_role_arn)"
+          --namespace kube-system
 
       # Update dependencies for monitoring
       - name: Update Helm Dependencies for monitoring

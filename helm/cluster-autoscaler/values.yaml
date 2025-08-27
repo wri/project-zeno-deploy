@@ -1,0 +1,21 @@
+# Cluster Autoscaler Helm values
+autoDiscovery:
+  clusterName: zeno-cluster  # Will be overridden per environment
+
+awsRegion: us-east-1
+
+serviceAccount:
+  create: true
+  name: cluster-autoscaler
+  annotations: {}  # Will be set in environment-specific files
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 300Mi
+  requests:
+    cpu: 100m
+    memory: 300Mi
+
+extraArgs:
+  node-group-auto-discovery: asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/{{ .Values.autoDiscovery.clusterName }}
