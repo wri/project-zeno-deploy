@@ -1,6 +1,7 @@
 # Simple version using the EKS IAM module
 module "cluster_autoscaler_irsa" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.0"
 
   role_name = "${local.cluster_name}-cluster-autoscaler"
 
