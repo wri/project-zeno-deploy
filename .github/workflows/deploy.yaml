@@ -206,6 +206,7 @@ jobs:
           --set zeno.secrets.langfuse.REDIS_PASSWORD="${{ secrets.LANGFUSE_REDIS_PASSWORD }}"
           --set zeno.secrets.api.OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
           --set zeno.secrets.api.ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}"
+          --set zeno.secrets.api.NEXTJS_API_KEY="${{ secrets.NEXTJS_API_KEY }}"
           --set zeno.secrets.api.AWS_ACCESS_KEY_ID="${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}"
           --set zeno.secrets.api.AWS_SECRET_ACCESS_KEY="${{ secrets.S3_READONLY_AWS_SECRET_ACCESS_KEY }}"
           --set zeno.secrets.api.GEE_SERVICE_ACCOUNT_JSON="${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}"

@@ -72,6 +72,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-zeno-secrets
                   key: ANTHROPIC_API_KEY
+            - name: NEXTJS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: NEXTJS_API_KEY
             - name: MAPBOX_API_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -250,6 +255,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-zeno-secrets
                   key: ANTHROPIC_API_KEY
+            - name: NEXTJS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: NEXTJS_API_KEY
             - name: MAPBOX_API_TOKEN
               valueFrom:
                 secretKeyRef:
