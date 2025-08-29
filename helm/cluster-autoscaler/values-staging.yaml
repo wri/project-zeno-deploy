@@ -1,0 +1,5 @@
+autoDiscovery:
+  clusterName: zeno-staging-cluster
+
+extraArgs:
+  node-group-auto-discovery: asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/zeno-staging-cluster
