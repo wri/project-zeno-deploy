@@ -140,22 +140,6 @@ jobs:
           --create-namespace
           --set installCRDs=true
 
-      # Deploy cluster-autoscaler
-      - name: Deploy cluster-autoscaler
-        if: |
-          github.event_name == 'push' && 
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        run: |
-          ROLE_ARN=$(cd terraform && terraform output -raw cluster_autoscaler_iam_role_arn)
-          # Create temporary values file to avoid --set parsing issues with dots in annotation key
-          printf 'serviceAccount:\n  annotations:\n    eks.amazonaws.com/role-arn: "%s"\n' "${ROLE_ARN}" > /tmp/ca-role.yaml
-          helm upgrade --install cluster-autoscaler autoscaler/cluster-autoscaler \
-            --version 9.43.0 \
-            -f helm/cluster-autoscaler/values.yaml \
-            -f helm/cluster-autoscaler/values-${{ env.ENVIRONMENT }}.yaml \
-            -f /tmp/ca-role.yaml \
-            --namespace kube-system
-
       # Update dependencies for monitoring
       - name: Update Helm Dependencies for monitoring
         if: |
