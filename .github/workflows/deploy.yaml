@@ -34,6 +34,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
            terraform_version: 1.5.1
+           terraform_wrapper: false
       - name: Terraform Format
         id: fmt
         working-directory: ./terraform
@@ -146,7 +147,9 @@ jobs:
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: |
-          ROLE_ARN=$(cd terraform && terraform output -raw cluster_autoscaler_iam_role_arn)
+          cd terraform
+          ROLE_ARN=$(terraform output -raw cluster_autoscaler_iam_role_arn)
+          cd ..
           echo "Cluster Autoscaler IAM Role ARN: ${ROLE_ARN}"
           helm upgrade --install cluster-autoscaler autoscaler/cluster-autoscaler \
             --version 9.43.0 \
