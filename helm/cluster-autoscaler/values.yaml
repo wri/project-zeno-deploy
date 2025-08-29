@@ -1,0 +1,21 @@
+# Cluster Autoscaler Helm values
+autoDiscovery:
+  clusterName: zeno-cluster  # Will be overridden per environment
+
+awsRegion: us-east-1
+
+serviceAccount:
+  create: true
+  name: cluster-autoscaler
+  # Role ARN will be set via --set-string in GitHub Actions
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 300Mi
+  requests:
+    cpu: 100m
+    memory: 300Mi
+
+extraArgs:
+  # node-group-auto-discovery will be overridden in environment-specific values files
