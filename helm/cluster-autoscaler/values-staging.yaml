@@ -1,6 +1,0 @@
-autoDiscovery:
-  clusterName: zeno-staging-cluster
-
-serviceAccount:
-  annotations:
-    eks.amazonaws.com/role-arn: "" # Will be populated by Terraform output
