@@ -155,7 +155,7 @@ jobs:
             --version 9.43.0 \
             -f helm/cluster-autoscaler/values.yaml \
             -f helm/cluster-autoscaler/values-${{ env.ENVIRONMENT }}.yaml \
-            --set-string 'serviceAccount.annotations.eks\.amazonaws\.com/role-arn'="${ROLE_ARN}" \
+            --set-string 'rbac.serviceAccount.annotations.eks\.amazonaws\.com/role-arn'="${ROLE_ARN}" \
             --namespace kube-system
 
       # Update dependencies for monitoring
