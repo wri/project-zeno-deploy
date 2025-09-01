@@ -75,6 +75,7 @@ langfuse:
     auth:
       existingSecret: zeno-langfuse-secrets
       existingSecretKey: CLICKHOUSE_PASSWORD
+    resourcesPreset: medium
   redis:
     primary:
       persistence:
@@ -135,6 +136,12 @@ zeno:
   api:
     host: api.zeno.ds.io
     replicas: 2
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 70
+      targetMemoryUtilizationPercentage: 80
     resources:
       requests:
         cpu: "1000m"
@@ -155,11 +162,11 @@ zeno:
     host: streamlit.zeno.ds.io
     resources:
       requests:
+        cpu: "100m"
+        memory: "0.2Gi"
+      limits:
         cpu: "500m"
         memory: "1Gi"
-      limits:
-        cpu: "1000m"
-        memory: "2Gi"
     config:
       API_BASE_URL: https://api.zeno.ds.io
 
