@@ -29,70 +29,52 @@ on:
 
 jobs:
   run-load-tests:
-    name: 'Run Load Tests in Zeno Shell'
+    name: 'Run Load Tests'
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       ENVIRONMENT: ${{ inputs.environment }}
+      ZENO_MACHINE_USER_TOKEN: ${{ secrets.ZENO_MACHINE_USER_TOKEN }}
     
     steps:
-      - name: Checkout
+      - name: Checkout project-zeno repository
         uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          repository: wri/project-zeno
+          path: project-zeno
 
-      - name: Configure Kubectl
-        uses: azure/setup-kubectl@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-      - name: Configure kubeconfig
-        run: aws eks update-kubeconfig --region us-east-1 --name zeno-${{ env.ENVIRONMENT }}-cluster
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
 
-      - name: Scale up zeno-shell deployment
-        id: scale-up
+      - name: Set environment variables
         run: |
-          echo "Scaling up zeno-shell deployment to 1 replica..."
-          kubectl scale deployment zeno-shell --replicas=1 -n default
-          
-          echo "Waiting for pod to be ready..."
-          kubectl wait --for=condition=ready pod -l app=zeno,component=shell --timeout=300s -n default
-          
-          POD_NAME=$(kubectl get pods -l app=zeno,component=shell -o jsonpath='{.items[0].metadata.name}' -n default)
-          echo "pod_name=$POD_NAME" >> $GITHUB_OUTPUT
-          echo "Shell pod is ready: $POD_NAME"
-
-      - name: Execute load tests in zeno-shell
-        id: execute-load-tests
-        run: |
-          POD_NAME="${{ steps.scale-up.outputs.pod_name }}"
-          TIMEOUT="${{ inputs.timeout }}"
-          ZENO_MACHINE_USER_TOKEN="${{ secrets.ZENO_MACHINE_USER_TOKEN }}"
-          
           # Set API base URL based on environment
           if [ "${{ env.ENVIRONMENT }}" = "production" ]; then
-            API_BASE_URL="https://api.zeno.ds.io"
+            echo "API_BASE_URL=https://api.zeno.ds.io" >> $GITHUB_ENV
           else
-            API_BASE_URL="https://api.zeno-staging.ds.io"
+            echo "API_BASE_URL=https://api.zeno-staging.ds.io" >> $GITHUB_ENV
           fi
-          
-          echo "Executing load tests in pod $POD_NAME:"
+
+      - name: Execute load tests
+        id: execute-load-tests
+        working-directory: project-zeno
+        run: |
+          echo "Executing load tests:"
           echo "Environment: ${{ env.ENVIRONMENT }}"
-          echo "API Base URL: $API_BASE_URL"
-          echo "Timeout: ${TIMEOUT}s"
+          echo "API Base URL: ${{ env.API_BASE_URL }}"
+          echo "Scenario: ${{ inputs.scenario }}"
+          echo "Timeout: ${{ inputs.timeout }}s"
           echo ""
           echo "=== Load Test Output ==="
           
-          # Execute the load test command with environment variables
-          COMMAND="ZENO_MACHINE_USER_TOKEN='$ZENO_MACHINE_USER_TOKEN' API_BASE_URL='$API_BASE_URL' python tests/load/scenarios.py ${{ inputs.scenario }}"
-          
-          if timeout ${TIMEOUT}s kubectl exec -i $POD_NAME -n default -- /bin/bash -c "$COMMAND"; then
+          # Execute the load test command
+          if timeout ${{ inputs.timeout }}s uv run --with locust python tests/load/scenarios.py ${{ inputs.scenario }}; then
             echo ""
             echo "=== Load tests completed successfully ==="
             echo "exit_code=0" >> $GITHUB_OUTPUT
@@ -103,13 +85,6 @@ jobs:
             echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
           fi
 
-      - name: Scale down zeno-shell deployment
-        if: always()
-        run: |
-          echo "Scaling down zeno-shell deployment to 0 replicas..."
-          kubectl scale deployment zeno-shell --replicas=0 -n default
-          echo "Cleanup completed."
-
       - name: Load test execution summary
         if: always()
         run: |
@@ -117,8 +92,9 @@ jobs:
           
           echo "=== Load Test Summary ==="
           echo "Environment: ${{ env.ENVIRONMENT }}"
+          echo "API Base URL: ${{ env.API_BASE_URL }}"
+          echo "Scenario: ${{ inputs.scenario }}"
           echo "Exit Code: $EXIT_CODE"
-          echo "Pod: ${{ steps.scale-up.outputs.pod_name }}"
           
           if [ "$EXIT_CODE" != "0" ]; then
             echo "❌ Load tests failed"
