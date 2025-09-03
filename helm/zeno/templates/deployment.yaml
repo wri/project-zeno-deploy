@@ -97,6 +97,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-zeno-secrets
                   key: ELEVENLABS_API_KEY
+            - name: GOOGLE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: GOOGLE_API_KEY
             - name: COOKIE_SIGNER_SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -280,6 +285,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-zeno-secrets
                   key: ELEVENLABS_API_KEY
+            - name: GOOGLE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: GOOGLE_API_KEY
             - name: COOKIE_SIGNER_SECRET_KEY
               valueFrom:
                 secretKeyRef:

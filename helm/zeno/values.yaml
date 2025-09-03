@@ -133,6 +133,7 @@ zeno:
       GFW_DATA_API_KEY:
       GFW_DATA_API_USER_ID:
       ELEVENLABS_API_KEY:
+      GOOGLE_API_KEY:
       COOKIE_SIGNER_SECRET_KEY:
 
   langfuse:
