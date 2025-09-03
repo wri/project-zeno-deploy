@@ -1,0 +1,128 @@
+name: 'Load Tests'
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run load tests against'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      scenario:
+        description: 'Load test scenario to run'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - load
+          - stress
+          - spike
+          - all
+      timeout:
+        description: 'Timeout in seconds for load test execution'
+        required: false
+        default: '900'
+
+jobs:
+  run-load-tests:
+    name: 'Run Load Tests in Zeno Shell'
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 15
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      ENVIRONMENT: ${{ inputs.environment }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Configure Kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubeconfig
+        run: aws eks update-kubeconfig --region us-east-1 --name zeno-${{ env.ENVIRONMENT }}-cluster
+
+      - name: Scale up zeno-shell deployment
+        id: scale-up
+        run: |
+          echo "Scaling up zeno-shell deployment to 1 replica..."
+          kubectl scale deployment zeno-shell --replicas=1 -n default
+          
+          echo "Waiting for pod to be ready..."
+          kubectl wait --for=condition=ready pod -l app=zeno,component=shell --timeout=300s -n default
+          
+          POD_NAME=$(kubectl get pods -l app=zeno,component=shell -o jsonpath='{.items[0].metadata.name}' -n default)
+          echo "pod_name=$POD_NAME" >> $GITHUB_OUTPUT
+          echo "Shell pod is ready: $POD_NAME"
+
+      - name: Execute load tests in zeno-shell
+        id: execute-load-tests
+        run: |
+          POD_NAME="${{ steps.scale-up.outputs.pod_name }}"
+          TIMEOUT="${{ inputs.timeout }}"
+          ZENO_MACHINE_USER_TOKEN="${{ secrets.ZENO_MACHINE_USER_TOKEN }}"
+          
+          # Set API base URL based on environment
+          if [ "${{ env.ENVIRONMENT }}" = "production" ]; then
+            API_BASE_URL="https://api.zeno.ds.io"
+          else
+            API_BASE_URL="https://api.zeno-staging.ds.io"
+          fi
+          
+          echo "Executing load tests in pod $POD_NAME:"
+          echo "Environment: ${{ env.ENVIRONMENT }}"
+          echo "API Base URL: $API_BASE_URL"
+          echo "Timeout: ${TIMEOUT}s"
+          echo ""
+          echo "=== Load Test Output ==="
+          
+          # Execute the load test command with environment variables
+          COMMAND="ZENO_MACHINE_USER_TOKEN='$ZENO_MACHINE_USER_TOKEN' API_BASE_URL='$API_BASE_URL' python tests/load/scenarios.py ${{ inputs.scenario }}"
+          
+          if timeout ${TIMEOUT}s kubectl exec -i $POD_NAME -n default -- /bin/bash -c "$COMMAND"; then
+            echo ""
+            echo "=== Load tests completed successfully ==="
+            echo "exit_code=0" >> $GITHUB_OUTPUT
+          else
+            EXIT_CODE=$?
+            echo ""
+            echo "=== Load tests failed with exit code: $EXIT_CODE ==="
+            echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Scale down zeno-shell deployment
+        if: always()
+        run: |
+          echo "Scaling down zeno-shell deployment to 0 replicas..."
+          kubectl scale deployment zeno-shell --replicas=0 -n default
+          echo "Cleanup completed."
+
+      - name: Load test execution summary
+        if: always()
+        run: |
+          EXIT_CODE="${{ steps.execute-load-tests.outputs.exit_code }}"
+          
+          echo "=== Load Test Summary ==="
+          echo "Environment: ${{ env.ENVIRONMENT }}"
+          echo "Exit Code: $EXIT_CODE"
+          echo "Pod: ${{ steps.scale-up.outputs.pod_name }}"
+          
+          if [ "$EXIT_CODE" != "0" ]; then
+            echo "❌ Load tests failed"
+            exit 1
+          else
+            echo "✅ Load tests passed"
+          fi
