@@ -1,0 +1,104 @@
+name: 'Load Tests'
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run load tests against'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      scenario:
+        description: 'Load test scenario to run'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - load
+          - stress
+          - spike
+          - all
+      timeout:
+        description: 'Timeout in seconds for load test execution'
+        required: false
+        default: '900'
+
+jobs:
+  run-load-tests:
+    name: 'Run Load Tests'
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 20
+    env:
+      ENVIRONMENT: ${{ inputs.environment }}
+      ZENO_MACHINE_USER_TOKEN: ${{ secrets.ZENO_MACHINE_USER_TOKEN }}
+    
+    steps:
+      - name: Checkout project-zeno repository
+        uses: actions/checkout@v3
+        with:
+          repository: wri/project-zeno
+          path: project-zeno
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set environment variables
+        run: |
+          # Set API base URL based on environment
+          if [ "${{ env.ENVIRONMENT }}" = "production" ]; then
+            echo "API_BASE_URL=https://api.zeno.ds.io" >> $GITHUB_ENV
+          else
+            echo "API_BASE_URL=https://api.zeno-staging.ds.io" >> $GITHUB_ENV
+          fi
+
+      - name: Execute load tests
+        id: execute-load-tests
+        working-directory: project-zeno
+        run: |
+          echo "Executing load tests:"
+          echo "Environment: ${{ env.ENVIRONMENT }}"
+          echo "API Base URL: ${{ env.API_BASE_URL }}"
+          echo "Scenario: ${{ inputs.scenario }}"
+          echo "Timeout: ${{ inputs.timeout }}s"
+          echo ""
+          echo "=== Load Test Output ==="
+          
+          # Execute the load test command
+          if timeout ${{ inputs.timeout }}s uv run --with locust python tests/load/scenarios.py ${{ inputs.scenario }}; then
+            echo ""
+            echo "=== Load tests completed successfully ==="
+            echo "exit_code=0" >> $GITHUB_OUTPUT
+          else
+            EXIT_CODE=$?
+            echo ""
+            echo "=== Load tests failed with exit code: $EXIT_CODE ==="
+            echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Load test execution summary
+        if: always()
+        run: |
+          EXIT_CODE="${{ steps.execute-load-tests.outputs.exit_code }}"
+          
+          echo "=== Load Test Summary ==="
+          echo "Environment: ${{ env.ENVIRONMENT }}"
+          echo "API Base URL: ${{ env.API_BASE_URL }}"
+          echo "Scenario: ${{ inputs.scenario }}"
+          echo "Exit Code: $EXIT_CODE"
+          
+          if [ "$EXIT_CODE" != "0" ]; then
+            echo "❌ Load tests failed"
+            exit 1
+          else
+            echo "✅ Load tests passed"
+          fi

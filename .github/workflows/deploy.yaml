@@ -34,6 +34,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
            terraform_version: 1.5.1
+           terraform_wrapper: false
       - name: Terraform Format
         id: fmt
         working-directory: ./terraform
@@ -109,6 +110,7 @@ jobs:
           helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
           helm repo add jetstack https://charts.jetstack.io
           helm repo add eoapi https://devseed.com/eoapi-k8s/
+          helm repo add autoscaler https://kubernetes.github.io/autoscaler
           helm repo update
 
       # Deploy ingress-nginx
@@ -138,6 +140,23 @@ jobs:
           --namespace cert-manager
           --create-namespace
           --set installCRDs=true
+
+      # Deploy cluster-autoscaler
+      - name: Deploy cluster-autoscaler
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        run: |
+          cd terraform
+          ROLE_ARN=$(terraform output -raw cluster_autoscaler_iam_role_arn)
+          cd ..
+          echo "Cluster Autoscaler IAM Role ARN: ${ROLE_ARN}"
+          helm upgrade --install cluster-autoscaler autoscaler/cluster-autoscaler \
+            --version 9.43.0 \
+            -f helm/cluster-autoscaler/values.yaml \
+            -f helm/cluster-autoscaler/values-${{ env.ENVIRONMENT }}.yaml \
+            --set-string 'rbac.serviceAccount.annotations.eks\.amazonaws\.com/role-arn'="${ROLE_ARN}" \
+            --namespace kube-system
 
       # Update dependencies for monitoring
       - name: Update Helm Dependencies for monitoring
@@ -190,6 +209,7 @@ jobs:
           --set zeno.secrets.langfuse.REDIS_PASSWORD="${{ secrets.LANGFUSE_REDIS_PASSWORD }}"
           --set zeno.secrets.api.OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
           --set zeno.secrets.api.ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}"
+          --set zeno.secrets.api.NEXTJS_API_KEY="${{ secrets.NEXTJS_API_KEY }}"
           --set zeno.secrets.api.AWS_ACCESS_KEY_ID="${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}"
           --set zeno.secrets.api.AWS_SECRET_ACCESS_KEY="${{ secrets.S3_READONLY_AWS_SECRET_ACCESS_KEY }}"
           --set zeno.secrets.api.GEE_SERVICE_ACCOUNT_JSON="${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}"
@@ -197,6 +217,7 @@ jobs:
           --set zeno.secrets.api.GFW_DATA_API_KEY="${{ secrets.GFW_DATA_API_KEY }}"
           --set zeno.secrets.api.GFW_DATA_API_USER_ID="${{ secrets.GFW_DATA_API_USER_ID }}"
           --set zeno.secrets.api.ELEVENLABS_API_KEY="${{ secrets.ELEVENLABS_API_KEY }}"
+          --set zeno.secrets.api.GOOGLE_API_KEY="${{ secrets.GOOGLE_API_KEY }}"
           --set zeno.secrets.api.COOKIE_SIGNER_SECRET_KEY="${{ secrets.COOKIE_SIGNER_SECRET_KEY }}"
           --set zeno.db.POSTGRES_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
       # Deploy eoapi

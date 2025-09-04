@@ -75,6 +75,13 @@ langfuse:
     auth:
       existingSecret: zeno-langfuse-secrets
       existingSecretKey: CLICKHOUSE_PASSWORD
+    resources:
+      requests:
+        memory: "1.5Gi"
+        cpu: "500m"
+      limits:
+        memory: "3.5Gi"
+        cpu: "750m"
   redis:
     primary:
       persistence:
@@ -118,6 +125,7 @@ zeno:
     api:
       OPENAI_API_KEY:
       ANTHROPIC_API_KEY:
+      NEXTJS_API_KEY:
       AWS_ACCESS_KEY_ID:
       AWS_SECRET_ACCESS_KEY:
       GEE_SERVICE_ACCOUNT_JSON:
@@ -125,6 +133,7 @@ zeno:
       GFW_DATA_API_KEY:
       GFW_DATA_API_USER_ID:
       ELEVENLABS_API_KEY:
+      GOOGLE_API_KEY:
       COOKIE_SIGNER_SECRET_KEY:
 
   langfuse:
@@ -134,6 +143,12 @@ zeno:
   api:
     host: api.zeno.ds.io
     replicas: 2
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 70
+      targetMemoryUtilizationPercentage: 80
     resources:
       requests:
         cpu: "1000m"
@@ -142,7 +157,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 3f0c8a9da6f86611df98e08cb00d91286e6723dc
+      tag: 7bca77cfbf9241c8ba2301e29d9f134c5426c685
     config:
       LOG_FORMAT: json
       LOG_LEVEL: info
@@ -154,11 +169,11 @@ zeno:
     host: streamlit.zeno.ds.io
     resources:
       requests:
+        cpu: "100m"
+        memory: "0.2Gi"
+      limits:
         cpu: "500m"
         memory: "1Gi"
-      limits:
-        cpu: "1000m"
-        memory: "2Gi"
     config:
       API_BASE_URL: https://api.zeno.ds.io
 
@@ -179,4 +194,4 @@ zeno:
     POSTGRES_DB: zeno_db
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-      tag: ef2b6f9591fd5e1eace19481c0eb4befbf30c53d
+      tag: 80c553742b254b32c3496301759dca6cb4c6bfb1

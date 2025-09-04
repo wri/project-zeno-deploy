@@ -3,10 +3,6 @@ name: 'Zeno Evals'
 on:
   workflow_dispatch:
     inputs:
-      command:
-        description: 'Command to run in zeno-shell container'
-        required: true
-        default: "echo 'Hello from zeno-shell!'"
       environment:
         description: 'Environment to run in'
         required: true
@@ -67,14 +63,15 @@ jobs:
           POD_NAME="${{ steps.scale-up.outputs.pod_name }}"
           TIMEOUT="${{ inputs.timeout }}"
           
-          echo "Executing command in pod $POD_NAME:"
-          echo "Command: ${{ inputs.command }}"
+          echo "Executing zeno evaluation in pod $POD_NAME:"
           echo "Timeout: ${TIMEOUT}s"
           echo ""
           echo "=== Command Output ==="
           
-          # Execute the command with timeout and capture output
-          if timeout ${TIMEOUT}s kubectl exec -i $POD_NAME -n default -- /bin/bash -c '${{ inputs.command }}'; then
+          # Execute the hardcoded evaluation command
+          COMMAND="uv run python -c 'print(\"Zeno evaluation placeholder - ready for real eval commands!\"); import sys; print(f\"Python {sys.version}\"); print(\"Environment check passed!\")'"
+          
+          if timeout ${TIMEOUT}s kubectl exec -i $POD_NAME -n default -- /bin/bash -c "$COMMAND"; then
             echo ""
             echo "=== Command completed successfully ==="
             echo "exit_code=0" >> $GITHUB_OUTPUT
@@ -99,13 +96,12 @@ jobs:
           
           echo "=== Execution Summary ==="
           echo "Environment: ${{ env.ENVIRONMENT }}"
-          echo "Command: ${{ inputs.command }}"
           echo "Exit Code: $EXIT_CODE"
           echo "Pod: ${{ steps.scale-up.outputs.pod_name }}"
           
           if [ "$EXIT_CODE" != "0" ]; then
-            echo "❌ Command execution failed"
+            echo "❌ Evaluation execution failed"
             exit 1
           else
-            echo "✅ Command execution succeeded"
+            echo "✅ Evaluation execution succeeded"
           fi

@@ -28,3 +28,8 @@ output "requester_pays_secret_key" {
   value = aws_iam_access_key.requester_pays.secret
   sensitive = true
 }
+
+output "node_groups_asg_names" {
+  description = "List of the autoscaling group names for EKS managed node groups"
+  value = module.eks.eks_managed_node_groups_autoscaling_group_names
+}
