@@ -157,7 +157,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 7bca77cfbf9241c8ba2301e29d9f134c5426c685
+      tag: a897b9dacf89fdb353afc06b9a5318842f57721d
     config:
       LOG_FORMAT: json
       LOG_LEVEL: info

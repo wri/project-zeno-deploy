@@ -126,6 +126,7 @@ jobs:
           --namespace ingress-nginx
           --create-namespace
           --set controller.config.proxy-body-size=500m
+          --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb"
 
       # Deploy cert-manager
       - name: Deploy cert-manager
