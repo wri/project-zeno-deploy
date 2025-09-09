@@ -33,17 +33,18 @@ zeno:
         memory: "2Gi"
       limits:
         memory: "4Gi"
-    config:
-      LANGFUSE_HOST: https://langfuse.zeno-staging.ds.io
-      OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
+  env_config:
+    LANGFUSE_HOST: https://langfuse.zeno-staging.ds.io
+    OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
 
   streamlit:
     host: streamlit.zeno-staging.ds.io
-    config:
+    env_config:
       API_BASE_URL: https://api.zeno-staging.ds.io
+      LOCAL_API_BASE_URL: https://api.zeno-staging.ds.io
       STREAMLIT_URL: https://streamlit.zeno-staging.ds.io
 
-  db:
+  db_secrets:
     POSTGRES_HOST: zeno-db-staging.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
 
 kube-prometheus-stack:
