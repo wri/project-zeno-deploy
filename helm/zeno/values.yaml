@@ -162,7 +162,7 @@ zeno:
     DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
     AWS_DEFAULT_REGION: us-east-1
     GEE_SERVICE_ACCOUNT_PATH: /keys/zeno-gee-service-account.json
-    MODEL: "Gemini"
+    MODEL: "gemini"
     
 
   langfuse:
