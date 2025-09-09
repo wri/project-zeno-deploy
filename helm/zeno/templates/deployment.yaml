@@ -17,8 +17,8 @@ spec:
         app: zeno
         component: api
       annotations:
-        config/hash: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        secret/hash: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        config/hash: {{ .Values.zeno.env_config | toYaml | sha256sum }}
+        secret/hash: {{ .Values.zeno.env_secrets | toYaml | sha256sum }}
     spec:
       initContainers:
         - name: s3-data-sync
@@ -98,7 +98,7 @@ spec:
         app: zeno
         component: streamlit
       annotations:
-        config/hash: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        config/hash: {{ .Values.zeno.streamlit.env_config | toYaml | sha256sum }}
     spec:
       containers:
         - name: zeno-streamlit
@@ -136,8 +136,8 @@ spec:
         app: zeno
         component: shell
       annotations:
-        config/hash: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        secret/hash: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        config/hash: {{ .Values.zeno.env_config | toYaml | sha256sum }}
+        secret/hash: {{ .Values.zeno.env_secrets | toYaml | sha256sum }}
     spec:
       initContainers:
         - name: s3-data-sync
