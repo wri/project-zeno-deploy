@@ -111,12 +111,10 @@ spec:
               containerPort: 8501
               protocol: TCP
           env:
-            - name: API_BASE_URL
-              value: {{ .Values.zeno.env_config.API_BASE_URL }}
-            - name: LOCAL_API_BASE_URL
-              value: {{ .Values.zeno.env_config.LOCAL_API_BASE_URL }}
-            - name: STREAMLIT_URL
-              value: {{ .Values.zeno.env_config.STREAMLIT_URL }}
+{{- range $key, $value := .Values.zeno.streamlit.env_config }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+{{- end }}
 
 ---
 

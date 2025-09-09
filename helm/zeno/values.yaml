@@ -163,10 +163,6 @@ zeno:
     AWS_DEFAULT_REGION: us-east-1
     GEE_SERVICE_ACCOUNT_PATH: /keys/zeno-gee-service-account.json
     
-    # Streamlit settings
-    API_BASE_URL: https://api.zeno.ds.io
-    LOCAL_API_BASE_URL: https://api.zeno.ds.io
-    STREAMLIT_URL: https://streamlit.zeno.ds.io
 
   langfuse:
     enabled: true
@@ -200,6 +196,10 @@ zeno:
       limits:
         cpu: "500m"
         memory: "1Gi"
+    env_config:
+      API_BASE_URL: https://api.zeno.ds.io
+      LOCAL_API_BASE_URL: https://api.zeno.ds.io
+      STREAMLIT_URL: https://streamlit.zeno.ds.io
 
   shell:
     replicas: 0
