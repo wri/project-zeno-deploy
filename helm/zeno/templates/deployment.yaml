@@ -110,11 +110,9 @@ spec:
             - name: http
               containerPort: 8501
               protocol: TCP
-          env:
-{{- range $key, $value := .Values.zeno.streamlit.env_config }}
-            - name: {{ $key }}
-              value: {{ $value | quote }}
-{{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-streamlit-config
 
 ---
 
