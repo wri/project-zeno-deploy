@@ -17,7 +17,8 @@ spec:
         app: zeno
         component: api
       annotations:
-        force-update: {{ randAlphaNum 5 | quote }}  # random annotation to force update
+        config/hash: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        secret/hash: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
     spec:
       initContainers:
         - name: s3-data-sync
@@ -97,7 +98,7 @@ spec:
         app: zeno
         component: streamlit
       annotations:
-        force-update: {{ randAlphaNum 5 | quote }}  # random annotation to force update
+        config/hash: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       containers:
         - name: zeno-streamlit
@@ -135,7 +136,8 @@ spec:
         app: zeno
         component: shell
       annotations:
-        force-update: {{ randAlphaNum 5 | quote }}  # random annotation to force update
+        config/hash: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        secret/hash: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
     spec:
       initContainers:
         - name: s3-data-sync
