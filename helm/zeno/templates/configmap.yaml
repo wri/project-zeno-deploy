@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-zeno-config
+data:
+{{- range $key, $value := .Values.zeno.env_config }}
+  {{ $key }}: {{ $value | quote }}
+{{- end }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-streamlit-config
+data:
+{{- range $key, $value := .Values.zeno.streamlit.env_config }}
+  {{ $key }}: {{ $value | quote }}
+{{- end }}

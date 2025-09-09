@@ -117,24 +117,52 @@ zeno:
     enable_tls: true
     create_cert_manager_issuer: true
 
-  secrets:
-    langfuse:
-      INIT_USER_PASSWORD:
-      INIT_PROJECT_SECRET_KEY:
-      INIT_PROJECT_PUBLIC_KEY:
-    api:
-      OPENAI_API_KEY:
-      ANTHROPIC_API_KEY:
-      NEXTJS_API_KEY:
-      AWS_ACCESS_KEY_ID:
-      AWS_SECRET_ACCESS_KEY:
-      GEE_SERVICE_ACCOUNT_JSON:
-      MAPBOX_API_TOKEN:
-      GFW_DATA_API_KEY:
-      GFW_DATA_API_USER_ID:
-      ELEVENLABS_API_KEY:
-      GOOGLE_API_KEY:
-      COOKIE_SIGNER_SECRET_KEY:
+  # Environment variables - Secrets (add any new secrets here)
+  env_secrets:
+    OPENAI_API_KEY: ""
+    ANTHROPIC_API_KEY: ""
+    NEXTJS_API_KEY: ""
+    MAPBOX_API_TOKEN: ""
+    GFW_DATA_API_KEY: ""
+    GFW_DATA_API_USER_ID: ""
+    ELEVENLABS_API_KEY: ""
+    GOOGLE_API_KEY: ""
+    AWS_ACCESS_KEY_ID: ""
+    AWS_SECRET_ACCESS_KEY: ""
+    COOKIE_SIGNER_SECRET_KEY: ""
+    GEE_SERVICE_ACCOUNT_JSON: ""
+
+  # Langfuse-specific secrets
+  langfuse_secrets:
+    LANGFUSE_INIT_USER_PASSWORD: ""
+    LANGFUSE_INIT_PROJECT_SECRET_KEY: ""
+    LANGFUSE_INIT_PROJECT_PUBLIC_KEY: ""
+    CLICKHOUSE_PASSWORD: ""
+    REDIS_PASSWORD: ""
+
+  # Database secrets  
+  db_secrets:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: ""
+    POSTGRES_HOST: ""
+    POSTGRES_DB: zeno_db
+
+  # Environment variables - Config (add any new config here)
+  env_config:
+    # Logging
+    LOG_FORMAT: json
+    LOG_LEVEL: info
+    LOG_TO_FILE: "false"
+    
+    # External services
+    LANGFUSE_HOST: https://langfuse.zeno.ds.io
+    OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
+    
+    # API settings
+    DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
+    AWS_DEFAULT_REGION: us-east-1
+    GEE_SERVICE_ACCOUNT_PATH: /keys/zeno-gee-service-account.json
+    
 
   langfuse:
     enabled: true
@@ -158,12 +186,6 @@ zeno:
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
       tag: bc42961d35087e85f0bd0233e7ec1b5ef9888666
-    config:
-      LOG_FORMAT: json
-      LOG_LEVEL: info
-      LANGFUSE_HOST: https://langfuse.zeno.ds.io
-      OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
-      DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
 
   streamlit:
     host: streamlit.zeno.ds.io
@@ -174,8 +196,10 @@ zeno:
       limits:
         cpu: "500m"
         memory: "1Gi"
-    config:
+    env_config:
       API_BASE_URL: https://api.zeno.ds.io
+      LOCAL_API_BASE_URL: https://api.zeno.ds.io
+      STREAMLIT_URL: https://streamlit.zeno.ds.io
 
   shell:
     replicas: 0
