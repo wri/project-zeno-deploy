@@ -17,11 +17,11 @@ spec:
         image: "{{ .Values.zeno.db.image.repository }}:{{ .Values.zeno.db.image.tag }}"
         env:
         - name: POSTGRES_USER
-          value: {{ .Values.zeno.db.POSTGRES_USER }}
+          value: {{ .Values.zeno.db_secrets.POSTGRES_USER }}
         - name: POSTGRES_PASSWORD
-          value: {{ .Values.zeno.db.POSTGRES_PASSWORD }}
+          value: {{ .Values.zeno.db_secrets.POSTGRES_PASSWORD }}
         - name: POSTGRES_HOST
-          value: {{ .Values.zeno.db.POSTGRES_HOST }}
+          value: {{ .Values.zeno.db_secrets.POSTGRES_HOST }}
         - name: POSTGRES_DB
-          value: {{ .Values.zeno.db.POSTGRES_DB }}
+          value: {{ .Values.zeno.db_secrets.POSTGRES_DB }}
       restartPolicy: Never
