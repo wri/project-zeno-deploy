@@ -145,7 +145,7 @@ zeno:
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: ""
     POSTGRES_HOST: ""
-    POSTGRES_DB: zeno_db
+    POSTGRES_DB: ""
 
   # Environment variables - Config (add any new config here)
   env_config:
