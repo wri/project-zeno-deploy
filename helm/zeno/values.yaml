@@ -3,12 +3,6 @@ global:
   environment: default
 
 # Dependency configurations
-ollama:
-  enabled: true
-  models:
-    # - llama3.2
-    - nomic-embed-text
-
 langfuse:
   fullnameOverride: "zeno" 
   langfuse:
@@ -156,7 +150,6 @@ zeno:
     
     # External services
     LANGFUSE_HOST: https://langfuse.zeno.ds.io
-    OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
     
     # API settings
     DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
@@ -186,7 +179,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: bc42961d35087e85f0bd0233e7ec1b5ef9888666
+      tag: 77779ef2068328f1f8667a90b41c5aeb1ea1c658
 
   streamlit:
     host: streamlit.zeno.ds.io
@@ -219,4 +212,4 @@ zeno:
     POSTGRES_DB: zeno_db
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-      tag: 80c553742b254b32c3496301759dca6cb4c6bfb1
+      tag: 77779ef2068328f1f8667a90b41c5aeb1ea1c658

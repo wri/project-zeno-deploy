@@ -5,9 +5,6 @@ type: application
 version: 0.1.0
 appVersion: "1.0.0"
 dependencies:
-  - name: ollama
-    version: 0.69.0
-    repository: https://otwld.github.io/ollama-helm/
   - name: langfuse
     version: 1.5.0
     repository: https://langfuse.github.io/langfuse-k8s
