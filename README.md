@@ -11,8 +11,8 @@ The deployment process is automated through GitHub Actions:
 
 ## Environment URLs
 
-- **Staging**: https://api.zeno-staging.ds.io
-- **Production**: https://api.zeno.ds.io
+- **Staging**: https://api.staging.globalnaturewatch.org
+- **Production**: https://api.globalnaturewatch.org
 
 ## Updating Application Version
 
@@ -54,7 +54,7 @@ We use Prometheus + Loki + Grafana for monitoring of services and logging.
 
 To login:
 
-Go to https://grafana.zeno-staging.ds.io
+Go to https://grafana.staging.globalnaturewatch.org
 
 Login: admin
 Get password with `kubectl get secret -n support support-grafana -o jsonpath='{.data.admin-password}' | base64 -d`
