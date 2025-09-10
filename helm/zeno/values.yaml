@@ -3,12 +3,6 @@ global:
   environment: default
 
 # Dependency configurations
-ollama:
-  enabled: true
-  models:
-    # - llama3.2
-    - nomic-embed-text
-
 langfuse:
   fullnameOverride: "zeno" 
   langfuse:
@@ -156,7 +150,6 @@ zeno:
     
     # External services
     LANGFUSE_HOST: https://langfuse.zeno.ds.io
-    OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
     
     # API settings
     DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
