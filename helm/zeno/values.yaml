@@ -212,7 +212,7 @@ zeno:
 
 # PGBouncer configuration
 pgbouncer:
-  enabled: false
+  enabled: true
   replicas: 2
   image:
     repository: bitnami/pgbouncer
