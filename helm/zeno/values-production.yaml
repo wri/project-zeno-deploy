@@ -31,6 +31,7 @@ zeno:
         memory: "4Gi"
   env_config:
     LANGFUSE_HOST: https://langfuse.zeno.ds.io
+    MODEL: "sonnet"
 
   streamlit:
     host: streamlit.zeno.ds.io
