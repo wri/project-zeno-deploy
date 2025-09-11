@@ -181,7 +181,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 4e8e0054b9deac0c637221b333d934075c97be18
+      tag: 8c7978c5cbd33f494607434692406b08ff1e9718
 
   streamlit:
     host: streamlit.zeno.ds.io
