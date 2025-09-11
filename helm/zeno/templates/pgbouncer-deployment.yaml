@@ -35,25 +35,13 @@ spec:
                 name: {{ .Release.Name }}-zeno-secrets
           env:
             - name: POSTGRESQL_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-zeno-secrets
-                  key: POSTGRES_HOST
+              value: {{ .Values.zeno.db_secrets.POSTGRES_HOST | quote }}
             - name: POSTGRESQL_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-zeno-secrets
-                  key: POSTGRES_USER
+              value: {{ .Values.zeno.db_secrets.POSTGRES_USER | quote }}
             - name: POSTGRESQL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-zeno-secrets
-                  key: POSTGRES_PASSWORD
+              value: {{ .Values.zeno.db_secrets.POSTGRES_PASSWORD | quote }}
             - name: POSTGRESQL_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-zeno-secrets
-                  key: POSTGRES_DB
+              value: {{ .Values.zeno.db_secrets.POSTGRES_DB | quote }}
           resources:
             {{- toYaml .Values.pgbouncer.resources | nindent 12 }}
           livenessProbe:
