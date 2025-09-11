@@ -1,0 +1,69 @@
+{{- if .Values.pgbouncer.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-pgbouncer
+  labels:
+    app: zeno
+    component: pgbouncer
+spec:
+  replicas: {{ .Values.pgbouncer.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: zeno
+      component: pgbouncer
+  template:
+    metadata:
+      labels:
+        app: zeno
+        component: pgbouncer
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/pgbouncer-configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: pgbouncer
+          image: {{ .Values.pgbouncer.image.repository }}:{{ .Values.pgbouncer.image.tag }}
+          imagePullPolicy: {{ .Values.pgbouncer.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: pgbouncer
+              containerPort: 5432
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-pgbouncer-config
+            - secretRef:
+                name: {{ .Release.Name }}-zeno-secrets
+          env:
+            - name: POSTGRESQL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: POSTGRES_HOST
+            - name: POSTGRESQL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: POSTGRES_DB
+          resources:
+            {{- toYaml .Values.pgbouncer.resources | nindent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 5
+            periodSeconds: 5
+{{- end }}

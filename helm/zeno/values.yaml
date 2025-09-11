@@ -206,10 +206,47 @@ zeno:
         memory: "2Gi"
 
   db:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD:
-    POSTGRES_HOST:
-    POSTGRES_DB: zeno_db
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
       tag: 77779ef2068328f1f8667a90b41c5aeb1ea1c658
+
+# PGBouncer configuration
+pgbouncer:
+  enabled: false
+  replicas: 2
+  image:
+    repository: bitnami/pgbouncer
+    tag: "1.21.0"
+    pullPolicy: IfNotPresent
+  
+  database:
+    port: 5432
+  
+  # Pool configuration
+  poolMode: "transaction"
+  authType: "scram-sha-256"
+  maxClientConn: 2000
+  defaultPoolSize: 40
+  minPoolSize: 20
+  reservePoolSize: 0
+  reservePoolTimeout: 5
+  maxDbConnections: 0
+  maxUserConnections: 0
+  
+  # Logging configuration
+  logConnections: 1
+  logDisconnections: 1
+  logPoolerErrors: 1
+  serverRoundRobin: 0
+  
+  # Admin users (optional)
+  # adminUsers: "admin_user"
+  # statsUsers: "stats_user"
+  
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
