@@ -156,6 +156,8 @@ zeno:
     AWS_DEFAULT_REGION: us-east-1
     GEE_SERVICE_ACCOUNT_PATH: /keys/zeno-gee-service-account.json
     MODEL: "sonnet"
+    ALLOW_ANONYMOUS_CHAT: "false"
+    ADMIN_USER_DAILY_QUOTA: 9999
     
 
   langfuse:
