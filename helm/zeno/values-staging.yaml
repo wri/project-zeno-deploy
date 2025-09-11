@@ -36,7 +36,6 @@ zeno:
   env_config:
     LANGFUSE_HOST: https://langfuse.zeno-staging.ds.io
     MODEL: "gemini"
-    SMALL_MODEL: "gemini-flash"
 
   streamlit:
     host: streamlit.zeno-staging.ds.io
