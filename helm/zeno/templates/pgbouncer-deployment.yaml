@@ -31,8 +31,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-pgbouncer-config
-            - secretRef:
-                name: {{ .Release.Name }}-zeno-secrets
           env:
             - name: POSTGRESQL_HOST
               value: {{ .Values.zeno.db_secrets.POSTGRES_HOST | quote }}
@@ -42,6 +40,10 @@ spec:
               value: {{ .Values.zeno.db_secrets.POSTGRES_PASSWORD | quote }}
             - name: POSTGRESQL_DATABASE
               value: {{ .Values.zeno.db_secrets.POSTGRES_DB | quote }}
+          volumeMounts:
+            - name: pgbouncer-hba
+              mountPath: /etc/pgbouncer
+              readOnly: true
           resources:
             {{- toYaml .Values.pgbouncer.resources | nindent 12 }}
           livenessProbe:
@@ -54,4 +56,8 @@ spec:
               port: 5432
             initialDelaySeconds: 5
             periodSeconds: 5
+      volumes:
+        - name: pgbouncer-hba
+          configMap:
+            name: {{ .Release.Name }}-pgbouncer-hba
 {{- end }}
