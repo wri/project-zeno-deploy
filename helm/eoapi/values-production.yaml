@@ -1,5 +1,5 @@
 ingress:
-  host: "eoapi.zeno.ds.io"
+  host: "eoapi.globalnaturewatch.org"
 
 
 namespace: eoapi

@@ -56,9 +56,9 @@ jobs:
         run: |
           # Set API base URL based on environment
           if [ "${{ env.ENVIRONMENT }}" = "production" ]; then
-            echo "API_BASE_URL=https://api.zeno.ds.io" >> $GITHUB_ENV
+            echo "API_BASE_URL=https://api.globalnaturewatch.org" >> $GITHUB_ENV
           else
-            echo "API_BASE_URL=https://api.zeno-staging.ds.io" >> $GITHUB_ENV
+            echo "API_BASE_URL=https://api.staging.globalnaturewatch.org" >> $GITHUB_ENV
           fi
 
       - name: Execute load tests

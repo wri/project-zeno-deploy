@@ -2,8 +2,8 @@ kube-prometheus-stack:
   grafana:
     ingress:
       hosts:
-        - grafana.zeno-staging.ds.io
+        - grafana.staging.globalnaturewatch.org
       tls:
         - secretName: grafana-tls
           hosts:
-            - grafana.zeno-staging.ds.io
+            - grafana.staging.globalnaturewatch.org
