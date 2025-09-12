@@ -159,7 +159,7 @@ zeno:
     SMALL_MODEL: "gemini-flash"
     ALLOW_ANONYMOUS_CHAT: "false"
     ADMIN_USER_DAILY_QUOTA: 9999
-    
+    EOAPI_BASE_URL: "https://eoapi.staging.globalnaturewatch.org"
 
   langfuse:
     enabled: true
