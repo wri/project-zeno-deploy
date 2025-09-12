@@ -35,6 +35,7 @@ zeno:
         memory: "4Gi"
   env_config:
     LANGFUSE_HOST: https://langfuse.zeno-staging.ds.io
+    DB_MAX_OVERFLOW: "100"
 
   streamlit:
     host: streamlit.zeno-staging.ds.io
