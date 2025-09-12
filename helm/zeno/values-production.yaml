@@ -31,7 +31,6 @@ zeno:
         memory: "4Gi"
   env_config:
     LANGFUSE_HOST: https://langfuse.zeno.ds.io
-    MODEL: "gemini"
 
   streamlit:
     host: streamlit.zeno.ds.io

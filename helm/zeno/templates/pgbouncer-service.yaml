@@ -1,0 +1,19 @@
+{{- if .Values.pgbouncer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgbouncer
+  labels:
+    app: zeno
+    component: pgbouncer
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: pgbouncer
+      protocol: TCP
+      name: pgbouncer
+  selector:
+    app: zeno
+    component: pgbouncer
+{{- end }}
