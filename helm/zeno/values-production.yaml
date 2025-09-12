@@ -2,7 +2,7 @@ langfuse:
   langfuse:
     ingress:
       hosts:
-      - host: langfuse.zeno.ds.io
+      - host: langfuse.globalnaturewatch.org
         paths:
         - path: /
           pathType: Prefix
@@ -13,10 +13,10 @@ langfuse:
 
 zeno:
   langfuse:
-    host: langfuse.zeno.ds.io
+    host: langfuse.globalnaturewatch.org
 
   api:
-    host: api.zeno.ds.io
+    host: api.globalnaturewatch.org
     autoscaling:
       enabled: true
       minReplicas: 3
@@ -30,14 +30,14 @@ zeno:
       limits:
         memory: "4Gi"
   env_config:
-    LANGFUSE_HOST: https://langfuse.zeno.ds.io
+    LANGFUSE_HOST: https://langfuse.globalnaturewatch.org
 
   streamlit:
-    host: streamlit.zeno.ds.io
+    host: streamlit.globalnaturewatch.org
     env_config:
-      API_BASE_URL: https://api.zeno.ds.io
-      LOCAL_API_BASE_URL: https://api.zeno.ds.io
-      STREAMLIT_URL: https://streamlit.zeno.ds.io
+      API_BASE_URL: https://api.globalnaturewatch.org
+      LOCAL_API_BASE_URL: https://api.globalnaturewatch.org
+      STREAMLIT_URL: https://streamlit.globalnaturewatch.org
 
   db_secrets:
     POSTGRES_HOST: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
@@ -46,8 +46,8 @@ kube-prometheus-stack:
   grafana:
     ingress:
       hosts:
-        - grafana.zeno.ds.io
+        - grafana.globalnaturewatch.org
       tls:
         - secretName: grafana-tls
           hosts:
-            - grafana.zeno.ds.io
+            - grafana.globalnaturewatch.org

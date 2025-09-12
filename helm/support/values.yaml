@@ -14,11 +14,11 @@ kube-prometheus-stack:
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
         cert-manager.io/cluster-issuer: letsencrypt-prod
       hosts:
-        - grafana.zeno.ds.io
+        - grafana.globalnaturewatch.org
       tls:
         - secretName: grafana-tls
           hosts:
-            - grafana.zeno.ds.io
+            - grafana.globalnaturewatch.org
 
 loki-stack:
   enabled: true
