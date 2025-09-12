@@ -3,12 +3,6 @@ global:
   environment: default
 
 # Dependency configurations
-ollama:
-  enabled: true
-  models:
-    # - llama3.2
-    - nomic-embed-text
-
 langfuse:
   fullnameOverride: "zeno" 
   langfuse:
@@ -156,13 +150,15 @@ zeno:
     
     # External services
     LANGFUSE_HOST: https://langfuse.globalnaturewatch.org
-    OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
     
     # API settings
-    DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org"
+    DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org,bezosearthfund.org"
     AWS_DEFAULT_REGION: us-east-1
     GEE_SERVICE_ACCOUNT_PATH: /keys/zeno-gee-service-account.json
     MODEL: "gemini"
+    SMALL_MODEL: "gemini-flash"
+    ALLOW_ANONYMOUS_CHAT: "false"
+    ADMIN_USER_DAILY_QUOTA: 9999
     
 
   langfuse:
@@ -186,7 +182,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: bc42961d35087e85f0bd0233e7ec1b5ef9888666
+      tag: 0d23f2ba6f21a2dbfde58d57fb04a6a399c8086d
 
   streamlit:
     host: streamlit.globalnaturewatch.org
@@ -213,10 +209,47 @@ zeno:
         memory: "2Gi"
 
   db:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD:
-    POSTGRES_HOST:
-    POSTGRES_DB: zeno_db
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-      tag: 80c553742b254b32c3496301759dca6cb4c6bfb1
+      tag: 77779ef2068328f1f8667a90b41c5aeb1ea1c658
+
+# PGBouncer configuration
+pgbouncer:
+  enabled: false
+  replicas: 2
+  image:
+    repository: bitnami/pgbouncer
+    tag: "1.21.0"
+    pullPolicy: IfNotPresent
+  
+  database:
+    port: 5432
+  
+  # Pool configuration
+  poolMode: "transaction"
+  authType: "scram-sha-256"
+  maxClientConn: 2000
+  defaultPoolSize: 40
+  minPoolSize: 20
+  reservePoolSize: 0
+  reservePoolTimeout: 5
+  maxDbConnections: 0
+  maxUserConnections: 0
+  
+  # Logging configuration
+  logConnections: 1
+  logDisconnections: 1
+  logPoolerErrors: 1
+  serverRoundRobin: 0
+  
+  # Admin users (optional)
+  # adminUsers: "admin_user"
+  # statsUsers: "stats_user"
+  
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "200m"
+      memory: "256Mi"

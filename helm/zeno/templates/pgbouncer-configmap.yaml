@@ -1,0 +1,52 @@
+{{- if .Values.pgbouncer.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-pgbouncer-config
+  labels:
+    app: zeno
+    component: pgbouncer
+data:
+  POSTGRESQL_PORT: {{ .Values.pgbouncer.database.port | default "5432" | quote }}
+  PGBOUNCER_PORT: "5432"
+  PGBOUNCER_POOL_MODE: {{ .Values.pgbouncer.poolMode | default "transaction" | quote }}
+  PGBOUNCER_SERVER_TLS_SSLMODE: "disable"
+  PGBOUNCER_AUTH_TYPE: {{ .Values.pgbouncer.authType | default "scram-sha-256" | quote }}
+  PGBOUNCER_AUTH_HBA_FILE: "/etc/pgbouncer/pg_hba.conf"
+  PGBOUNCER_MAX_CLIENT_CONN: {{ .Values.pgbouncer.maxClientConn | default 100 | quote }}
+  PGBOUNCER_DEFAULT_POOL_SIZE: {{ .Values.pgbouncer.defaultPoolSize | default 20 | quote }}
+  PGBOUNCER_MIN_POOL_SIZE: {{ .Values.pgbouncer.minPoolSize | default 0 | quote }}
+  PGBOUNCER_RESERVE_POOL_SIZE: {{ .Values.pgbouncer.reservePoolSize | default 0 | quote }}
+  PGBOUNCER_RESERVE_POOL_TIMEOUT: {{ .Values.pgbouncer.reservePoolTimeout | default 5 | quote }}
+  {{- if .Values.pgbouncer.maxDbConnections }}
+  PGBOUNCER_MAX_DB_CONNECTIONS: {{ .Values.pgbouncer.maxDbConnections | quote }}
+  {{- end }}
+  {{- if .Values.pgbouncer.maxUserConnections }}
+  PGBOUNCER_MAX_USER_CONNECTIONS: {{ .Values.pgbouncer.maxUserConnections | quote }}
+  {{- end }}
+  {{- if .Values.pgbouncer.logConnections }}
+  PGBOUNCER_LOG_CONNECTIONS: {{ .Values.pgbouncer.logConnections | quote }}
+  {{- end }}
+  {{- if .Values.pgbouncer.logDisconnections }}
+  PGBOUNCER_LOG_DISCONNECTIONS: {{ .Values.pgbouncer.logDisconnections | quote }}
+  {{- end }}
+  {{- if .Values.pgbouncer.logPoolerErrors }}
+  PGBOUNCER_LOG_POOLER_ERRORS: {{ .Values.pgbouncer.logPoolerErrors | quote }}
+  {{- end }}
+  {{- if .Values.pgbouncer.serverRoundRobin }}
+  PGBOUNCER_SERVER_ROUND_ROBIN: {{ .Values.pgbouncer.serverRoundRobin | quote }}
+  {{- end }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-pgbouncer-hba
+  labels:
+    app: zeno
+    component: pgbouncer
+data:
+  pg_hba.conf: |
+    host    all        all         all                   md5
+{{- end }}

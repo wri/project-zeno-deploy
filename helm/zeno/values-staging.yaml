@@ -35,7 +35,7 @@ zeno:
         memory: "4Gi"
   env_config:
     LANGFUSE_HOST: https://langfuse.staging.globalnaturewatch.org
-    OLLAMA_BASE_URL: http://ollama.default.svc.cluster.local:11434
+    DB_MAX_OVERFLOW: "100"
 
   streamlit:
     host: streamlit.staging.globalnaturewatch.org
