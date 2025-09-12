@@ -35,6 +35,7 @@ zeno:
         memory: "4Gi"
   env_config:
     LANGFUSE_HOST: https://langfuse.staging.globalnaturewatch.org
+    EOAPI_BASE_URL: https://eoapi.staging.globalnaturewatch.org
     DB_MAX_OVERFLOW: "100"
 
   streamlit:
