@@ -1,5 +1,9 @@
 ingress:
   host: "eoapi.globalnaturewatch.org"
 
+raster:
+  autoscaling:
+    minReplicas: 3
+    maxReplicas: 8
 
 namespace: eoapi
