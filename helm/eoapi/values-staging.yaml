@@ -1,4 +1,9 @@
 ingress:
   host: "eoapi.staging.globalnaturewatch.org"
 
+raster:
+  autoscaling:
+    minReplicas: 1
+    maxReplicas: 3
+
 namespace: eoapi
