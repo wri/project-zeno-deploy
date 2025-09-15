@@ -19,6 +19,18 @@ raster:
     - "--host=$(HOST)"
     - "--port=$(PORT)"
     - "--log-level=debug"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+    type: "cpu"
+    behaviour:
+      scaleDown:
+        stabilizationWindowSeconds: 60
+      scaleUp:
+        stabilizationWindowSeconds: 0
+    targets:
+      cpu: 70
   
 
 postgresql:
