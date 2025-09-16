@@ -1,5 +1,7 @@
 ingress:
-  host: "eoapi.staging.globalnaturewatch.org"
+  hosts:
+    - "eoapi.staging.globalnaturewatch.org"
+    - "titiler.whydidweevendothis.com"
 
 raster:
   autoscaling:
