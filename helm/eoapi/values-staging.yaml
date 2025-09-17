@@ -1,6 +1,7 @@
 ingress:
   hosts:
     - "eoapi.staging.globalnaturewatch.org"
+    - "eoapi-cache-staging.globalnaturewatch.org"
     - "titiler.whydidweevendothis.com"
 
 raster:
