@@ -32,7 +32,7 @@ zeno:
 
   env_config:
     LANGFUSE_HOST: https://langfuse.globalnaturewatch.org
-    EOAPI_BASE_URL: https://eoapi.globalnaturewatch.org
+    EOAPI_BASE_URL: https://eoapi-cache.globalnaturewatch.org
 
   streamlit:
     host: streamlit.globalnaturewatch.org
