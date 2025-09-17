@@ -1,5 +1,8 @@
 ingress:
-  host: "eoapi.globalnaturewatch.org"
+  hosts:
+    - "eoapi.globalnaturewatch.org"
+    - "eoapi-cache.whydidweevendothis.com"
+    - "eoapi-cache.globalnaturewatch.org"
 
 raster:
   autoscaling:
