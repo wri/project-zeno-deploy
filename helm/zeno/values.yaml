@@ -159,6 +159,7 @@ zeno:
     SMALL_MODEL: "haiku"
     ALLOW_ANONYMOUS_CHAT: "false"
     ADMIN_USER_DAILY_QUOTA: 9999
+    REGULAR_USER_DAILY_QUOTA: 10
 
   langfuse:
     enabled: true
