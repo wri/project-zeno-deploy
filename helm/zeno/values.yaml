@@ -160,6 +160,7 @@ zeno:
     ALLOW_ANONYMOUS_CHAT: "false"
     ADMIN_USER_DAILY_QUOTA: 9999
     REGULAR_USER_DAILY_QUOTA: 10
+    PRO_USER_DAILY_QUOTA: 100
 
   langfuse:
     enabled: true
@@ -182,7 +183,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 61e4f567f739cd715623336e6a452f10a5f2cce7
+      tag: ce8580f17c49e1b7f0ca0533261fbb2f38157337
 
   streamlit:
     host: streamlit.globalnaturewatch.org
