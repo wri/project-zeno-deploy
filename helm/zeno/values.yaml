@@ -155,8 +155,8 @@ zeno:
     DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org,bezosearthfund.org"
     AWS_DEFAULT_REGION: us-east-1
     GEE_SERVICE_ACCOUNT_PATH: /keys/zeno-gee-service-account.json
-    MODEL: "sonnet"
-    SMALL_MODEL: "haiku"
+    MODEL: "gemini"
+    SMALL_MODEL: "gemini-flash"
     ALLOW_ANONYMOUS_CHAT: "false"
     ADMIN_USER_DAILY_QUOTA: 9999
     REGULAR_USER_DAILY_QUOTA: 10
@@ -183,7 +183,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: c2b524ab697799a803ec3136ed4f5210b28544e4
+      tag: a371e050defb5abb81f9663327d2fcba08b70211
 
   streamlit:
     host: streamlit.globalnaturewatch.org

@@ -37,8 +37,6 @@ zeno:
     LANGFUSE_HOST: https://langfuse.staging.globalnaturewatch.org
     EOAPI_BASE_URL: https://eoapi-cache-staging.globalnaturewatch.org
     DB_MAX_OVERFLOW: "100"
-    MODEL: "gemini"
-    SMALL_MODEL: "gemini-flash"
 
   streamlit:
     host: streamlit.staging.globalnaturewatch.org
