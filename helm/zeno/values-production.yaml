@@ -34,6 +34,8 @@ zeno:
     LANGFUSE_HOST: https://langfuse.globalnaturewatch.org
     EOAPI_BASE_URL: https://eoapi-cache.globalnaturewatch.org
     DATASET_EMBEDDINGS_DB: zeno-docs-openai-index-v3
+    MODEL: "gemini"
+    SMALL_MODEL: "gemini-flash"
 
   streamlit:
     host: streamlit.globalnaturewatch.org
