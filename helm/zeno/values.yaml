@@ -183,7 +183,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: c36f37d559222ae823a7ecef5a803a2321a479e3
+      tag: 378e9991ade1a037a54fe1c1e7b188c7f77e9cd2
 
   streamlit:
     host: streamlit.globalnaturewatch.org
