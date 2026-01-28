@@ -38,6 +38,13 @@ zeno:
     EOAPI_BASE_URL: https://eoapi-cache-staging.globalnaturewatch.org
     DB_MAX_OVERFLOW: "100"
 
+    # signup settings to duplicate production, these following lines can be removed
+    # to go back to defaulting to private (defines in default values.yaml)
+    ALLOW_PUBLIC_SIGNUPS: true
+    ALLOW_ANONYMOUS_CHAT: false
+    DOMAINS_ALLOWLIST: ""
+    MAX_USER_SIGNUPS: 5000
+
   streamlit:
     host: streamlit.staging.globalnaturewatch.org
     env_config:
