@@ -116,16 +116,17 @@ jobs:
       # Deploy ingress-nginx
       - name: Deploy ingress-nginx
         if: |
-          github.event_name == 'push' && 
+          github.event_name == 'push' &&
           (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: >
-          helm upgrade --install 
+          helm upgrade --install
           ingress-nginx
           ingress-nginx/ingress-nginx
           --version 4.11.3
           --namespace ingress-nginx
           --create-namespace
           --set controller.config.proxy-body-size=500m
+          --set controller.config.proxy-read-timeout=300s
           --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb"
 
       # Deploy cert-manager
