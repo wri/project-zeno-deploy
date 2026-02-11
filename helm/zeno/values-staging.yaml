@@ -37,6 +37,8 @@ zeno:
     LANGFUSE_HOST: https://langfuse.staging.globalnaturewatch.org
     EOAPI_BASE_URL: https://eoapi-cache-staging.globalnaturewatch.org
     DB_MAX_OVERFLOW: "100"
+    MODEL: "gemini-flash"
+    CODING_MODEL: "gemini-2.5-flash"
 
     # signup settings to duplicate production, these following lines can be removed
     # to go back to defaulting to private (defines in default values.yaml)
