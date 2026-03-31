@@ -210,6 +210,8 @@ zeno:
         memory: "2Gi"
 
   db:
+    migrate:
+      enabled: true
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
       tag: 77779ef2068328f1f8667a90b41c5aeb1ea1c658
