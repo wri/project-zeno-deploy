@@ -30,7 +30,10 @@ jobs:
             | tr '[:upper:]' '[:lower:]' \
             | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
 
-          NORMALIZED_ENVIRONMENT="${NORMALIZED_ENVIRONMENT:0:40}"
+          # Keep this short enough for downstream AWS name_prefix constraints.
+          # EKS derives names like zeno-<env>-cluster-cluster- and AWS caps
+          # some name_prefix values at 38 chars, leaving 16 chars for <env>.
+          NORMALIZED_ENVIRONMENT="${NORMALIZED_ENVIRONMENT:0:16}"
           NORMALIZED_ENVIRONMENT=$(echo "${NORMALIZED_ENVIRONMENT}" | sed -E 's/^-+//; s/-+$//')
 
           if [ -z "${NORMALIZED_ENVIRONMENT}" ]; then
@@ -88,4 +91,3 @@ jobs:
         run: |
           echo "Terraform plan failed. See above for error details."
           exit 1
-

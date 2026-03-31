@@ -32,7 +32,9 @@ jobs:
             | tr '[:upper:]' '[:lower:]' \
             | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
 
-          NORMALIZED_ENVIRONMENT="${NORMALIZED_ENVIRONMENT:0:40}"
+          # Match deploy-ephemeral.yaml so destroy targets the same state key and
+          # stays within downstream AWS name_prefix limits.
+          NORMALIZED_ENVIRONMENT="${NORMALIZED_ENVIRONMENT:0:16}"
           NORMALIZED_ENVIRONMENT=$(echo "${NORMALIZED_ENVIRONMENT}" | sed -E 's/^-+//; s/-+$//')
 
           if [ -z "${NORMALIZED_ENVIRONMENT}" ]; then
