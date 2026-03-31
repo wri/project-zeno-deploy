@@ -1,0 +1,204 @@
+name: 'Deploy Ephemeral Environment'
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - develop
+
+jobs:
+  deploy:
+    if: false
+    name: 'Deploy Ephemeral Environment'
+    runs-on: ubuntu-latest
+    environment: staging
+    concurrency:
+      group: deploy-ephemeral-${{ github.ref_name }}
+      cancel-in-progress: false
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: us-east-1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Normalize environment name
+        run: |
+          RAW_ENVIRONMENT="${{ github.ref_name }}"
+          NORMALIZED_ENVIRONMENT=$(echo "${RAW_ENVIRONMENT}" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
+
+          NORMALIZED_ENVIRONMENT="${NORMALIZED_ENVIRONMENT:0:16}"
+          NORMALIZED_ENVIRONMENT=$(echo "${NORMALIZED_ENVIRONMENT}" | sed -E 's/^-+//; s/-+$//')
+
+          if [ -z "${NORMALIZED_ENVIRONMENT}" ]; then
+            echo "Environment name '${RAW_ENVIRONMENT}' becomes empty after sanitization."
+            exit 1
+          fi
+
+          echo "ENVIRONMENT=${NORMALIZED_ENVIRONMENT}" >> "${GITHUB_ENV}"
+          echo "TF_STATE_KEY=terraform/state/ephemeral/${NORMALIZED_ENVIRONMENT}/terraform.tfstate" >> "${GITHUB_ENV}"
+          echo "CLUSTER_NAME=zeno-${NORMALIZED_ENVIRONMENT}-cluster" >> "${GITHUB_ENV}"
+          echo "LANGFUSE_BUCKET=langfuse-${NORMALIZED_ENVIRONMENT}-bucket" >> "${GITHUB_ENV}"
+
+          echo "API_HOST=api-${NORMALIZED_ENVIRONMENT}.staging.globalnaturewatch.org" >> "${GITHUB_ENV}"
+          echo "STREAMLIT_HOST=streamlit-${NORMALIZED_ENVIRONMENT}.staging.globalnaturewatch.org" >> "${GITHUB_ENV}"
+          echo "LANGFUSE_HOST=langfuse-${NORMALIZED_ENVIRONMENT}.staging.globalnaturewatch.org" >> "${GITHUB_ENV}"
+          echo "EOAPI_HOST=eoapi-${NORMALIZED_ENVIRONMENT}.staging.globalnaturewatch.org" >> "${GITHUB_ENV}"
+          echo "EOAPI_CACHE_HOST=eoapi-cache-${NORMALIZED_ENVIRONMENT}.staging.globalnaturewatch.org" >> "${GITHUB_ENV}"
+          echo "GRAFANA_HOST=grafana-${NORMALIZED_ENVIRONMENT}.staging.globalnaturewatch.org" >> "${GITHUB_ENV}"
+
+      - name: Configure Kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.1
+          terraform_wrapper: false
+
+      - name: Terraform Format
+        working-directory: ./terraform
+        run: terraform fmt -no-color
+
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init -backend-config="key=${{ env.TF_STATE_KEY }}"
+
+      - name: Terraform Validate
+        working-directory: ./terraform
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        working-directory: ./terraform
+        run: terraform plan -var="environment=${{ env.ENVIRONMENT }}" -var="eoapi_db_password=${{ secrets.EOAPI_DB_PASSWORD }}" -no-color -input=false
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: |
+          echo "Terraform plan failed. See above for error details."
+          exit 1
+
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: >
+          terraform apply
+          -var="environment=${{ env.ENVIRONMENT }}"
+          -var="eoapi_db_password=${{ secrets.EOAPI_DB_PASSWORD }}"
+          -auto-approve
+
+      - name: Configure kubeconfig
+        run: aws eks update-kubeconfig --region "${{ env.AWS_REGION }}" --name "${{ env.CLUSTER_NAME }}"
+
+      - name: Add Helm repositories
+        run: |
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo add eoapi https://devseed.com/eoapi-k8s/
+          helm repo add autoscaler https://kubernetes.github.io/autoscaler
+          helm repo update
+
+      - name: Deploy ingress-nginx
+        run: >
+          helm upgrade --install
+          ingress-nginx
+          ingress-nginx/ingress-nginx
+          --version 4.11.3
+          --namespace ingress-nginx
+          --create-namespace
+          --set controller.config.proxy-body-size=500m
+          --set controller.config.proxy-read-timeout=300s
+          --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb"
+
+      - name: Deploy cert-manager
+        run: >
+          helm upgrade --install
+          cert-manager
+          jetstack/cert-manager
+          --version v1.16.1
+          --namespace cert-manager
+          --create-namespace
+          --set installCRDs=true
+
+      - name: Deploy cluster-autoscaler
+        run: |
+          cd terraform
+          ROLE_ARN=$(terraform output -raw cluster_autoscaler_iam_role_arn)
+          cd ..
+
+          helm upgrade --install cluster-autoscaler autoscaler/cluster-autoscaler \
+            --version 9.43.0 \
+            -f helm/cluster-autoscaler/values.yaml \
+            --set-string autoDiscovery.clusterName="${CLUSTER_NAME}" \
+            --set-string extraArgs.node-group-auto-discovery="asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/${CLUSTER_NAME}" \
+            --set-string 'rbac.serviceAccount.annotations.eks\.amazonaws\.com/role-arn'="${ROLE_ARN}" \
+            --namespace kube-system
+
+      - name: Update Helm dependencies for monitoring
+        run: helm dependency update ./helm/support
+
+      - name: Deploy monitoring services
+        working-directory: ./helm
+        run: >
+          helm upgrade --install support ./support
+          -f support/values.yaml
+          --namespace support
+          --create-namespace
+          --set-string kube-prometheus-stack.grafana.ingress.hosts[0]="${{ env.GRAFANA_HOST }}"
+          --set-string kube-prometheus-stack.grafana.ingress.tls[0].hosts[0]="${{ env.GRAFANA_HOST }}"
+
+      - name: Update Helm dependencies for Zeno
+        run: helm dependency update ./helm/zeno
+
+      - name: Deploy Zeno
+        working-directory: ./helm
+        run: >
+          helm upgrade --install zeno ./zeno
+          -f zeno/values.yaml
+          -f zeno/values-staging.yaml
+          --set-string global.environment="${{ env.ENVIRONMENT }}"
+          --set zeno.db.migrate.enabled=false
+          --set-string langfuse.langfuse.ingress.hosts[0].host="${{ env.LANGFUSE_HOST }}"
+          --set-string langfuse.postgresql.auth.password="${{ secrets.DATABASE_PASSWORD }}"
+          --set-string langfuse.langfuse.nextauth.secret.value="${{ secrets.LANGFUSE_NEXTAUTH_SECRET }}"
+          --set-string langfuse.langfuse.salt.value="${{ secrets.LANGFUSE_SALT }}"
+          --set-string langfuse.s3.bucket="${{ env.LANGFUSE_BUCKET }}"
+          --set-string langfuse.s3.accessKeyId.value="${{ secrets.LANGFUSE_S3_ACCESS_KEY }}"
+          --set-string langfuse.s3.secretAccessKey.value="${{ secrets.LANGFUSE_S3_SECRET_KEY }}"
+          --set-string zeno.langfuse.host="${{ env.LANGFUSE_HOST }}"
+          --set-string zeno.api.host="${{ env.API_HOST }}"
+          --set-string zeno.streamlit.host="${{ env.STREAMLIT_HOST }}"
+          --set-string zeno.langfuse_secrets.LANGFUSE_INIT_USER_PASSWORD="${{ secrets.LANGFUSE_INIT_USER_PASSWORD }}"
+          --set-string zeno.langfuse_secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_SECRET_KEY }}"
+          --set-string zeno.langfuse_secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}"
+          --set-string zeno.langfuse_secrets.CLICKHOUSE_PASSWORD="${{ secrets.LANGFUSE_CLICKHOUSE_PASSWORD }}"
+          --set-string zeno.langfuse_secrets.REDIS_PASSWORD="${{ secrets.LANGFUSE_REDIS_PASSWORD }}"
+          --set-string zeno.env_config.LANGFUSE_HOST="https://${{ env.LANGFUSE_HOST }}"
+          --set-string zeno.env_config.EOAPI_BASE_URL="https://${{ env.EOAPI_CACHE_HOST }}"
+          --set-string zeno.env_secrets.OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
+          --set-string zeno.env_secrets.ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}"
+          --set-string zeno.env_secrets.NEXTJS_API_KEY="${{ secrets.NEXTJS_API_KEY }}"
+          --set-string zeno.env_secrets.AWS_ACCESS_KEY_ID="${{ secrets.S3_READONLY_AWS_ACCESS_KEY_ID }}"
+          --set-string zeno.env_secrets.AWS_SECRET_ACCESS_KEY="${{ secrets.S3_READONLY_AWS_SECRET_ACCESS_KEY }}"
+          --set-string zeno.env_secrets.GEE_SERVICE_ACCOUNT_JSON="${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}"
+          --set-string zeno.env_secrets.MAPBOX_API_TOKEN="${{ secrets.MAPBOX_API_TOKEN }}"
+          --set-string zeno.env_secrets.GFW_DATA_API_KEY="${{ secrets.GFW_DATA_API_KEY }}"
+          --set-string zeno.env_secrets.GFW_DATA_API_USER_ID="${{ secrets.GFW_DATA_API_USER_ID }}"
+          --set-string zeno.env_secrets.ELEVENLABS_API_KEY="${{ secrets.ELEVENLABS_API_KEY }}"
+          --set-string zeno.env_secrets.GOOGLE_API_KEY="${{ secrets.GOOGLE_API_KEY }}"
+          --set-string zeno.env_secrets.COOKIE_SIGNER_SECRET_KEY="${{ secrets.COOKIE_SIGNER_SECRET_KEY }}"
+          --set-string zeno.db_secrets.POSTGRES_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
+          --set-string zeno.streamlit.env_config.API_BASE_URL="https://${{ env.API_HOST }}"
+          --set-string zeno.streamlit.env_config.LOCAL_API_BASE_URL="https://${{ env.API_HOST }}"
+          --set-string zeno.streamlit.env_config.STREAMLIT_URL="https://${{ env.STREAMLIT_HOST }}"
