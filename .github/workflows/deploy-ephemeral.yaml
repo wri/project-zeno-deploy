@@ -81,6 +81,12 @@ jobs:
         working-directory: ./terraform
         run: terraform validate -no-color
 
+      - name: Terraform Plan
+        id: plan
+        working-directory: ./terraform
+        if: github.event_name == 'pull_request'
+        run: terraform plan -var-file="${{ env.ENVIRONMENT }}.tfvars" -var="eoapi_db_password=${{ secrets.EOAPI_DB_PASSWORD }}" -no-color -input=false
+
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: |
