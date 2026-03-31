@@ -1,0 +1,101 @@
+name: 'Destroy Ephemeral Environment'
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment_name:
+        description: 'Name for the ephemeral environment to destroy.'
+        required: true
+        type: string
+
+jobs:
+  destroy:
+    name: 'Destroy Ephemeral Environment'
+    runs-on: ubuntu-latest
+    environment: staging
+    concurrency:
+      group: destroy-ephemeral-${{ github.event.inputs.environment_name }}
+      cancel-in-progress: false
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: us-east-1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Normalize environment name
+        run: |
+          RAW_ENVIRONMENT="${{ inputs.environment_name }}"
+          NORMALIZED_ENVIRONMENT=$(echo "${RAW_ENVIRONMENT}" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
+
+          NORMALIZED_ENVIRONMENT="${NORMALIZED_ENVIRONMENT:0:40}"
+          NORMALIZED_ENVIRONMENT=$(echo "${NORMALIZED_ENVIRONMENT}" | sed -E 's/^-+//; s/-+$//')
+
+          if [ -z "${NORMALIZED_ENVIRONMENT}" ]; then
+            echo "Environment name '${RAW_ENVIRONMENT}' becomes empty after sanitization."
+            exit 1
+          fi
+
+          echo "ENVIRONMENT=${NORMALIZED_ENVIRONMENT}" >> "${GITHUB_ENV}"
+          echo "TF_STATE_KEY=terraform/state/ephemeral/${NORMALIZED_ENVIRONMENT}/terraform.tfstate" >> "${GITHUB_ENV}"
+
+      - name: Skip protected environments
+        run: |
+          if [ "${{ env.ENVIRONMENT }}" = "production" ] || [ "${{ env.ENVIRONMENT }}" = "staging" ]; then
+            echo "Protected environment '${{ env.ENVIRONMENT }}' requested. Skipping destroy."
+            echo "SKIP_DESTROY=true" >> "${GITHUB_ENV}"
+          fi
+
+      - name: Configure AWS credentials
+        if: env.SKIP_DESTROY != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        if: env.SKIP_DESTROY != 'true'
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.1
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        if: env.SKIP_DESTROY != 'true'
+        working-directory: ./terraform
+        run: terraform init -backend-config="key=${{ env.TF_STATE_KEY }}"
+
+      - name: Check for existing state
+        if: env.SKIP_DESTROY != 'true'
+        id: state_check
+        working-directory: ./terraform
+        run: |
+          if terraform state list >/dev/null 2>&1; then
+            echo "has_state=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "No Terraform state found for '${{ env.ENVIRONMENT }}'."
+            echo "has_state=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Terraform Destroy
+        if: env.SKIP_DESTROY != 'true' && steps.state_check.outputs.has_state == 'true'
+        working-directory: ./terraform
+        run: >
+          terraform destroy
+          -var="environment=${{ env.ENVIRONMENT }}"
+          -var="eoapi_db_password=${{ secrets.EOAPI_DB_PASSWORD }}"
+          -auto-approve
+
+      - name: No-op summary
+        if: env.SKIP_DESTROY == 'true' || steps.state_check.outputs.has_state != 'true'
+        run: |
+          if [ "${{ env.SKIP_DESTROY }}" = "true" ]; then
+            echo "Destroy intentionally skipped for protected environment '${{ env.ENVIRONMENT }}'."
+          else
+            echo "Nothing to destroy for '${{ env.ENVIRONMENT }}'."
+          fi
