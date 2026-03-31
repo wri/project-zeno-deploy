@@ -89,7 +89,8 @@ jobs:
         run: |
           echo "Terraform plan failed. See above for error details."
           exit 1
-            - name: Terraform Apply
+
+      - name: Terraform Apply
         working-directory: ./terraform
         run: >
           terraform apply
@@ -201,4 +202,3 @@ jobs:
           --set-string zeno.streamlit.env_config.API_BASE_URL="https://${{ env.API_HOST }}"
           --set-string zeno.streamlit.env_config.LOCAL_API_BASE_URL="https://${{ env.API_HOST }}"
           --set-string zeno.streamlit.env_config.STREAMLIT_URL="https://${{ env.STREAMLIT_HOST }}"
-
