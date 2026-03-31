@@ -80,3 +80,9 @@ jobs:
       - name: Terraform Validate
         working-directory: ./terraform
         run: terraform validate -no-color
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: |
+          echo "Terraform plan failed. See above for error details."
+          exit 1
