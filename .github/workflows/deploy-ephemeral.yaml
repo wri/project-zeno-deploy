@@ -84,7 +84,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         working-directory: ./terraform
-        run: terraform plan -var-file="${{ env.ENVIRONMENT }}.tfvars" -var="eoapi_db_password=${{ secrets.EOAPI_DB_PASSWORD }}" -no-color -input=false
+        run: terraform plan -var="environment=${{ env.ENVIRONMENT }}" -var="eoapi_db_password=${{ secrets.EOAPI_DB_PASSWORD }}" -no-color -input=false
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
