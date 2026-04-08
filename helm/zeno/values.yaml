@@ -155,8 +155,9 @@ zeno:
     DOMAINS_ALLOWLIST: "developmentseed.org,wri.org,wriconsultant.org,bezosearthfund.org"
     AWS_DEFAULT_REGION: us-east-1
     GEE_SERVICE_ACCOUNT_PATH: /keys/zeno-gee-service-account.json
-    MODEL: "gemini"
+    MODEL: "gemini-flash"
     SMALL_MODEL: "gemini-flash"
+    CODING_MODEL: "gemini-3-flash-preview"
     ALLOW_ANONYMOUS_CHAT: "false"
     ADMIN_USER_DAILY_QUOTA: 9999
     REGULAR_USER_DAILY_QUOTA: 10
