@@ -30,7 +30,6 @@ zeno:
       limits:
         memory: "4Gi"
     image:
-      repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
       tag: ab274896517c9c6422303d7f42ff8edd4f8aa780
 
   env_config:
