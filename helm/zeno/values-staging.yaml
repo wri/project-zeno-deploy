@@ -43,6 +43,7 @@ zeno:
     ALLOW_ANONYMOUS_CHAT: false
     DOMAINS_ALLOWLIST: ""
     MAX_USER_SIGNUPS: 5000
+    GNW_STAGE: staging
 
   streamlit:
     host: streamlit.staging.globalnaturewatch.org
