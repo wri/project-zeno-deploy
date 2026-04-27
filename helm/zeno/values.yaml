@@ -212,7 +212,7 @@ zeno:
   db:
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-      tag: 64fa2b2b98a7f48af15684a1489600b4ce645e15
+      tag: 2c92d53b8505265f29c9d3d2d959ef28087d088f
 
 # PGBouncer configuration
 pgbouncer:
