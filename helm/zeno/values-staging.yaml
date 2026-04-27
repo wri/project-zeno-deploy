@@ -46,6 +46,7 @@ zeno:
     DOMAINS_ALLOWLIST: ""
     MAX_USER_SIGNUPS: 5000
     GNW_STAGE: staging
+    DATASET_EMBEDDINGS_DB: gnw-dataset-index-gemini-v4
 
   streamlit:
     host: streamlit.staging.globalnaturewatch.org
