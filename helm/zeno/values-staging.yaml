@@ -34,7 +34,7 @@ zeno:
       limits:
         memory: "4Gi"
     image:
-      tag: ecff8f6dedc2ae22894ffd74e23ae72fe8a9fbbd
+      tag: 1b8ee8317257b5c28fab004e1bca4342fc750f9e
   env_config:
     LANGFUSE_HOST: https://langfuse.staging.globalnaturewatch.org
     EOAPI_BASE_URL: https://eoapi-cache-staging.globalnaturewatch.org
