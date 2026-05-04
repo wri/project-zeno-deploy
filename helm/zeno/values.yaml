@@ -54,6 +54,12 @@ langfuse:
           secretKeyRef:
             name: zeno-langfuse-secrets
             key: LANGFUSE_INIT_USER_PASSWORD
+      - name: ENCRYPTION_KEY
+        valueFrom:
+          secretKeyRef:
+            name: zeno-langfuse-secrets
+            key: ENCRYPTION_KEY
+            
   postgresql:
     deploy: false
     auth:
@@ -133,6 +139,7 @@ zeno:
     LANGFUSE_INIT_PROJECT_PUBLIC_KEY: ""
     CLICKHOUSE_PASSWORD: ""
     REDIS_PASSWORD: ""
+    ENCRYPTION_KEY: ""
 
   # Database secrets  
   db_secrets:
