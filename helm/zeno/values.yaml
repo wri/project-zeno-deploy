@@ -139,7 +139,6 @@ zeno:
     LANGFUSE_INIT_PROJECT_PUBLIC_KEY: ""
     CLICKHOUSE_PASSWORD: ""
     REDIS_PASSWORD: ""
-    ENCRYPTION_KEY: ""
 
   # Database secrets  
   db_secrets:
