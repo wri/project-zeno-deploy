@@ -12,6 +12,10 @@ langfuse:
         value: ""
     salt:
       value: ""
+    encryptionKey:
+      secretKeyRef:
+        name: zeno-langfuse-secrets
+        key: ENCRYPTION_KEY
     features:
       telemetryEnabled: true
     ingress:
@@ -54,12 +58,7 @@ langfuse:
           secretKeyRef:
             name: zeno-langfuse-secrets
             key: LANGFUSE_INIT_USER_PASSWORD
-      - name: ENCRYPTION_KEY
-        valueFrom:
-          secretKeyRef:
-            name: zeno-langfuse-secrets
-            key: ENCRYPTION_KEY
-            
+
   postgresql:
     deploy: false
     auth:
