@@ -13,15 +13,14 @@ spec:
       name: {{ .Release.Name }}-db-migrate
     spec:
       containers:
-      - name: db-migrate
-        image: "{{ .Values.zeno.db.image.repository }}:{{ .Values.zeno.db.image.tag }}"
-        env:
-        - name: POSTGRES_USER
-          value: {{ .Values.zeno.db_secrets.POSTGRES_USER }}
-        - name: POSTGRES_PASSWORD
-          value: {{ .Values.zeno.db_secrets.POSTGRES_PASSWORD }}
-        - name: POSTGRES_HOST
-          value: {{ .Values.zeno.db_secrets.POSTGRES_HOST }}
-        - name: POSTGRES_DB
-          value: {{ .Values.zeno.db_secrets.POSTGRES_DB }}
+        - name: db-migrate
+          image: "{{ .Values.zeno.api.image.repository }}:{{ .Values.zeno.api.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          command: ["/app/db/migrate.sh"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-zeno-secrets
+                  key: DATABASE_URL
       restartPolicy: Never

@@ -215,11 +215,6 @@ zeno:
         cpu: "1000m"
         memory: "2Gi"
 
-  db:
-    image:
-      repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-      tag: a2a69021d87b80e526acdc49d04594cdd5d84996
-
 # PGBouncer configuration
 pgbouncer:
   enabled: false

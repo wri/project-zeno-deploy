@@ -32,21 +32,9 @@ api:
 
 ## Database Updates
 
-When the database schema or migrations have changed:
-
-1. Open `helm/zeno/values.yaml`
-2. Under the `db` section, locate the `image` subsection
-3. Update the `tag` field with the git hash that includes the database changes
-
-Example:
-```yaml
-db:
-  image:
-    repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-    tag: 149bffadbb4d58500b13accc7eb862c4d6d08150  # Replace with new git hash
-```
-
-Note: It's important to ensure that the database migrations are compatible with the application version being deployed.
+Database migrations now ship inside the API image. Bumping `zeno.api.image.tag`
+is sufficient — a Helm `pre-install`/`pre-upgrade` Job runs `/app/db/migrate.sh`
+(`alembic upgrade head`) against `$DATABASE_URL` before the new pods roll out.
 
 ### Inspecting Logs
 
