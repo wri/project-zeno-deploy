@@ -209,6 +209,7 @@ jobs:
           --set zeno.langfuse_secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY="${{ secrets.LANGFUSE_INIT_PROJECT_PUBLIC_KEY }}"
           --set zeno.langfuse_secrets.CLICKHOUSE_PASSWORD="${{ secrets.LANGFUSE_CLICKHOUSE_PASSWORD }}"
           --set zeno.langfuse_secrets.REDIS_PASSWORD="${{ secrets.LANGFUSE_REDIS_PASSWORD }}"
+          --set zeno.langfuse_secrets.ENCRYPTION_KEY="${{ secrets.ENCRYPTION_KEY }}"
           --set zeno.env_secrets.OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
           --set zeno.env_secrets.ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}"
           --set zeno.env_secrets.NEXTJS_API_KEY="${{ secrets.NEXTJS_API_KEY }}"
