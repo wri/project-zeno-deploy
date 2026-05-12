@@ -189,7 +189,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 91b083f68223d51832e1bd3df136a9e7645a8178
+      tag: a2a69021d87b80e526acdc49d04594cdd5d84996
 
   streamlit:
     host: streamlit.globalnaturewatch.org
@@ -218,7 +218,7 @@ zeno:
   db:
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno-db
-      tag: e57e2e19fb6e76b03d07f1c8a28a9ce4c2870d2e
+      tag: a2a69021d87b80e526acdc49d04594cdd5d84996
 
 # PGBouncer configuration
 pgbouncer:
