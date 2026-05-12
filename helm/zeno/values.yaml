@@ -163,6 +163,8 @@ zeno:
     MODEL: "gemini-flash"
     SMALL_MODEL: "gemini-flash"
     CODING_MODEL: "gemini-3-flash-preview"
+    FALLBACK_MODELS: "gemini,gemini-flash-lite"
+    CODING_FALLBACK_MODELS: "gemini-3.1-pro-preview,gemini-2.5-pro"
     ALLOW_ANONYMOUS_CHAT: "false"
     ADMIN_USER_DAILY_QUOTA: 9999
     REGULAR_USER_DAILY_QUOTA: 10
