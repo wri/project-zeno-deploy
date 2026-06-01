@@ -193,20 +193,6 @@ zeno:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
       tag: a9f528b78501b093ab4a7edb2a8bce7b088eebf5
 
-  streamlit:
-    host: streamlit.globalnaturewatch.org
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "0.2Gi"
-      limits:
-        cpu: "500m"
-        memory: "1Gi"
-    env_config:
-      API_BASE_URL: https://api.globalnaturewatch.org
-      LOCAL_API_BASE_URL: https://api.globalnaturewatch.org
-      STREAMLIT_URL: https://streamlit.globalnaturewatch.org
-
   shell:
     replicas: 0
     resources:
