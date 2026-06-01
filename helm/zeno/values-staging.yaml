@@ -47,13 +47,6 @@ zeno:
     GNW_STAGE: staging
     DATASET_EMBEDDINGS_DB: gnw-dataset-index-gemini-v4
 
-  streamlit:
-    host: streamlit.staging.globalnaturewatch.org
-    env_config:
-      API_BASE_URL: https://api.staging.globalnaturewatch.org
-      LOCAL_API_BASE_URL: https://api.staging.globalnaturewatch.org
-      STREAMLIT_URL: https://streamlit.staging.globalnaturewatch.org
-
   db_secrets:
     POSTGRES_HOST: zeno-db-staging.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
 

@@ -12,7 +12,6 @@ spec:
   tls:
     - hosts:
         - {{ .Values.zeno.api.host }}
-        - {{ .Values.zeno.streamlit.host }}
       secretName: {{ .Release.Name }}-tls
   {{- end }}
   rules:
@@ -26,14 +25,4 @@ spec:
                 name: {{ .Release.Name }}-api
                 port:
                   number: 8000
-    - host: {{ .Values.zeno.streamlit.host }}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Release.Name }}-streamlit
-                port:
-                  number: 8501
 

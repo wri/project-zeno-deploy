@@ -82,44 +82,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-streamlit
-  labels:
-    app: zeno
-    component: streamlit
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: zeno
-      component: streamlit
-  template:
-    metadata:
-      labels:
-        app: zeno
-        component: streamlit
-      annotations:
-        config/hash: {{ .Values.zeno.streamlit.env_config | toYaml | sha256sum }}
-    spec:
-      containers:
-        - name: zeno-streamlit
-          image: "{{ .Values.zeno.api.image.repository }}:{{ .Values.zeno.api.image.tag }}"
-          imagePullPolicy: "IfNotPresent"
-          command: ["uv", "run", "streamlit", "run", "frontend/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
-          resources:
-            {{- toYaml .Values.zeno.streamlit.resources | nindent 12 }}
-          ports:
-            - name: http
-              containerPort: 8501
-              protocol: TCP
-          envFrom:
-            - configMapRef:
-                name: {{ .Release.Name }}-streamlit-config
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: {{ .Release.Name }}-shell
   labels:
     app: zeno
