@@ -37,7 +37,7 @@ zeno:
     ALLOW_ANONYMOUS_CHAT: false
     DOMAINS_ALLOWLIST: ""
     MAX_USER_SIGNUPS: 5000
-    DATASET_EMBEDDINGS_DB: gnw-dataset-index-gemini-v4
+    DATASET_EMBEDDINGS_DB: gnw-dataset-index-gemini-v5
 
   db_secrets:
     POSTGRES_HOST: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
