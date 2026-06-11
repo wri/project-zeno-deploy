@@ -163,9 +163,11 @@ zeno:
     MODEL: "gemini-flash"
     SMALL_MODEL: "gemini-flash"
     CODING_MODEL: "gemini-3-flash-preview"
+    FALLBACK_MODELS: "gemini,gemini-flash-lite"
+    CODING_FALLBACK_MODELS: "gemini-3.1-pro-preview,gemini-2.5-pro"
     ALLOW_ANONYMOUS_CHAT: "false"
     ADMIN_USER_DAILY_QUOTA: 9999
-    REGULAR_USER_DAILY_QUOTA: 10
+    REGULAR_USER_DAILY_QUOTA: 20
     PRO_USER_DAILY_QUOTA: 100
 
   langfuse:
@@ -189,21 +191,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 09b3b109d03dd346099bddcefc78317065b30e38
-
-  streamlit:
-    host: streamlit.globalnaturewatch.org
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "0.2Gi"
-      limits:
-        cpu: "500m"
-        memory: "1Gi"
-    env_config:
-      API_BASE_URL: https://api.globalnaturewatch.org
-      LOCAL_API_BASE_URL: https://api.globalnaturewatch.org
-      STREAMLIT_URL: https://streamlit.globalnaturewatch.org
+      tag: 1412c361243c914ffc354b8ff229bc0791b2c3f5
 
   shell:
     replicas: 0
