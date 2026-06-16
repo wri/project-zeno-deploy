@@ -26,6 +26,7 @@ env:
   PYTHONWARNINGS: "ignore"
   VSI_CACHE: "TRUE"
   VSI_CACHE_SIZE: "5000000"
+  MOSAIC_CONCURRENCY: "1"
 
 extraEnvFrom:
   - secretRef:
