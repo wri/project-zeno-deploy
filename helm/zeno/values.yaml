@@ -169,7 +169,7 @@ zeno:
     ADMIN_USER_DAILY_QUOTA: 9999
     REGULAR_USER_DAILY_QUOTA: 20
     PRO_USER_DAILY_QUOTA: 100
-    MOSAIC_S3_BUCKET=placeholder-zeno-chroma-db
+    MOSAIC_S3_BUCKET=gnw-cache
     MOSAIC_S3_PREFIX=mosaics
     MOSAIC_S3_REGION=us-east-1
   langfuse:
@@ -193,7 +193,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 161d736cfb6e44f120c8f4a1b96a2b2f3c39d33c
+      tag: c081b7fdbcc5c4d5294d9c1b864c5554ebbd2aee
 
   shell:
     replicas: 0
