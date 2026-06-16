@@ -238,3 +238,17 @@ jobs:
           -f eoapi/values-${{ env.ENVIRONMENT }}.yaml
           --namespace eoapi
           --create-namespace
+      # Deploy classic MosaicJSON TiTiler
+      - name: Deploy titiler-mosaicjson
+        if: |
+          github.event_name == 'push' &&
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        working-directory: ./helm
+        run: >
+          helm upgrade --install
+          titiler-mosaicjson
+          ./titiler-mosaicjson
+          -f titiler-mosaicjson/values.yaml
+          -f titiler-mosaicjson/values-${{ env.ENVIRONMENT }}.yaml
+          --namespace eoapi
+          --create-namespace

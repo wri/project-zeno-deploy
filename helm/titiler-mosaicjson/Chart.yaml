@@ -1,0 +1,6 @@
+apiVersion: v2
+name: titiler-mosaicjson
+description: TiTiler service for classic MosaicJSON endpoints
+type: application
+version: 0.1.0
+appVersion: "2.0.4"

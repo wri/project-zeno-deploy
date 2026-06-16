@@ -1,0 +1,61 @@
+# Default configuration for classic MosaicJSON TiTiler
+image:
+  repository: ghcr.io/developmentseed/titiler
+  tag: "2.0.4"
+  pullPolicy: IfNotPresent
+
+replicas: 2
+workers: 4
+
+resources:
+  limits:
+    cpu: "2000m"
+    memory: "8192Mi"
+  requests:
+    cpu: "1000m"
+    memory: "4096Mi"
+
+env:
+  AWS_REQUEST_PAYER: "requester"
+  GDAL_CACHEMAX: "200"
+  GDAL_DISABLE_READDIR_ON_OPEN: "EMPTY_DIR"
+  GDAL_INGESTED_BYTES_AT_OPEN: "32768"
+  GDAL_HTTP_MERGE_CONSECUTIVE_RANGES: "YES"
+  GDAL_HTTP_MULTIPLEX: "YES"
+  GDAL_HTTP_VERSION: "2"
+  PYTHONWARNINGS: "ignore"
+  VSI_CACHE: "TRUE"
+  VSI_CACHE_SIZE: "5000000"
+
+extraEnvFrom:
+  - secretRef:
+      name: requester-pays-s3-credentials
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 70
+  behaviour:
+    scaleDown:
+      stabilizationWindowSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 0
+
+ingress:
+  enabled: true
+  className: nginx
+  path: /mosaicjson
+  pathType: Prefix
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts: []
+  tls:
+    enabled: true
+    secretName: titiler-mosaicjson-tls
+
+service:
+  port: 8080
+
+namespace: eoapi

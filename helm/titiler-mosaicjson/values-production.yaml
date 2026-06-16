@@ -1,0 +1,8 @@
+ingress:
+  hosts:
+    - eoapi-cache.globalnaturewatch.org
+    - eoapi-cache.whydidweevendothis.com
+
+autoscaling:
+  minReplicas: 3
+  maxReplicas: 8

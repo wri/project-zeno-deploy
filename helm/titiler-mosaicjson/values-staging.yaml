@@ -1,0 +1,8 @@
+ingress:
+  hosts:
+    - eoapi-cache-staging.globalnaturewatch.org
+    - titiler.whydidweevendothis.com
+
+autoscaling:
+  minReplicas: 1
+  maxReplicas: 3
