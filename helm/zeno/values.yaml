@@ -169,7 +169,9 @@ zeno:
     ADMIN_USER_DAILY_QUOTA: 9999
     REGULAR_USER_DAILY_QUOTA: 20
     PRO_USER_DAILY_QUOTA: 100
-
+    MOSAIC_S3_BUCKET=placeholder-zeno-chroma-db
+    MOSAIC_S3_PREFIX=mosaics
+    MOSAIC_S3_REGION=us-east-1
   langfuse:
     enabled: true
     host: langfuse.globalnaturewatch.org

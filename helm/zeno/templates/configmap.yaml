@@ -6,3 +6,4 @@ data:
 {{- range $key, $value := .Values.zeno.env_config }}
   {{ $key }}: {{ $value | quote }}
 {{- end }}
+  API_BASE_URL: {{ printf "https://%s" .Values.zeno.api.host | quote }}
