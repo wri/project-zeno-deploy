@@ -1,0 +1,45 @@
+{{- if .Values.zeno.langfuseIngest.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-langfuse-ingest
+  labels:
+    app: zeno
+    component: langfuse-ingest
+spec:
+  schedule: {{ .Values.zeno.langfuseIngest.schedule | quote }}
+  concurrencyPolicy: Forbid           # never overlap runs (watermark integrity)
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  startingDeadlineSeconds: 600
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 3600
+      template:
+        metadata:
+          name: {{ .Release.Name }}-langfuse-ingest
+          labels:
+            app: zeno
+            component: langfuse-ingest
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: langfuse-ingest
+              image: "{{ .Values.zeno.api.image.repository }}:{{ .Values.zeno.api.image.tag }}"
+              imagePullPolicy: IfNotPresent
+              command: ["/bin/sh", "-c"]
+              args:
+                - "uv run python src/api/cli.py ingest-langfuse-traces"
+              envFrom:
+                - configMapRef:
+                    name: {{ .Release.Name }}-zeno-config
+                - secretRef:
+                    name: {{ .Release.Name }}-zeno-secrets
+              resources:
+                requests:
+                  cpu: "250m"
+                  memory: "512Mi"
+                limits:
+                  memory: "1Gi"
+{{- end }}

@@ -176,6 +176,13 @@ zeno:
     enabled: true
     host: langfuse.globalnaturewatch.org
 
+  # Daily CronJob that ingests derived analytics from Langfuse traces into Postgres.
+  # Runs the `ingest-langfuse-traces` CLI in the API image; inherits DATABASE_URL,
+  # LANGFUSE_HOST and the LANGFUSE_*_KEY secrets via envFrom (no extra secrets needed).
+  langfuseIngest:
+    enabled: true
+    schedule: "0 2 * * *"   # 02:00 UTC daily, off-peak
+
   api:
     host: api.globalnaturewatch.org
     replicas: 2
