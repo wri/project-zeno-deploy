@@ -197,7 +197,6 @@ jobs:
         working-directory: ./helm
         run: >
           helm upgrade --install zeno ./zeno
-          --timeout 20m
           -f zeno/values.yaml
           -f zeno/values-${{ env.ENVIRONMENT }}.yaml
           --set langfuse.postgresql.auth.password="${{ secrets.DATABASE_PASSWORD }}"
