@@ -199,7 +199,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 089cab6f400fc782f4b8fa5100b502edbf68b2f7
+      tag: 7795848214e770ab31fcc63d7ce131147a8d07f7
 
   shell:
     replicas: 0
