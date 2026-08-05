@@ -17,6 +17,9 @@ zeno:
 
   api:
     host: api.globalnaturewatch.org
+    image:
+      repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
+      tag: 0c7ed1a5a75eadab4bd1e38f88f9cdfcc8cef622
     autoscaling:
       enabled: true
       minReplicas: 3
@@ -37,7 +40,7 @@ zeno:
     ALLOW_ANONYMOUS_CHAT: false
     DOMAINS_ALLOWLIST: ""
     MAX_USER_SIGNUPS: 5000
-    DATASET_EMBEDDINGS_DB: gnw-dataset-index-gemini-v5
+    DATASET_EMBEDDINGS_DB: gnw-dataset-index-gemini-v7
 
   db_secrets:
     POSTGRES_HOST: zeno-db.cv2oy6g4svaz.us-east-1.rds.amazonaws.com
