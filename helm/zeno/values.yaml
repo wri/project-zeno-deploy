@@ -130,6 +130,7 @@ zeno:
     AWS_SECRET_ACCESS_KEY: ""
     COOKIE_SIGNER_SECRET_KEY: ""
     GEE_SERVICE_ACCOUNT_JSON: ""
+    WRI_BEARER_TOKEN: ""
 
   # Langfuse-specific secrets
   langfuse_secrets:
