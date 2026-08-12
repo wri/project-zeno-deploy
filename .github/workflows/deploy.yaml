@@ -222,6 +222,7 @@ jobs:
           --set zeno.env_secrets.ELEVENLABS_API_KEY="${{ secrets.ELEVENLABS_API_KEY }}"
           --set zeno.env_secrets.GOOGLE_API_KEY="${{ secrets.GOOGLE_API_KEY }}"
           --set zeno.env_secrets.COOKIE_SIGNER_SECRET_KEY="${{ secrets.COOKIE_SIGNER_SECRET_KEY }}"
+          --set zeno.env_secrets.WRI_BEARER_TOKEN="${{ secrets.WRI_BEARER_TOKEN }}"
           --set zeno.db_secrets.POSTGRES_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
       # Deploy eoapi
       - name: Deploy eoapi

@@ -130,6 +130,7 @@ zeno:
     AWS_SECRET_ACCESS_KEY: ""
     COOKIE_SIGNER_SECRET_KEY: ""
     GEE_SERVICE_ACCOUNT_JSON: ""
+    WRI_BEARER_TOKEN: ""
 
   # Langfuse-specific secrets
   langfuse_secrets:
@@ -199,7 +200,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 7a0f7b62234e136b8c82e79123ad6f5ea0f62464
+      tag: 993d20dfcfad3b16bf144b4a768221b0177f7c17
 
   shell:
     replicas: 0

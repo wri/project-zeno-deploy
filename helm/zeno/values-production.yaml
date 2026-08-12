@@ -17,9 +17,6 @@ zeno:
 
   api:
     host: api.globalnaturewatch.org
-    image:
-      repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: 0c7ed1a5a75eadab4bd1e38f88f9cdfcc8cef622
     autoscaling:
       enabled: true
       minReplicas: 3
