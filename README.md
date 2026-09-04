@@ -2,6 +2,10 @@
 
 This repository contains the infrastructure and deployment configuration for the Zeno project.
 
+## Cluster Access
+
+See [docs/accessing-the-cluster.md](docs/accessing-the-cluster.md) to get `kubectl` access to the staging and production clusters.
+
 ## Deployment Process
 
 The deployment process is automated through GitHub Actions:
