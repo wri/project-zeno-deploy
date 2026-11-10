@@ -34,6 +34,7 @@ helm version
 
 ### Option A — SSO (preferred)
 
+Either configure using:
 ```bash
 aws configure sso --profile zeno
 ```
@@ -49,6 +50,21 @@ Answer with:
 | Account | `084375562450` |
 | Role | `AWSAdministratorAccess` |
 | Default client region | `us-east-1` |
+
+Or just put this in your `~/.aws/config`:
+
+```
+[sso-session wri-sso]
+sso_start_url = https://d-9067428136.awsapps.com/start/#
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
+
+[profile zeno-admin]
+sso_session = wri-sso
+sso_account_id = 084375562450
+sso_role_name = AWSAdministratorAccess
+region = us-east-1
+```
 
 Ask an admin for the start URL, or find it in WRI's AWS access request process.
 
