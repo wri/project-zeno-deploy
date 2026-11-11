@@ -174,6 +174,9 @@ zeno:
     MOSAIC_S3_BUCKET: gnw-cache
     MOSAIC_S3_PREFIX: mosaics
     MOSAIC_S3_REGION: us-east-1
+    # Sync saved custom areas to the analytics API (project-zeno#888), so integrated
+    # alerts can be requested by id (project-zeno#895)
+    CUSTOM_AOI_ANALYTICS_ENABLED: "true"
   langfuse:
     enabled: true
     host: langfuse.globalnaturewatch.org
@@ -201,7 +204,7 @@ zeno:
         memory: "4Gi"
     image:
       repository: public.ecr.aws/b7u8b0a6/project-zeno/zeno
-      tag: f840c59edd880ab10275b8b85f6bde3625aecabe
+      tag: 163d61485d5ad8d272177b620682cfc3dd3adfa3
 
   shell:
     replicas: 0
