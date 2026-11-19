@@ -114,6 +114,10 @@ jobs:
           helm repo update
 
       # Deploy ingress-nginx
+      # HTTP/2 is off to mitigate CVE-2026-123007 and CVE-2026-123633.
+      # These are nginx HTTP/2 RCE bugs, fixed in nginx 1.30.7. Controller
+      # v1.11.3 bundles nginx 1.25.5, and ingress-nginx gets no more releases.
+      # Turn HTTP/2 on again only on a controller with a patched nginx.
       - name: Deploy ingress-nginx
         if: |
           github.event_name == 'push' &&
@@ -127,6 +131,7 @@ jobs:
           --create-namespace
           --set controller.config.proxy-body-size=500m
           --set controller.config.proxy-read-timeout=300s
+          --set-string controller.config.use-http2=false
           --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb"
 
       # Deploy cert-manager
