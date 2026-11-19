@@ -134,6 +134,19 @@ jobs:
           --set-string controller.config.use-http2=false
           --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb"
 
+      # Restart ingress-nginx controller
+      # A ConfigMap change only reloads nginx. Old workers keep serving their
+      # open HTTP/2 connections until they drain. The restart makes sure the
+      # HTTP/2 mitigation is in effect at once. Remove this step when HTTP/2 is
+      # turned on again on a controller with a patched nginx.
+      - name: Restart ingress-nginx controller
+        if: |
+          github.event_name == 'push' &&
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        run: |
+          kubectl -n ingress-nginx rollout restart deployment ingress-nginx-controller
+          kubectl -n ingress-nginx rollout status deployment ingress-nginx-controller --timeout=300s
+
       # Deploy cert-manager
       - name: Deploy cert-manager
         if: |
