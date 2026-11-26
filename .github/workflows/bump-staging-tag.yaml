@@ -1,0 +1,49 @@
+name: Bump staging image tag
+
+on:
+  repository_dispatch:
+    types: [zeno-image-published]
+
+permissions:
+  contents: write
+
+jobs:
+  bump-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      # ubuntu-latest ships yq preinstalled, but the image is a moving
+      # target GitHub repoints periodically - fall back to a pinned direct
+      # download so this doesn't break silently if that ever changes.
+      - name: Ensure yq is available
+        run: |
+          if ! command -v yq >/dev/null 2>&1; then
+            echo "yq not found on runner, installing v4.44.3..."
+            sudo curl -fsSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64
+            sudo chmod +x /usr/local/bin/yq
+          fi
+          yq --version
+
+      - name: Update zeno.api.image.tag in values.yaml
+        env:
+          SHA: ${{ github.event.client_payload.sha }}
+        run: |
+          yq -i ".zeno.api.image.tag = strenv(SHA)" helm/zeno/values.yaml
+
+      - name: Commit and push
+        env:
+          SHA: ${{ github.event.client_payload.sha }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add helm/zeno/values.yaml
+          if git diff --cached --quiet; then
+            echo "Tag unchanged, nothing to commit"
+            exit 0
+          fi
+          git commit -m "Bump zeno image tag to ${SHA}"
+          git push origin develop
